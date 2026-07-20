@@ -1,0 +1,10 @@
+# Nightly cleanup of expired/revoked auth sessions (template built-in cron
+# task). Install with the matching .timer file; replace "myapp" with the
+# project folder name under /opt.
+[Unit]
+Description=myapp: cleanup expired auth sessions
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/myapp/backend
+ExecStart=/root/.bun/bin/bun src/cron.ts auth:sessions:cleanup
