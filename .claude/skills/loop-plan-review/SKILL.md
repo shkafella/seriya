@@ -33,7 +33,7 @@ Independent review means the reviewer may share the same filesystem and reposito
    - Locate the spec/TZ and code surfaces the plan references, so the reviewer prompt can name them as grounding sources.
    - Preserve unrelated user changes and do not stage, commit, reset, stash, or push unless the user explicitly asks.
 
-2. Start one independent reviewer sub-agent using the most capable model with extra high reasoning.
+2. Start one independent reviewer sub-agent on the same model the main session is running — do not request a specific model or a model upgrade (no hardcoded Opus/Sonnet/etc.); simply omit any model override so the sub-agent inherits the session model. Use the highest reasoning effort available.
    - Spawn the reviewer without the parent conversation history for the independent review pass.
    - Give the reviewer only a self-contained task prompt with the repository path, the plan file path, grounding-source paths, and the acceptance bar. Do not include parent-thread analysis, authoring rationale, suspected weaknesses, previous reviewer output, or summaries of the main process's reasoning.
    - Ask the reviewer to stay read-only, verify the plan's factual claims against the actual repository state (referenced files, schemas, routes, APIs, commands), and return findings with plan-section and file references.
@@ -60,10 +60,10 @@ Independent review means the reviewer may share the same filesystem and reposito
 
 ## Score Trajectory Report
 
-- Maintain a running scoreboard across rounds. **As soon as the first round completes — and again before each subsequent round and once more in the Final Response — print exactly ONE summary table, written in the user's language and in plain, non-technical wording, with ONE row per completed round for the Claude/Opus reviewer.** Do NOT print an English table, and do NOT add any prose recap above or below the table: the table is the entire report.
+- Maintain a running scoreboard across rounds. **As soon as the first round completes — and again before each subsequent round and once more in the Final Response — print exactly ONE summary table, written in the user's language and in plain, non-technical wording, with ONE row per completed round for the reviewer.** Do NOT print an English table, and do NOT add any prose recap above or below the table: the table is the entire report.
 - Translate the column headers into the user's language. The columns are:
   - Round — the round number.
-  - Model — which reviewer this row is for: the Claude reviewer (label «Опус»). Render the model name in the user's language.
+  - Model — the actual model the reviewer ran on (the session's model, whatever it is). Render the model name in the user's language.
   - Score — the X/10 score the reviewer gave that round.
   - How serious the findings were — severity in plain words (critical / moderate / minor / none), never code terms.
   - Why we continue (or stop) — the plain-language reason tied to the findings (e.g. "found a serious error — fixing it" / "nothing left to fix").
@@ -73,8 +73,8 @@ Independent review means the reviewer may share the same filesystem and reposito
 
 | Раунд | Модель | Оценка | Насколько серьёзные находки | Почему продолжаем или стоп |
 |-------|--------|--------|------------------------------|-----------------------------|
-| 1 | Опус | 8,5 | Средние | Нашли неточности в плане — исправили |
-| 2 | Опус | 9,5 | Нет | Замечаний больше нет — план готов, останавливаемся |
+| 1 | Соннет | 8,5 | Средние | Нашли неточности в плане — исправили |
+| 2 | Соннет | 9,5 | Нет | Замечаний больше нет — план готов, останавливаемся |
 
 ## Status-line Round Feed
 
