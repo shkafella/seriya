@@ -6,7 +6,8 @@
 
 ## Правила
 
-- Один план — один файл. Имя: `НАЗВАНИЕ_ФИЧИ_PLAN.md` (например `PAYMENTS_PLAN.md`, `NOTIFICATIONS_PLAN.md`).
+- Все документы в этой папке — планы, ТЗ, спецификации — всегда пишутся **на английском языке**. Обсуждение планов с владельцем при этом идёт на русском, как обычно.
+- Один план — один файл. Имя: `FEATURE_NAME_PLAN.md` (например `PAYMENTS_PLAN.md`, `NOTIFICATIONS_PLAN.md`).
 - План пишется простым языком: владелец проекта должен понимать каждый пункт. Технические детали — только там, где без них решение нельзя зафиксировать.
 - Ключевые решения нумеруются `D-1`, `D-2`, … — на них удобно ссылаться в разговоре и в следующих планах («как решили в D-3»). Если решение меняется, старое не стирается, а помечается: `D-3 (пересмотрено, см. D-7)`.
 - После одобрения структуры плана владельцем прогоняется `/loop-plan-review` — независимый проверяющий крутит раунды замечаний, пока план не станет готовым к исполнению (оценка ≥ 9,5/10 или «замечаний нет»).
@@ -15,34 +16,34 @@
 ## Шаблон плана
 
 ```markdown
-# План: <название фичи>
+# Plan: <feature name>
 
-## Что делаем и зачем
-2–5 предложений: какую проблему пользователя решаем, что появится на экране,
-как поймём, что фича удалась.
+## What and why
+2–5 sentences: what user problem we solve, what appears on screen,
+and how we will know the feature succeeded.
 
-## Ключевые решения
-- **D-1.** <Решение и короткое «почему». Отвергнутые альтернативы — одной строкой.>
+## Key decisions
+- **D-1.** <Decision and a short "why". Rejected alternatives — one line.>
 - **D-2.** …
 
-## Что осознанно НЕ делаем
-Границы фичи: что откладываем и почему. Это защита от расползания задачи.
+## What we deliberately do NOT do
+Feature boundaries: what we postpone and why. This protects against scope creep.
 
-## Этапы
-### Этап 1 — <название>
-- Что делается.
-- **Готово, когда:** <наблюдаемые критерии — что видно на экране / что отвечает
-  сервер / какие тесты зелёные>.
+## Stages
+### Stage 1 — <name>
+- What gets done.
+- **Done when:** <observable criteria — what is visible on screen / what the
+  server responds / which tests are green>.
 
-### Этап 2 — <название>
+### Stage 2 — <name>
 - …
 
-## Риски и открытые вопросы
-- <Что может пойти не так, что уточнить у владельца.>
+## Risks and open questions
+- <What can go wrong, what to clarify with the owner.>
 
-## Статус
-- [ ] План одобрен владельцем
-- [ ] План прошёл /loop-plan-review
-- [ ] Этап 1 … / Этап 2 … (отмечать по ходу)
-- [ ] Код прошёл /loop-code-review (для сложных фич)
+## Status
+- [ ] Plan approved by the owner
+- [ ] Plan passed /loop-plan-review
+- [ ] Stage 1 … / Stage 2 … (check off as work proceeds)
+- [ ] Code passed /loop-code-review (for complex features)
 ```
