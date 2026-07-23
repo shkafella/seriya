@@ -1,13 +1,13 @@
 ---
 name: loop-code-review
-description: Iterative code review workflow for active git changes using independent sub-agents. Use when the user invokes `/loop-code-review`, asks for a looped sub-agent code review, or asks Claude Code to keep reviewing and fixing active changes until an independent reviewer either rates the result at least 9.5 out of 10 or reports no actionable comments. Single independent Claude reviewer, no external models.
+description: Iterative code review workflow for active git changes using independent sub-agents. Use when the user invokes `/loop-code-review`, asks for a looped sub-agent code review, or asks Claude Code to keep reviewing and fixing active changes until an independent reviewer either rates the result at least 9.5 out of 10, reports no actionable comments, or the loop hits the plateau stop (three consecutive rounds at 9.0 or higher with only minor findings). Single independent Claude reviewer, no external models.
 ---
 
 # Loop Code Review
 
 ## Overview
 
-Run an iterative review-and-fix loop over the current git worktree. Use an independent read-only reviewer sub-agent, address actionable findings, validate the result, and continue until the reviewer gives the latest state a score of at least 9.5/10 or explicitly reports no actionable comments/findings.
+Run an iterative review-and-fix loop over the current git worktree. Use an independent read-only reviewer sub-agent, address actionable findings, validate the result, and continue until the reviewer gives the latest state a score of at least 9.5/10, explicitly reports no actionable comments/findings, or the plateau stop fires (see Workflow step 5).
 
 ## Sub-agent Context Isolation
 
@@ -47,7 +47,8 @@ Independent review means the reviewer may share the same filesystem and reposito
 5. Repeat the loop.
    - Before spawning the next reviewer, print the score-trajectory table (see "Score Trajectory Report") and refresh the status-line round feed (see "Status-line Round Feed").
    - Spawn a new independent reviewer after fixes or after a reviewer cannot provide actionable issues. Each scoring pass must use a fresh sub-agent without parent context or prior review discussion.
-   - Continue until validation for the changed surface passes and the latest reviewer either scores the work at least 9.5/10 or explicitly reports no actionable comments/findings.
+   - Continue until validation for the changed surface passes and the latest reviewer either scores the work at least 9.5/10 or explicitly reports no actionable comments/findings — or until the plateau stop below fires.
+   - Plateau stop (anti-spin): if three consecutive completed rounds each scored at least 9.0 and none of their findings was worse than minor (naming, comments, small test polish — no bugs, regressions, security/privacy or data-integrity issues), and validation for the changed surface is green, stop instead of spawning another reviewer: apply the still-worthwhile minor fixes from the latest round, accept the current state, and list the remaining minor findings in the Final Response. Fresh reviewers of a substantial diff almost never report "no findings"; past a stable 9.0+ plateau, further rounds trade real time and money for polish.
    - Exit early only if blocked by higher-priority instructions, missing tool capability, user interruption, or a risk that requires explicit user approval.
 
 ## Score Trajectory Report
@@ -97,7 +98,7 @@ When the loop finishes, report:
 
 - the final score-trajectory table (see "Score Trajectory Report"), in the user's language;
 - what changed and why;
-- the reviewer acceptance signal: score at least 9.5/10, no actionable comments/findings, or both;
+- the reviewer acceptance signal: score at least 9.5/10, no actionable comments/findings, or the plateau stop — state which;
 - validation commands and results;
 - any findings intentionally not changed, with the reason;
 - remaining risks or follow-up work, if any.

@@ -1,13 +1,13 @@
 ---
 name: loop-plan-review
-description: Iterative plan review workflow for plan/spec documents using independent sub-agents. Use when the user invokes `/loop-plan-review`, asks for a looped sub-agent review of a plan document, or asks Claude Code to keep reviewing and improving a plan until an independent reviewer either rates it at least 9.5 out of 10 or reports no actionable comments, so the plan becomes execution-ready. Single independent Claude reviewer, no external models.
+description: Iterative plan review workflow for plan/spec documents using independent sub-agents. Use when the user invokes `/loop-plan-review`, asks for a looped sub-agent review of a plan document, or asks Claude Code to keep reviewing and improving a plan until an independent reviewer either rates it at least 9.5 out of 10, reports no actionable comments, or the loop hits the plateau stop (three consecutive rounds at 9.0 or higher with only minor findings), so the plan becomes execution-ready. Single independent Claude reviewer, no external models.
 ---
 
 # Loop Plan Review
 
 ## Overview
 
-Run an iterative review-and-improve loop over a plan document until it is execution-ready. Use an independent read-only reviewer sub-agent, fix actionable plan defects, verify factual claims against the repository, and continue until the reviewer gives the latest plan a score of at least 9.5/10 or explicitly reports no actionable comments/findings.
+Run an iterative review-and-improve loop over a plan document until it is execution-ready. Use an independent read-only reviewer sub-agent, fix actionable plan defects, verify factual claims against the repository, and continue until the reviewer gives the latest plan a score of at least 9.5/10, explicitly reports no actionable comments/findings, or the plateau stop fires (see Workflow step 5).
 
 Execution-ready means: someone with repository access but no conversation history could implement the plan step by step without guessing — goals, ordering, file-level targets, acceptance criteria, risks, and validation are all stated and grounded in the real codebase.
 
@@ -55,7 +55,8 @@ Independent review means the reviewer may share the same filesystem and reposito
 5. Repeat the loop.
    - Before spawning the next reviewer, print the score-trajectory table (see "Score Trajectory Report") and refresh the status-line round feed (see "Status-line Round Feed").
    - Spawn a new independent reviewer after revisions or after a reviewer cannot provide actionable issues. Each scoring pass must use a fresh sub-agent without parent context or prior review discussion.
-   - Continue until the latest reviewer either scores the plan at least 9.5/10 or explicitly reports no actionable comments/findings, and no surfaced product decisions remain unanswered.
+   - Continue until the latest reviewer either scores the plan at least 9.5/10 or explicitly reports no actionable comments/findings, and no surfaced product decisions remain unanswered — or until the plateau stop below fires.
+   - Plateau stop (anti-spin): if three consecutive completed rounds each scored at least 9.0 and none of their findings was worse than minor (one-sentence clarifications and wording gaps — no wrong or stale claims, contradictions, missing steps, or unanswered product decisions), stop instead of spawning another reviewer: apply the still-worthwhile minor fixes from the latest round, accept the plan, and list the remaining minor findings in the Final Response. Fresh reviewers of a long document almost never report "no findings" — every revision adds text in which the next reviewer finds new micro-gaps — so past a stable 9.0+ plateau, further rounds trade real time and money for wording polish.
    - Exit early only if blocked by higher-priority instructions, missing tool capability, user interruption, or an open product decision the user must make first.
 
 ## Score Trajectory Report
@@ -107,7 +108,7 @@ When the loop finishes, report:
 
 - the final score-trajectory table (see "Score Trajectory Report"), in the user's language;
 - what changed in the plan and why;
-- the reviewer acceptance signal: score at least 9.5/10, no actionable comments/findings, or both;
+- the reviewer acceptance signal: score at least 9.5/10, no actionable comments/findings, or the plateau stop — state which;
 - which factual claims were verified against the repository and how;
 - product decisions the user made during the loop, and any still open;
 - any findings intentionally not changed, with the reason;
