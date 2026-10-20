@@ -8,7 +8,7 @@ export PATH="/root/.bun/bin:$PATH"
 
 APP_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 PROJECT="$(basename "$APP_DIR")"
-DB_NAME="web_app_demo" # adjust if the database was renamed at bootstrap
+DB_NAME="seriya" # adjust if the database was renamed at bootstrap
 DB_USER="superuser"
 RETENTION_DAYS=30
 BACKUP_DIR="/var/backups/$PROJECT"

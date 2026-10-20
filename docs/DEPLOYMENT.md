@@ -107,7 +107,7 @@ Create production env files on the server (never commit them):
   COOKIE_SECURE=true
   JWT_SECRET=<output of: openssl rand -hex 32>
   CORS_ORIGINS=https://<domain>
-  DATABASE_URL=postgresql://superuser:<strong password>@localhost:54329/web_app_demo?schema=public
+  DATABASE_URL=postgresql://superuser:<strong password>@localhost:54329/seriya?schema=public
   TRUST_PROXY=true
   TRUSTED_PROXY_CLIENT_IP_HEADER=X-Real-IP
   ```

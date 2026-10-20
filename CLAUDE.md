@@ -52,7 +52,7 @@
 - Use `docs/LOCAL_DATABASE.md` and `docker-compose.yml` as the local PostgreSQL source of truth. Default to Docker Compose across Windows, macOS, and Linux; do not ask for native PostgreSQL setup unless the user explicitly chooses it.
 - Prefer existing utilities, framework APIs, and the standard library before adding dependencies.
 - Do not add new production or tooling dependencies without explicit user approval unless the user directly requested that dependency by name.
-- Before using a new library, inspect the relevant `package.json`. Prefer installed libraries such as Zod, TanStack Query, TanStack Form, Hono, Prisma, and `@web-app-demo/contracts`.
+- Before using a new library, inspect the relevant `package.json`. Prefer installed libraries such as Zod, TanStack Query, TanStack Form, Hono, Prisma, and `@seriya/contracts`.
 - If a missing dependency clearly improves the product outcome, explain the user-visible reason, maintenance/security impact, and ask before installing.
 - Before using framework-specific APIs, check current official docs, local package types, or existing examples.
 - For E2E, use Playwright. Read `docs/TESTING.md` before adding flows.
@@ -74,20 +74,6 @@
 - Client product contexts live in `src/features/<context>`; routes/screens compose public feature APIs, and endpoint-agnostic capabilities live in `src/platform`.
 - Do not add empty layers, generic/base repositories, CQRS, event sourcing, or state-machine libraries without a concrete product need.
 - Do not move business rules into routes, screens, providers, or UI primitives to avoid defining the owning application/domain boundary.
-
-## Bootstrap-Only Instructions
-
-<!-- BOOTSTRAP_ONLY_START -->
-This block exists only for fresh installs from the template. If this repository has not been initialized for a real project yet:
-
-- Read `README.md` (the first-run section) before setup or feature work, and interview the user per that section: project name, what product to build first, which surfaces are needed now (webapp, backend/API, website, full-stack), whether the first version needs auth/persistence/uploads/payments/real-time, whether a VPS is already rented, and whether a domain exists or must be registered.
-- Detach this checkout from the template: run `git remote remove origin`, then add the user's own private GitHub repository as `origin` only when they provide one or ask you to create/publish it.
-- Create `backend/.env` from `backend/.env.example` (and `webapp/.env` when needed), and verify git ignores these files before writing any real value into them.
-- If the user already has VPS credentials (IP, login, password), run the full turnkey server setup from `docs/DEPLOYMENT.md` now — hardening, runtime stack, code, the domain request, HTTPS, the deploy script, timers, backups. If not, record that deployment is deferred and return to the runbook as soon as credentials appear.
-- Rename `package.json` and other repository-specific identifiers to the chosen project name where applicable.
-- Record durable project choices in README files and docs, not in `AGENTS.md` or `CLAUDE.md`.
-- After first-run setup is complete, delete this entire `Bootstrap-Only Instructions` block from both `AGENTS.md` and `CLAUDE.md`.
-<!-- BOOTSTRAP_ONLY_END -->
 
 ## Git And Remote Policy
 

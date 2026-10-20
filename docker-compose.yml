@@ -1,9 +1,11 @@
+name: seriya
+
 services:
   postgres:
     image: postgres:18-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: web_app_demo
+      POSTGRES_DB: seriya
       POSTGRES_USER: superuser
       POSTGRES_PASSWORD: superpassword
     ports:
@@ -11,7 +13,7 @@ services:
     volumes:
       - postgres_18_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U superuser -d web_app_demo"]
+      test: ["CMD-SHELL", "pg_isready -U superuser -d seriya"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -20,7 +22,7 @@ services:
     image: postgres:18-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: web_app_demo_test
+      POSTGRES_DB: seriya_test
       POSTGRES_USER: superuser
       POSTGRES_PASSWORD: superpassword
     ports:
@@ -28,7 +30,7 @@ services:
     volumes:
       - postgres_18_test_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U superuser -d web_app_demo_test"]
+      test: ["CMD-SHELL", "pg_isready -U superuser -d seriya_test"]
       interval: 5s
       timeout: 5s
       retries: 10

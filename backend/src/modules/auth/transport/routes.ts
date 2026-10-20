@@ -11,7 +11,7 @@ import {
   tokenLogoutRequestSchema,
   tokenRefreshRequestSchema,
   tokenRefreshResponseSchema,
-} from '@web-app-demo/contracts'
+} from '@seriya/contracts'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
 import type { Context, MiddlewareHandler } from 'hono'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
@@ -24,7 +24,7 @@ import { userDtoFromPrincipal } from '../domain/user'
 import { executeAuth } from './errors'
 import type { AuthHttpEnv } from './middleware'
 
-const refreshCookieName = 'web_app_demo_refresh'
+const refreshCookieName = 'seriya_refresh'
 
 const cookieAuthResponseContent = {
   'application/json': {
