@@ -437,6 +437,20 @@ maybeDescribe('catalog import integration', () => {
       body: JSON.stringify({ revision: target.revision, changes: { publicName: 'Новое имя' } }),
     })
     expect(saved.status).toBe(200)
+    const savedVariant = await saved.json()
+    const otherSku = body.variants.find((variant: { id: string }) => variant.id !== target.id)!.sku
+    const duplicateSku = await app.request(`/api/owner/catalog/variants/${target.id}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${owner.accessToken}` },
+      body: JSON.stringify({ revision: savedVariant.revision, changes: { sku: otherSku } }),
+    })
+    expect(duplicateSku.status).toBe(409)
+    expect((await duplicateSku.json()).error).toMatchObject({ code: 'CONFLICT', details: { field: 'sku' } })
+    const missingAsset = await app.request(`/api/owner/catalog/variants/${target.id}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${owner.accessToken}` },
+      body: JSON.stringify({ revision: savedVariant.revision, changes: { assetId: crypto.randomUUID() } }),
+    })
+    expect(missingAsset.status).toBe(400)
+    expect((await missingAsset.json()).error).toMatchObject({ code: 'VALIDATION_ERROR', details: { field: 'assetId' } })
 
     const candidateResponse = await app.request('/api/owner/catalog/candidate', {
       method: 'POST', headers: { Authorization: `Bearer ${owner.accessToken}` },

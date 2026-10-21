@@ -67,36 +67,55 @@ export class CatalogService {
 
   async editVariant(userId: string, variantId: string, input: unknown) {
     const command = ownerCatalogVariantEditSchema.parse(input)
-    return this.db.$transaction(async (tx) => {
-      const variant = await tx.catalogVariant.findUnique({ where: { id: variantId } })
-      if (!variant) throw new AppError(404, 'CATALOG_VARIANT_NOT_FOUND', 'Catalog variant not found')
-      if (variant.revision !== command.revision) throw new AppError(409, 'STALE_CATALOG_EDIT', 'This item changed; reload and try again')
-      const state = await tx.catalogState.findUnique({ where: { singletonKey: 'catalog' } })
-      if (!state) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
-      const before = ownerVariantDto(variant)
-      const actualChanges = Object.fromEntries(
-        Object.entries(command.changes).filter(([key, value]) => canonicalJson(ownerFieldValue(variant, key)) !== canonicalJson(value)),
-      ) as OwnerCatalogVariantEdit['changes']
-      if (Object.keys(actualChanges).length === 0) return before
-      const editedFields = new Set(stringArray(variant.ownerEditedFields))
-      for (const key of Object.keys(actualChanges)) editedFields.add(key)
-      const data = editData({ ...command, changes: actualChanges }, [...editedFields])
-      const claimed = await tx.catalogVariant.updateMany({
-        where: { id: variantId, revision: command.revision },
-        data: { ...data, revision: { increment: 1 } },
+    try {
+      return await this.db.$transaction(async (tx) => {
+        const variant = await tx.catalogVariant.findUnique({ where: { id: variantId } })
+        if (!variant) throw new AppError(404, 'CATALOG_VARIANT_NOT_FOUND', 'Catalog variant not found')
+        if (variant.revision !== command.revision) throw new AppError(409, 'STALE_CATALOG_EDIT', 'This item changed; reload and try again')
+        const state = await tx.catalogState.findUnique({ where: { singletonKey: 'catalog' } })
+        if (!state) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
+        const before = ownerVariantDto(variant)
+        const actualChanges = Object.fromEntries(
+          Object.entries(command.changes).filter(([key, value]) => canonicalJson(ownerFieldValue(variant, key)) !== canonicalJson(value)),
+        ) as OwnerCatalogVariantEdit['changes']
+        if (Object.keys(actualChanges).length === 0) return before
+        if (actualChanges.sku !== undefined) {
+          const existingSku = await tx.catalogVariant.findFirst({
+            where: { sku: actualChanges.sku, NOT: { id: variantId } },
+            select: { id: true },
+          })
+          if (existingSku) throw duplicateCatalogSkuError()
+        }
+        if (actualChanges.assetId !== undefined && actualChanges.assetId !== null) {
+          const asset = await tx.catalogAsset.findUnique({ where: { id: actualChanges.assetId }, select: { id: true } })
+          if (!asset) throw new AppError(400, 'VALIDATION_ERROR', 'Selected catalog asset does not exist', { field: 'assetId' })
+        }
+        const editedFields = new Set(stringArray(variant.ownerEditedFields))
+        for (const key of Object.keys(actualChanges)) editedFields.add(key)
+        const data = editData({ ...command, changes: actualChanges }, [...editedFields])
+        const claimed = await tx.catalogVariant.updateMany({
+          where: { id: variantId, revision: command.revision },
+          data: { ...data, revision: { increment: 1 } },
+        })
+        if (claimed.count !== 1) throw new AppError(409, 'STALE_CATALOG_EDIT', 'This item changed; reload and try again')
+        const updated = await tx.catalogVariant.findUniqueOrThrow({ where: { id: variantId } })
+        await tx.catalogState.update({ where: { id: state.id }, data: { revision: { increment: 1 } } })
+        await tx.catalogEditHistory.create({
+          data: {
+            variantId, userId,
+            before: before as unknown as Prisma.InputJsonValue,
+            after: ownerVariantDto(updated) as unknown as Prisma.InputJsonValue,
+          },
+        })
+        return ownerVariantDto(updated)
       })
-      if (claimed.count !== 1) throw new AppError(409, 'STALE_CATALOG_EDIT', 'This item changed; reload and try again')
-      const updated = await tx.catalogVariant.findUniqueOrThrow({ where: { id: variantId } })
-      await tx.catalogState.update({ where: { id: state.id }, data: { revision: { increment: 1 } } })
-      await tx.catalogEditHistory.create({
-        data: {
-          variantId, userId,
-          before: before as unknown as Prisma.InputJsonValue,
-          after: ownerVariantDto(updated) as unknown as Prisma.InputJsonValue,
-        },
-      })
-      return ownerVariantDto(updated)
-    })
+    } catch (error) {
+      if (prismaErrorCode(error) === 'P2002') throw duplicateCatalogSkuError()
+      if (prismaErrorCode(error) === 'P2003') {
+        throw new AppError(400, 'VALIDATION_ERROR', 'Selected catalog asset does not exist', { field: 'assetId' })
+      }
+      throw error
+    }
   }
 
   async prepareCandidate() {
@@ -316,6 +335,15 @@ function ownerFieldValue(variant: {
     case 'assetId': return variant.assetId
     default: return undefined
   }
+}
+
+function duplicateCatalogSkuError() {
+  return new AppError(409, 'CONFLICT', 'Another catalog variant already uses this SKU', { field: 'sku' })
+}
+
+function prismaErrorCode(error: unknown) {
+  if (typeof error !== 'object' || error === null || !('code' in error)) return undefined
+  return typeof error.code === 'string' ? error.code : undefined
 }
 
 async function buildPublicSnapshot(

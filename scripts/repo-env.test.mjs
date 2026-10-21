@@ -3,6 +3,7 @@ import { afterEach, expect, test } from 'bun:test'
 import {
   assertTestDatabaseUrl,
   defaultTestDatabaseUrl,
+  normalizeTcpPort,
   postgresPortFromDatabaseUrl,
 } from './repo-env.mjs'
 
@@ -37,6 +38,13 @@ test('postgresPortFromDatabaseUrl returns explicit ports and postgres defaults',
       'postgresql://superuser:superpassword@localhost/seriya_test?schema=public',
     ),
   ).toBe('5432')
+})
+
+test('normalizeTcpPort rejects invalid TCP ports and removes leading zeroes', () => {
+  expect(normalizeTcpPort('054321', 'BACKEND_DOCKER_SMOKE_PORT')).toBe('54321')
+  expect(() => normalizeTcpPort('0')).toThrow('between 1 and 65535')
+  expect(() => normalizeTcpPort('65536')).toThrow('between 1 and 65535')
+  expect(() => normalizeTcpPort('54x')).toThrow('must be an integer TCP port')
 })
 
 test('assertTestDatabaseUrl accepts test databases and rejects development databases', () => {

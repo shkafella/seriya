@@ -4,22 +4,26 @@ import {
   assertTestDatabaseUrl,
   composeEnv,
   composeProjectName,
-  defaultPostgresTestPort,
   defaultTestDatabaseUrl,
+  normalizeTcpPort,
   postgresPortFromDatabaseUrl,
   repositoryHash,
   repositoryRoot,
 } from '../../scripts/repo-env.mjs'
 
-const imageName = process.env.BACKEND_DOCKER_SMOKE_IMAGE ?? 'seriya-backend:smoke'
-const containerName =
-  process.env.BACKEND_DOCKER_SMOKE_CONTAINER ??
-  `seriya-backend-smoke-${repositoryHash}-${process.pid}`
-const hostPort = process.env.BACKEND_DOCKER_SMOKE_PORT ?? String(await findOpenPort())
-const networkName = `${composeProjectName}_default`
-const composeArgs = ['compose', '-p', composeProjectName]
-const databaseUrlForHost =
-  process.env.TEST_DATABASE_URL ?? defaultTestDatabaseUrl(defaultPostgresTestPort)
+const smokeRunId = `${repositoryHash}-${process.pid}`
+const imageName = `seriya-backend:smoke-${smokeRunId}`
+const containerName = `seriya-backend-smoke-${smokeRunId}`
+const configuredHostPort = process.env.BACKEND_DOCKER_SMOKE_PORT
+const smokeComposeProjectName =
+  `${composeProjectName}-smoke-${process.pid}`
+const networkName = `${smokeComposeProjectName}_default`
+const composeArgs = ['compose', '-p', smokeComposeProjectName]
+// This smoke test owns its Compose project and database. Do not reuse the
+// developer's TEST_DATABASE_URL: its host port may already be occupied by a
+// long-lived local test stack, while this project must start independently.
+const smokePostgresPort = String(await findOpenPort())
+const databaseUrlForHost = defaultTestDatabaseUrl(smokePostgresPort)
 const databaseUrlForContainer =
   process.env.BACKEND_DOCKER_SMOKE_DATABASE_URL ??
   'postgresql://superuser:superpassword@postgres_test:5432/seriya_test?schema=public'
@@ -29,6 +33,7 @@ assertTestDatabaseUrl(databaseUrlForContainer, {
 })
 const dockerEnv = composeEnv({
   POSTGRES_TEST_PORT: postgresPortFromDatabaseUrl(databaseUrlForHost),
+  COMPOSE_PROJECT_NAME: smokeComposeProjectName,
 })
 const smokeOwnerEmail = `docker-smoke-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`
 const smokeOwnerPassword = `Docker-smoke-${Math.random().toString(36).slice(2)}-123`
@@ -97,7 +102,7 @@ async function waitForComposePostgres() {
   throw new Error('Timed out waiting for postgres_test')
 }
 
-async function waitForHealth() {
+async function waitForHealth(hostPort) {
   const url = `http://127.0.0.1:${hostPort}/health/ready`
 
   for (let attempt = 1; attempt <= 30; attempt += 1) {
@@ -119,7 +124,7 @@ async function waitForHealth() {
   throw new Error(`Timed out waiting for ${url}`)
 }
 
-async function smokeAuthApi() {
+async function smokeAuthApi(hostPort) {
   const baseUrl = `http://127.0.0.1:${hostPort}`
 
   const register = await fetch(`${baseUrl}/api/auth/token/register`, {
@@ -180,6 +185,16 @@ try {
   run('docker', [...composeArgs, 'up', '-d', 'postgres_test'], { env: dockerEnv })
   await waitForComposePostgres()
 
+  // PostgreSQL now owns smokePostgresPort. Choosing the backend port afterwards
+  // guarantees that an automatic choice cannot reuse it.
+  const hostPort =
+    configuredHostPort === undefined
+      ? String(await findOpenPort())
+      : normalizeTcpPort(configuredHostPort, 'BACKEND_DOCKER_SMOKE_PORT')
+  if (hostPort === smokePostgresPort) {
+    throw new Error('BACKEND_DOCKER_SMOKE_PORT must differ from the smoke PostgreSQL port')
+  }
+
   run('bun', ['run', '--cwd', 'backend', 'prisma:deploy'], {
     env: {
       ...process.env,
@@ -224,10 +239,11 @@ try {
     imageName,
   ])
 
-  await waitForHealth()
-  await smokeAuthApi()
+  await waitForHealth(hostPort)
+  await smokeAuthApi(hostPort)
 } finally {
   spawnSync('docker', ['rm', '-f', containerName], { stdio: 'ignore' })
+  spawnSync('docker', ['image', 'rm', '--force', imageName], { stdio: 'ignore' })
   spawnSync('docker', [...composeArgs, 'down', '--volumes', '--remove-orphans'], {
     cwd: repositoryRoot,
     env: dockerEnv,

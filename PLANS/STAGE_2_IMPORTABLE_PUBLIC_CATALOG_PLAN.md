@@ -14,7 +14,7 @@ Stage 2 is complete when all of the following are observable:
 2. Stale, concurrent, invalid, duplicate, unmapped, or owner-conflicting imports change no catalog rows; source removals deactivate only source-managed records.
 3. Exactly one configured owner can view and edit catalog records and prepare a release candidate; an authenticated non-owner receives `403`, and production registration is closed.
 4. Public catalog API responses and Astro's initial HTML resolve the same active release ID and contain only active, complete variants from that snapshot, grouped into 25 families with correctly labelled launch price ranges for ordinary modules, false panels, and trim products.
-5. Raw Basis/B3D/OBJ files never enter the public tree. The six reference packages pass the offline provenance/bounds/mask pipeline; neutral schematics keep development unblocked, but final production activation requires owner-supplied, rights-approved derived-asset coverage for every published asset family.
+5. Raw Basis/B3D/OBJ files never enter the public tree. The six reference packages pass the offline provenance/bounds/mask pipeline and form the initial Basis-derived visual set. Approved Seriya-owned neutral schematics cover the remaining catalog families; further Basis conversions are incremental catalog expansions and do not block the first test production activation.
 
 ## Key decisions
 
@@ -32,7 +32,7 @@ Stage 2 is complete when all of the following are observable:
 - **D-12.** Local registration stays enabled for existing development and tests. A dedicated environment flag must be explicitly false in production; environment validation refuses a production runtime that permits registration. Both browser and token registration routes enforce the same policy.
 - **D-13.** Owner catalog edits cover public name, SKU, dimensions, layout span, availability, cut eligibility, and asset selection. Commercial inputs are visible but read-only until Stage 3. Optimistic revision checks return a visible conflict instead of accepting stale edits.
 - **D-14.** The asset pipeline uses only Python's standard library. It validates the source manifest, hashes OBJ/MTL/XML/PDF inputs, records OBJ bounds and approved nominal dimensions/anchors, verifies separate body/facade material mappings, and emits deterministic content-hashed SVG front assets plus a manifest. It never publishes raw source files.
-- **D-15.** The six supplied Basis packages are private regression inputs under `.scratch/` and are not committed. Their derived assets stay internal until rights are confirmed. Public development pages initially use generated Seriya-owned schematic SVGs for all families, so missing owner exports or uncertain textures cannot block the remaining engineering work. Once the fixture pipeline passes, request the complete owner export batch, require an explicit rights/provenance decision for every mapped source, batch-convert it, and prove that every published asset family resolves to an approved derived asset. Any missing, rejected, or unmapped family blocks final production activation; neutral schematics are not accepted as the production completion substitute unless the governing product specification is explicitly revised.
+- **D-15.** The six supplied Basis packages are private regression inputs under `.scratch/` and are not committed. Their derived assets stay internal until rights are confirmed. Public pages use the six approved Basis-derived visuals plus generated Seriya-owned neutral schematic SVGs for other catalog families. Stage 2 activation requires all six initial Basis packages to pass provenance, rights, bounds, and mask validation and validates ownership and deterministic generation of every neutral schematic; absence of further Basis exports does not block the first test release. Additional Basis models are converted and substituted incrementally after launch.
 - **D-16.** Public paths are `/catalog` and `/catalog/<family-slug>`. SEO-critical family name, description, available dimensions, price range, image, and exclusions are rendered into initial HTML without client JavaScript.
 - **D-16a.** `/catalog` renders all published family cards in initial HTML and progressively enhances them with phone-usable filters for row, purpose, width, and function. Filters can be combined, are reflected in the URL, and show a clear empty result with a reset action; filtering never makes the underlying SEO content depend on JavaScript.
 - **D-17.** Backend ownership follows the existing modular-monolith rules: contracts in `packages/contracts`, import/publication/application behavior in `backend/src/modules/catalog`, pure price calculation in `backend/src/modules/pricing`, Prisma only in infrastructure, owner UI in `webapp/src/features/catalog`, and public pages in `website/src/pages/catalog`.
@@ -85,8 +85,8 @@ Stage 2 is complete when all of the following are observable:
 
 - Add the source manifest format, offline validator/converter for the six private Basis fixtures, deterministic neutral family schematic generator, batch manifest/converter, rights/provenance status, and asset manifest/check command.
 - Store only derived content-hashed SVGs under `website/public/catalog`; never copy source archives, OBJ, B3D, XML, PDF, or source textures there.
-- After the six-fixture converter is green, request the remaining Basis exports already confirmed to exist and run the same controlled batch flow for every asset family.
-- **Done when:** all six fixtures produce stable bounds/provenance/mask metadata in a temporary output; all 25 families have deterministic neutral development schematics; the full supplied batch has explicit rights status and maps every production-published asset family to an approved content-hashed derived asset; regeneration is byte-identical; and missing source packages, rights, provenance, material mappings, family coverage, or approved nominal-dimension mismatches fail the final production-activation gate.
+- Publish the six approved Basis-derived visuals for the first test release and keep deterministic Seriya-owned neutral schematics for the remaining catalog families. Convert further owner-supplied Basis exports through the same controlled batch flow in later catalog-expansion increments.
+- **Done when:** all six fixtures produce stable bounds/provenance/mask metadata in a temporary output and have explicit approved rights/provenance status; all remaining published families resolve to deterministic approved neutral schematics; regeneration is byte-identical; and missing rights, provenance, material mappings, or approved nominal-dimension mismatches for any of the six initial Basis assets fail the activation gate. Missing not-yet-supplied Basis models do not fail the gate.
 
 ### Stage 2.5 — Owner workspace and public catalog
 
@@ -108,7 +108,7 @@ Stage 2 is complete when all of the following are observable:
 - **Import integration:** empty database, idempotent re-import, rename/move identity, deactivation, owner conflict, stale preview, concurrent apply, rollback on injected failure.
 - **Authorization:** unauthenticated `401`, authenticated non-owner `403`, owner success, stale owner edit `409`, production registration `403` on both transports.
 - **Publication/release:** immutable candidate and checksum, preparation leaves active pointer unchanged, backup receipt required for activation, prior publication unchanged, unpublished edit marker, backend/API/HTML/assets parity by release ID, one activation at a time, maintenance-state denial, interruption/retry after every transition, and complete application rollback after failed backend readiness or smoke.
-- **Assets:** source provenance and rights, bounds, masks, nominal tolerance, no raw public files, deterministic hashes, development-placeholder coverage, full production-family coverage, and a blocking activation check for missing or unapproved assets.
+- **Assets:** source provenance and rights, bounds, masks, nominal tolerance, no raw public files, deterministic hashes, approved neutral-schematic coverage for families outside the initial six-model Basis set, and a blocking activation check for any missing or unapproved asset in that initial set.
 - **Public HTML and filters:** 25 family links, initial-HTML names/ranges/dimensions/exclusions/filter metadata, canonical metadata, inactive records absent, combined row/purpose/width/function filtering, URL restoration, and empty/reset behavior at the phone viewport.
 - **Regression:** existing auth/session, architecture, storage, catalog generator, webapp, typecheck, build, and database integration suites remain green.
 
@@ -118,13 +118,13 @@ Stage 2 is complete when all of the following are observable:
 - Run preview and inspect its machine-readable summary before apply. Apply aborts on any invalid, stale, conflicting, or concurrent state.
 - Prepare the initial candidate only after the 225-record import and launch price version pass validation. Candidate preparation alone is not public.
 - Export, install locked dependencies, generate the Prisma client, and build into a new full application release directory. A failed preparation never touches the active release or public pointer. Activation verifies backup and production-asset coverage, persists the old/new set, closes public catalog API reads, advances the application symlink, restarts and readiness-checks the backend from the new release, then advances the active publication through recorded idempotent steps. Success verifies backend version, API, HTML, assets, and publication before reopening reads. Failure or process interruption is recovered on retry/startup by completing or restoring the recorded set; a failed backend start/readiness or post-switch smoke restores the previous application symlink, restarts/verifies its backend, and restores the previous publication. The additive database remains backward compatible.
-- If Basis conversion fails or rights remain unconfirmed, keep the neutral schematic for local development while final production activation stays blocked. Catalog data and prices never fall back to an external image host.
+- If one of the six initial Basis conversions fails or its rights remain unconfirmed, keep the neutral schematic for local development while the first test production activation remains blocked. Catalog data and prices never fall back to an external image host.
 
 ## Risks and bounded experiments
 
 - **Prisma transaction serialization:** hypothesis — one PostgreSQL transaction advisory lock plus revision check gives one winner. Earliest experiment: concurrent integration test in Stage 2.2. Threshold: exactly one apply increments revision and the other changes no catalog row. Fallback: acquire a locked singleton state row with `SELECT ... FOR UPDATE` inside the same transaction.
 - **Full-release parity and coordinated activation:** hypothesis — canonical shared DTO parsing, one release/publication ID, persisted maintenance state, full application release symlinks, and a resumable activation attempt keep backend, API, Astro HTML, and assets aligned. Earliest experiment: candidate/export/activation test in Stage 2.5 that fails backend readiness and terminates after every release/pointer/status transition before rerunning recovery. Threshold: matching runtime version/checksums/IDs after success; during interruption catalog API is unavailable; after recovery the complete new set or complete previous set is running and ready. Fallback: keep/restore the old application and publication, and require operator recovery before any later activation.
-- **Basis material mapping:** hypothesis — the six samples consistently expose body and AGT facade materials. Earliest experiment: fixture pipeline test in Stage 2.4. Threshold: every fixture has both semantic masks and finite bounds. Fallback: record validated geometry metadata and keep the authored neutral schematic for development while production activation remains blocked until an explicit per-family mapping is supplied.
+- **Basis material mapping:** hypothesis — the six samples consistently expose body and AGT facade materials. Earliest experiment: fixture pipeline test in Stage 2.4. Threshold: every fixture has both semantic masks and finite bounds. Fallback: record validated geometry metadata and keep the authored neutral schematic for local development while production activation remains blocked until all six initial mappings are approved.
 - **Owner edit/import conflict:** hypothesis — field-level override metadata is sufficient for Stage 2 fields. Earliest experiment: integration matrix in Stage 2.2. Threshold: owner value survives and apply returns a deterministic conflict. Fallback: require explicit owner resolution and rerun preview; never overwrite.
 
 ## Repository anchors
@@ -146,14 +146,26 @@ Stage 2 is complete when all of the following are observable:
 - [x] Stage 2.1 complete
 - [x] Stage 2.2 complete
 - [x] Stage 2.3 complete
-- [ ] Stage 2.4 complete — the conversion pipeline and six fixtures are ready, but production activation still requires the full owner-approved, rights-cleared 25-family Basis asset batch
+- [x] Stage 2.4 complete — the conversion pipeline and six fixtures are ready; the owner approved the six-model test-release boundary on 2026-10-22, with later Basis models deferred to incremental catalog expansion
 - [ ] Stage 2.5 complete — the release implementation and automated contract checks are ready; a live Linux/systemd failure-injection rehearsal remains
-- [ ] Stage 2.6 complete — the ninth review on the user-requested `gpt-5.6-sol` (`high`) scored 8.0/10 with two medium findings and no level 1–3 defects; both findings are fixed and validated, but no tenth post-fix acceptance score was requested
-- [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — nine scoring passes are complete, but the latest score was issued before its two medium findings were remediated
+- [x] Stage 2.6 complete — validation matrix is green; the final post-fix review at levels 1–4 found no defects, scored the scoped implementation 10.0/10, and assessed changed-scenario coverage at 9.7/10
+- [x] Code accepted by `/loop-code-review-3` at levels 1–4 — final fresh review after all remediations found no blocker, critical, serious, or medium finding
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
 - [x] Sixth-review remediation committed and pushed in `95fd7d7` (`fix: close sixth review findings`)
 - [x] Seventh-review remediation committed and pushed in `821e460` (`fix: close seventh review findings`)
 - [x] Eighth-review remediation committed and pushed in `cd476d8` (`fix: allow reassigned imported skus`)
 - [x] Ninth-review remediation implemented and validated: production Docker smoke now runs with closed registration and a bootstrapped owner, and production assets must parse as a strict passive SVG subset
+- [x] Final post-ninth-review remediation validated: catalog edits return explicit duplicate-SKU and missing-asset errors; test cleanup respects owner identity; catalog asset bytes have fixed line endings; and Docker smoke uses isolated, self-cleaning resources
+
+### Post-fix code-review record (levels 1–4)
+
+| Fresh review | Score | Result and action |
+| --- | ---: | --- |
+| 1 | 9.2/10 | Medium catalog-edit error handling; corrected and covered by API tests. |
+| 2 | 8.7/10 | Medium conflict with an existing test-DB port; smoke now owns a separate port. |
+| 3 | 9.6/10 | Medium possible API/PostgreSQL port collision; API port is chosen after PostgreSQL starts. |
+| 4 | 6.0/10 | Critical unsafe Compose-project override and medium port normalization; unsafe overrides removed and ports normalized. |
+| 5 | 8.9/10 | Medium leftover tagged Docker image; generated image is removed during cleanup. |
+| 6 | 10.0/10 | Accepted: no blocker, critical, serious, or medium findings; changed-scenario coverage 9.7/10. |
 
 Last updated: 2026-10-22.

@@ -19,6 +19,21 @@ export function postgresPortFromDatabaseUrl(databaseUrl) {
   return '5432'
 }
 
+export function normalizeTcpPort(value, environmentName = 'TCP port') {
+  const candidate = String(value).trim()
+
+  if (!/^\d+$/.test(candidate)) {
+    throw new Error(`${environmentName} must be an integer TCP port`)
+  }
+
+  const port = Number(candidate)
+  if (!Number.isSafeInteger(port) || port < 1 || port > 65535) {
+    throw new Error(`${environmentName} must be between 1 and 65535`)
+  }
+
+  return String(port)
+}
+
 export function assertTestDatabaseUrl(
   databaseUrl,
   { allowEnvName = 'TEST_ALLOW_NON_TEST_DATABASE' } = {},

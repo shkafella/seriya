@@ -88,6 +88,20 @@ describe('production release contract', () => {
     expect(dockerSmoke).toContain("'catalog:owner', '--', 'bootstrap'")
     expect(dockerSmoke).toContain('/api/auth/token/login')
     expect(dockerSmoke).toContain('Registration closure smoke failed')
+    expect(dockerSmoke).toContain('smoke-${process.pid}')
+    expect(dockerSmoke).not.toContain('BACKEND_DOCKER_SMOKE_COMPOSE_PROJECT')
+    expect(dockerSmoke).not.toContain('BACKEND_DOCKER_SMOKE_CONTAINER')
+    expect(dockerSmoke).not.toContain('BACKEND_DOCKER_SMOKE_IMAGE')
+    expect(dockerSmoke).toContain('const smokeRunId = `${repositoryHash}-${process.pid}`')
+    expect(dockerSmoke).toContain("['image', 'rm', '--force', imageName]")
+    expect(dockerSmoke).toContain('const smokePostgresPort = String(await findOpenPort())')
+    expect(dockerSmoke).toContain('defaultTestDatabaseUrl(smokePostgresPort)')
+    expect(dockerSmoke).not.toContain('postgresPortFromDatabaseUrl(process.env.TEST_DATABASE_URL)')
+    expect(dockerSmoke).toContain("normalizeTcpPort(configuredHostPort, 'BACKEND_DOCKER_SMOKE_PORT')")
+    expect(dockerSmoke).toContain('BACKEND_DOCKER_SMOKE_PORT must differ from the smoke PostgreSQL port')
+    expect(dockerSmoke.indexOf('await waitForComposePostgres()')).toBeLessThan(
+      dockerSmoke.indexOf('configuredHostPort === undefined'),
+    )
   })
 
   test('verifies the actual backup bytes and rejects tampering before migration', async () => {
