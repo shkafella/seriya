@@ -152,6 +152,6 @@ Stage 2 is complete when all of the following are observable:
 - [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — seventh-round remediation is complete but must receive a fresh eighth-round acceptance score
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
 - [x] Sixth-review remediation committed and pushed in `95fd7d7` (`fix: close sixth review findings`)
-- [ ] Seventh-review remediation committed and pushed
+- [x] Seventh-review remediation committed and pushed in `821e460` (`fix: close seventh review findings`)
 
 Last updated: 2026-10-21.
