@@ -153,6 +153,6 @@ Stage 2 is complete when all of the following are observable:
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
 - [x] Sixth-review remediation committed and pushed in `95fd7d7` (`fix: close sixth review findings`)
 - [x] Seventh-review remediation committed and pushed in `821e460` (`fix: close seventh review findings`)
-- [ ] Eighth-review remediation committed and pushed
+- [x] Eighth-review remediation committed and pushed in `cd476d8` (`fix: allow reassigned imported skus`)
 
 Last updated: 2026-10-21.
