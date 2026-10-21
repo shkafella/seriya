@@ -47,4 +47,15 @@ describe('catalog import reconciliation', () => {
 
     expect(conflicts.size).toBe(0)
   })
+
+  test('allows a new identity to take a SKU released by an existing identity', () => {
+    const conflicts = resultingSkuConflictSourceIds([
+      {
+        id: 'a', sku: 'A', sourceManaged: true, ownerEditedFields: [],
+        sourceRecord: { sourceRecordId: 'catalog-source-0001' },
+      },
+    ], [moduleWith('catalog-source-0001', 'B'), moduleWith('catalog-source-0002', 'A')])
+
+    expect(conflicts.size).toBe(0)
+  })
 })

@@ -166,6 +166,39 @@ maybeDescribe('catalog import integration', () => {
     expect((await prisma.catalogVariant.findUniqueOrThrow({ where: { id: right.id } })).sku).toBe(left.sku)
   }, 30_000)
 
+  test('lets a new mapped identity take a SKU released in the same import', async () => {
+    const prisma = freshDb()
+    await resetCatalog(prisma)
+    const fullSeed = JSON.parse(await readFile(seedPath, 'utf8'))
+    const addedLater = fullSeed.modules.pop()
+    const initial = await loadSeed(JSON.stringify(fullSeed), 'without-later-identity.json')
+    await applyCatalogImport(prisma, initial, await previewCatalogImport(prisma, initial))
+    const existing = await prisma.catalogVariant.findFirstOrThrow({
+      orderBy: { sku: 'asc' }, include: { sourceRecord: true },
+    })
+    const changedSeed = JSON.parse(await readFile(seedPath, 'utf8'))
+    const existingInput = changedSeed.modules.find((item: { sourceRecordId: string }) => (
+      item.sourceRecordId === existing.sourceRecord!.sourceRecordId
+    ))
+    const addedInput = changedSeed.modules.find((item: { sourceRecordId: string }) => (
+      item.sourceRecordId === addedLater.sourceRecordId
+    ))
+    existingInput.sku = 'RELEASED-SKU-OWNER'
+    addedInput.sku = existing.sku
+    const changed = await loadSeed(JSON.stringify(changedSeed), 'reuse-released-sku.json')
+
+    const preview = await previewCatalogImport(prisma, changed)
+    expect(preview.valid).toBe(true)
+    expect(preview.counts).toMatchObject({ created: 1, updated: 1, invalid: 0, conflicts: 0 })
+    await applyCatalogImport(prisma, changed, preview)
+
+    expect((await prisma.catalogVariant.findUniqueOrThrow({ where: { id: existing.id } })).sku)
+      .toBe('RELEASED-SKU-OWNER')
+    expect((await prisma.catalogVariant.findUniqueOrThrow({
+      where: { sku: addedInput.sku },
+    })).sourceManaged).toBe(true)
+  }, 30_000)
+
   test('rejects incomplete launch rates before any catalog write', async () => {
     const prisma = freshDb()
     await resetCatalog(prisma)

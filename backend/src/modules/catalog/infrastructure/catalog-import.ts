@@ -80,7 +80,6 @@ export async function previewCatalogImport(
   for (const item of loaded.seed.modules) {
     const current = bySource.get(item.sourceRecordId)
     if (!current) {
-      if (existing.some((variant) => variant.sku === item.sku)) invalid.push(record(item, 'SKU already belongs to another catalog identity'))
       created.push(record(item))
       continue
     }
