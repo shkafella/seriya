@@ -151,6 +151,6 @@ Stage 2 is complete when all of the following are observable:
 - [ ] Stage 2.6 complete — an explicitly authorized sixth review scored 6.8/10 and was not accepted; all four reported findings were fixed and post-fix validation is green, but there is no post-fix acceptance score
 - [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — the sixth review found one blocker, one serious, and two medium defects; remediation is complete but has not received another independent acceptance round
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
-- [ ] Sixth-review remediation committed and pushed
+- [x] Sixth-review remediation committed and pushed in `95fd7d7` (`fix: close sixth review findings`)
 
 Last updated: 2026-10-21.
