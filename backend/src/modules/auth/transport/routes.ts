@@ -281,6 +281,7 @@ export function createAuthRoutes({ env, requireAuth, service }: CreateAuthRoutes
   })
 
   routes.openapi(cookieRegisterRoute, async (c) => {
+    assertRegistrationEnabled(env)
     assertTrustedCookieOrigin(c, env)
     const result = await executeAuth(() => service.register(c.req.valid('json'), requestMetadata(c, env)))
     setRefreshCookie(c, result.refreshToken, env)
@@ -288,6 +289,7 @@ export function createAuthRoutes({ env, requireAuth, service }: CreateAuthRoutes
   })
 
   routes.openapi(tokenRegisterRoute, async (c) => {
+    assertRegistrationEnabled(env)
     const result = await executeAuth(() => service.register(c.req.valid('json'), requestMetadata(c, env)))
     return c.json(result, 201)
   })
@@ -339,6 +341,12 @@ export function createAuthRoutes({ env, requireAuth, service }: CreateAuthRoutes
   })
 
   return routes
+}
+
+function assertRegistrationEnabled(env: AppEnv) {
+  if (!env.AUTH_REGISTRATION_ENABLED) {
+    throw new AppError(403, 'REGISTRATION_CLOSED', 'Registration is closed')
+  }
 }
 
 function requestMetadata(c: Context, env: AppEnv): { userAgent?: string; ipAddress?: string } {

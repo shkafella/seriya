@@ -2,6 +2,8 @@
 
 The CSR browser client provides the baseline auth flow for future app features. It lives behind authentication and needs no SEO, so it stays client-side rendered; the public, SEO-facing surfaces live in the `website` workspace instead. It consumes the shared API contracts and should keep server-state, form-state, and auth behavior centralized.
 
+Stage 2 adds the owner-only `/app/catalog` workspace: phone-usable search, variant editing, visible optimistic conflicts, read-only launch material rates, unpublished-change status, and release-candidate preparation. Authentication alone is insufficient; the backend checks the singleton owner identity on every catalog request.
+
 ## Project Surface Status
 
 This section may be updated during first-run bootstrap. If the root `README.md` marks webapp as deferred, add a short note here explaining that browser work is intentionally paused. When the user activates webapp, remove or rewrite that note before starting browser development.

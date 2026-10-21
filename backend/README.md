@@ -35,6 +35,10 @@ bun run --cwd backend prisma:validate
 bun run --cwd backend prisma:generate
 bun run --cwd backend prisma:migrate
 bun run --cwd backend prisma:deploy
+bun run --cwd backend catalog:preview
+bun run --cwd backend catalog:apply
+bun run --cwd backend catalog:assets sync
+bun run --cwd backend catalog:release prepare
 ```
 
 On Windows PowerShell, use `Copy-Item backend/.env.example backend/.env` instead of `cp`. Workspace aliases are also available from the repository root: `bun run dev:backend`, `bun run build:backend`, `bun run typecheck:backend`, and `bun run test:backend`.
@@ -54,6 +58,8 @@ Keep an explicit username and password in Prisma connection URLs even on local n
 `JWT_SECRET` must be at least 32 characters locally. Production accepts the 64-or-more-character hexadecimal output of `openssl rand -hex 32`; do not use the `.env.example` placeholder, repeated characters, or human phrases.
 
 `COOKIE_SECURE=false` is appropriate for local HTTP; production requires `COOKIE_SECURE=true` with exact HTTPS origins in `CORS_ORIGINS`. Production browser auth uses `SameSite=None; Secure` refresh cookies, so wildcard, empty, HTTP, or path-bearing CORS origins are invalid. Every cookie-backed auth write (`register`, `login`, `refresh`, and `logout`) also requires a trusted `Origin` in production cookie mode.
+
+`AUTH_REGISTRATION_ENABLED=true` is the local-development default. Production startup requires it to be explicitly `false`; both browser and token registration routes then return `403`. The one catalog owner is bound by immutable user ID through the server-only `catalog:owner` command, not by public registration or email matching.
 
 Auth writes are protected by `AUTH_BODY_LIMIT_BYTES` and a bounded in-process fixed-window limiter. `TRUST_PROXY=false` uses the direct Bun connection address. Behind a trusted proxy, set `TRUST_PROXY=true` together with the proxy's authoritative `TRUSTED_PROXY_CLIENT_IP_HEADER`; use `TRUSTED_PROXY_CLIENT_IP_POSITION=last` only when the proxy appends the client to a comma-separated chain. Behind the nginx setup from [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md) use `X-Real-IP`. The default production shape is one API instance behind nginx on the same server. Before horizontally scaling, move rate-limit state to a shared trusted store or edge/WAF layer.
 
@@ -91,6 +97,13 @@ Production runs on a self-managed VPS: the backend is a systemd service behind n
 - `GET /openapi.json`
 - `GET /health/live`
 - `GET /health/ready`
+
+## Catalog API
+
+- `GET /api/catalog` and `GET /api/catalog/families/:slug` serve only the active immutable publication.
+- `/api/owner/catalog/*` requires both a valid session and the singleton owner identity; it supports list, optimistic variant edits, and candidate preparation.
+- A preview/apply import uses stable `sourceRecordId` values, reports owner conflicts, and never overwrites owner-edited fields.
+- Public launch prices use the immutable price version and label exclusions explicitly. Exact configuration totals belong to Stage 3.
 
 Passwords are hashed through `Bun.password` with Argon2id. Access tokens are short-lived JWTs through `jose`. Initial refresh tokens are random; rotated successors are opaque, domain-separated HMAC values derived with the server secret so concurrent uses of the same credential receive the same successor. Only current and immediately previous SHA-256 hashes are stored in the database. Refresh atomically rotates the credential inside the same logical session, so another browser tab's still-valid access token is not revoked. Reuse of the previous credential after the short race-tolerance window revokes that session as potentially compromised.
 

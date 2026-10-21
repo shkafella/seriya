@@ -1,7 +1,4 @@
-# Backend API as a systemd service. Install as
-# /etc/systemd/system/<project>-backend.service and replace "myapp" with the
-# project folder name under /opt. Bun auto-loads backend/.env from the
-# working directory.
+# Install as /etc/systemd/system/<project>-backend.service and replace myapp.
 [Unit]
 Description=myapp backend API
 After=network-online.target docker.service
@@ -9,8 +6,9 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/myapp/backend
-ExecStart=/root/.bun/bin/bun run src/index.ts
+WorkingDirectory=/opt/myapp/current/backend
+EnvironmentFile=/opt/myapp/shared/backend.env
+ExecStart=/root/.bun/bin/bun run start:raw
 Restart=always
 RestartSec=3
 

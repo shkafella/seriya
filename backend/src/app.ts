@@ -7,6 +7,7 @@ import type { AppEnv } from './env'
 import { errorResponse, handleError, validationErrorHook } from './http/errors'
 import { createAuthSecurity } from './http/security'
 import { createAuthModule, type AuthHttpEnv } from './modules/auth'
+import { CatalogService, createCatalogRoutes } from './modules/catalog'
 
 type CreateAppOptions = {
   env: AppEnv
@@ -15,6 +16,7 @@ type CreateAppOptions = {
 
 export function createApp({ env, prisma }: CreateAppOptions) {
   const auth = createAuthModule({ db: prisma, env })
+  const catalog = createCatalogRoutes({ service: new CatalogService(prisma), requireAuth: auth.requireAuth })
   const app = new OpenAPIHono<AuthHttpEnv>({
     defaultHook: validationErrorHook,
   })
@@ -47,6 +49,7 @@ export function createApp({ env, prisma }: CreateAppOptions) {
     return c.json({
       name: 'seriya backend',
       status: 'ok',
+      releaseId: env.RELEASE_ID,
     })
   })
 
@@ -65,13 +68,15 @@ export function createApp({ env, prisma }: CreateAppOptions) {
   app.get('/health/ready', async (c) => {
     try {
       await prisma.$queryRaw`SELECT 1`
-      return c.json({ status: 'ok' }, 200)
+      return c.json({ status: 'ok', releaseId: env.RELEASE_ID }, 200)
     } catch {
       return c.json({ status: 'unavailable' }, 503)
     }
   })
 
   app.route('/api/auth', auth.routes)
+  app.route('/api/catalog', catalog.publicRoutes)
+  app.route('/api/owner/catalog', catalog.ownerRoutes)
 
   app.doc('/openapi.json', {
     openapi: '3.0.0',

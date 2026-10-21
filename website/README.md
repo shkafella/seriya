@@ -48,6 +48,8 @@ bun run preview
 
 Astro publishes pages from `src/pages`. Static assets live in `public`.
 
+The Stage 2 catalog is exported as `src/data/catalog.public.v1.json`. `/catalog` renders all 25 family cards into initial HTML and progressively enhances row, purpose, width, and function filters; `/catalog/<slug>` is generated for every family. Never fetch the Stage 1 seed from a public page. The deploy flow exports one reviewed publication snapshot before building Astro, and embeds its release ID in page metadata.
+
 ## Deployment
 
 When the website has only fully prerendered output and no server islands or runtime-rendered routes, the build output in `website/dist` is fully static. Production deployment builds it on the VPS (`bun install --frozen-lockfile && bun run build:website`) and serves `website/dist` with nginx. Set `PUBLIC_WEBSITE_URL` to the public canonical origin at build time; without it, pages omit canonical and `og:url` metadata. If website links to the browser app, `PUBLIC_WEBAPP_URL` must also be a concrete build-time URL. Rebuild and redeploy after either URL changes. Follow the shared runbook in [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md).

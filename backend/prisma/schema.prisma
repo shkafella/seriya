@@ -15,8 +15,227 @@ model User {
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   sessions     AuthSession[]
+  ownerIdentity OwnerIdentity?
 
   @@map("users")
+}
+
+enum CatalogActivationState {
+  IDLE
+  MAINTENANCE
+}
+
+enum CatalogPublicationStatus {
+  CANDIDATE
+  ACTIVE
+  SUPERSEDED
+}
+
+enum CatalogAssetStatus {
+  DEVELOPMENT
+  APPROVED
+  REJECTED
+}
+
+enum ActivationAttemptStatus {
+  PREPARED
+  APPLICATION_SWITCHED
+  PUBLICATION_SWITCHED
+  VERIFIED
+  ROLLED_BACK
+  FAILED
+}
+
+model OwnerIdentity {
+  id           String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey String   @unique @default("owner") @map("singleton_key")
+  userId       String   @unique @map("user_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@map("owner_identities")
+}
+
+model CatalogState {
+  id                  String                 @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey        String                 @unique @default("catalog") @map("singleton_key")
+  revision            Int                    @default(0)
+  activePublicationId String?                @unique @map("active_publication_id") @db.Uuid
+  activationState     CatalogActivationState @default(IDLE) @map("activation_state")
+  createdAt           DateTime               @default(now()) @map("created_at")
+  updatedAt           DateTime               @updatedAt @map("updated_at")
+  activePublication   CatalogPublication?    @relation("ActiveCatalogPublication", fields: [activePublicationId], references: [id], onDelete: Restrict)
+
+  @@map("catalog_state")
+}
+
+model CatalogSourceRecord {
+  id             String          @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  sourceRecordId String          @unique @map("source_record_id")
+  sourceChecksum String          @map("source_checksum")
+  sourceData     Json            @map("source_data")
+  isActive       Boolean         @default(true) @map("is_active")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  variant        CatalogVariant?
+
+  @@map("catalog_source_records")
+}
+
+model CatalogFamily {
+  id                String           @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  key               String           @unique
+  slug              String           @unique
+  importedPublicName String          @map("imported_public_name")
+  publicName        String           @map("public_name")
+  description       String           @default("")
+  row               String
+  purposes          Json             @default("[]")
+  functions         Json             @default("[]")
+  isActive          Boolean          @default(true) @map("is_active")
+  sourceManaged     Boolean          @default(true) @map("source_managed")
+  ownerEditedFields Json             @default("[]") @map("owner_edited_fields")
+  revision          Int              @default(0)
+  assetId           String?          @map("asset_id") @db.Uuid
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+  asset             CatalogAsset?    @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  variants          CatalogVariant[]
+
+  @@map("catalog_families")
+}
+
+model CatalogVariant {
+  id                 String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  sourceRecordId     String?              @unique @map("source_record_id") @db.Uuid
+  familyId           String               @map("family_id") @db.Uuid
+  sku                String               @unique
+  importedData       Json                 @map("imported_data")
+  publicName         String               @map("public_name")
+  heightMm           Int                  @map("height_mm")
+  widthMm            Int                  @map("width_mm")
+  depthMm            Int                  @map("depth_mm")
+  layoutSpanMm       Int?                 @map("layout_span_mm")
+  bodyM2             Decimal              @map("body_m2") @db.Decimal(12, 4)
+  facadeM2           Decimal              @map("facade_m2") @db.Decimal(12, 4)
+  hdfM2              Decimal              @map("hdf_m2") @db.Decimal(12, 4)
+  fastenerChargeRub  Decimal              @map("fastener_charge_rub") @db.Decimal(12, 2)
+  cutPolicy          String               @map("cut_policy")
+  variantData        Json                 @map("variant_data")
+  fastenersData      Json                 @map("fasteners_data")
+  isActive           Boolean              @default(true) @map("is_active")
+  isComplete         Boolean              @default(true) @map("is_complete")
+  sourceManaged      Boolean              @default(true) @map("source_managed")
+  ownerEditedFields  Json                 @default("[]") @map("owner_edited_fields")
+  revision           Int                  @default(0)
+  assetId            String?              @map("asset_id") @db.Uuid
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+  sourceRecord       CatalogSourceRecord? @relation(fields: [sourceRecordId], references: [id], onDelete: SetNull)
+  family             CatalogFamily        @relation(fields: [familyId], references: [id], onDelete: Restrict)
+  asset              CatalogAsset?        @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  edits              CatalogEditHistory[]
+
+  @@index([familyId])
+  @@index([isActive, isComplete])
+  @@map("catalog_variants")
+}
+
+model CatalogAsset {
+  id                 String             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  key                String             @unique
+  publicPath         String             @unique @map("public_path")
+  sourceChecksum     String?            @map("source_checksum")
+  derivedChecksum    String             @map("derived_checksum")
+  provenance         Json
+  geometry           Json
+  masks              Json
+  status             CatalogAssetStatus @default(DEVELOPMENT)
+  rightsApproved     Boolean            @default(false) @map("rights_approved")
+  productionApproved Boolean            @default(false) @map("production_approved")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+  families           CatalogFamily[]
+  variants           CatalogVariant[]
+
+  @@map("catalog_assets")
+}
+
+model PriceVersion {
+  id          String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  version     Int                  @unique
+  currency    String               @default("RUB")
+  rates       Json
+  checksum    String               @unique
+  publishedAt DateTime             @default(now()) @map("published_at")
+  createdAt   DateTime             @default(now()) @map("created_at")
+  publications CatalogPublication[]
+
+  @@map("price_versions")
+}
+
+model CatalogImportHistory {
+  id                 String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  sourceChecksum     String   @map("source_checksum")
+  sourceMapChecksum  String   @map("source_map_checksum")
+  baseRevision       Int      @map("base_revision")
+  resultingRevision  Int      @map("resulting_revision")
+  reconciliation     Json
+  appliedAt          DateTime @default(now()) @map("applied_at")
+
+  @@map("catalog_import_history")
+}
+
+model CatalogEditHistory {
+  id        String         @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  variantId String         @map("variant_id") @db.Uuid
+  userId    String         @map("user_id") @db.Uuid
+  before    Json
+  after     Json
+  createdAt DateTime       @default(now()) @map("created_at")
+  variant   CatalogVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@index([variantId])
+  @@map("catalog_edit_history")
+}
+
+model CatalogPublication {
+  id              String                   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  catalogRevision Int                      @map("catalog_revision")
+  priceVersionId  String                   @map("price_version_id") @db.Uuid
+  releaseId       String?                  @map("release_id")
+  snapshot        Json
+  checksum        String                   @unique
+  status          CatalogPublicationStatus @default(CANDIDATE)
+  backupReceipt   Json?                    @map("backup_receipt")
+  createdAt       DateTime                 @default(now()) @map("created_at")
+  activatedAt     DateTime?                @map("activated_at")
+  priceVersion    PriceVersion             @relation(fields: [priceVersionId], references: [id], onDelete: Restrict)
+  activeForState  CatalogState?            @relation("ActiveCatalogPublication")
+  attemptsAsPrevious CatalogActivationAttempt[] @relation("PreviousPublication")
+  attemptsAsNext     CatalogActivationAttempt[] @relation("NextPublication")
+
+  @@index([status])
+  @@map("catalog_publications")
+}
+
+model CatalogActivationAttempt {
+  id                    String                  @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  previousPublicationId String?                 @map("previous_publication_id") @db.Uuid
+  nextPublicationId     String                  @map("next_publication_id") @db.Uuid
+  previousReleasePath   String?                 @map("previous_release_path")
+  nextReleasePath       String                  @map("next_release_path")
+  status                ActivationAttemptStatus @default(PREPARED)
+  recoveryDecision      String?                 @map("recovery_decision")
+  error                 String?
+  createdAt             DateTime                @default(now()) @map("created_at")
+  updatedAt             DateTime                @updatedAt @map("updated_at")
+  previousPublication   CatalogPublication?     @relation("PreviousPublication", fields: [previousPublicationId], references: [id], onDelete: Restrict)
+  nextPublication       CatalogPublication      @relation("NextPublication", fields: [nextPublicationId], references: [id], onDelete: Restrict)
+
+  @@index([status])
+  @@map("catalog_activation_attempts")
 }
 
 model AuthSession {

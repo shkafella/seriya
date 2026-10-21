@@ -1,23 +1,32 @@
-# nginx site for the webapp + API proxy. Install as
-# /etc/nginx/sites-available/<domain>, symlink into sites-enabled, remove the
-# stock "default" site, replace <domain> and <project>, then run
-# `nginx -t && systemctl reload nginx`. Certbot upgrades this block to HTTPS
-# and adds the HTTP->HTTPS redirect itself.
+# Public catalog. Replace <domain> and <project>.
 server {
     listen 80;
     server_name <domain>;
-
-    root /opt/<project>/webapp/dist;
+    root /opt/<project>/current/website/dist;
     index index.html;
     client_max_body_size 10m;
 
-    location / {
-        try_files $uri /index.html;
-    }
-
+    location / { try_files $uri $uri/ =404; }
     location /api/ {
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Owner workspace. Use a protected subdomain such as admin.<domain>.
+server {
+    listen 80;
+    server_name <app-domain>;
+    root /opt/<project>/current/webapp/dist;
+    index index.html;
+
+    location / { try_files $uri /index.html; }
+    location /api/ {
+        proxy_pass http://127.0.0.1:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

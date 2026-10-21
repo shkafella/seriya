@@ -6,5 +6,5 @@ Description=myapp: cleanup expired auth sessions
 
 [Service]
 Type=oneshot
-WorkingDirectory=/opt/myapp/backend
+WorkingDirectory=/opt/myapp/current/backend
 ExecStart=/root/.bun/bin/bun src/cron.ts auth:sessions:cleanup

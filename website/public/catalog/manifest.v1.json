@@ -1,0 +1,605 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "familyKey": "cornice",
+      "publicPath": "/catalog/cornice-bc602294170e.svg",
+      "derivedChecksum": "bc602294170e2929cbbe52bb8bf0aaf11e94a06342f457155501e9a12b6a9ed5",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "deep-cornice",
+      "publicPath": "/catalog/deep-cornice-70397fd61379.svg",
+      "derivedChecksum": "70397fd613798dcb994783c4383acc3908966c3d64004cccda96c2a614cedede",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "false-panel",
+      "publicPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+      "derivedChecksum": "c50e0dd0a1d03f9d556c355f83fa0b32af269bf771bd5d8de7867187739ed058",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-bottle",
+      "publicPath": "/catalog/lower-bottle-9a61c4d95e5e.svg",
+      "derivedChecksum": "9a61c4d95e5e2478b1742a26bb26238057aaf8e34e7d9b3f98de639e78080b56",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-corner-removable-shelf",
+      "publicPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+      "derivedChecksum": "1c7b4ba752703b3c32e95f90c8dc1816de2eddba6a82af46b8da99447c22973e",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-corner-sink",
+      "publicPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+      "derivedChecksum": "3bea6f73be4f0de9ff2a2f19337215a0a216f513dc59fce2c9f6404edea0842b",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-dishwasher",
+      "publicPath": "/catalog/lower-dishwasher-b311c5298f60.svg",
+      "derivedChecksum": "b311c5298f60ef9705b936a5ba985fb5c67df7a7ac3b07839fb7c2907f7b460d",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-fridge",
+      "publicPath": "/catalog/lower-fridge-688e85c07ab2.svg",
+      "derivedChecksum": "688e85c07ab225d760d2027acc6ff6e6253bee5c47bf3640f1c3615b37ea5cad",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-hidden-drawers",
+      "publicPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+      "derivedChecksum": "4f7aeae4420ae305bef2c7ae297987fc7f20243e76faf6f53c68e96d82a0a9ee",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-oven",
+      "publicPath": "/catalog/lower-oven-e8692fb6616b.svg",
+      "derivedChecksum": "e8692fb6616b8b9449573747714916ab0fbf57e7e3f0091ef68b05669dd54366",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-removable-shelf",
+      "publicPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+      "derivedChecksum": "f8e7949ccfbd719ec1e5a9345953b98dece95248a0c2678b928b5aa56f71f7fc",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-shelf",
+      "publicPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+      "derivedChecksum": "b3bcdcf4d256263e88d1b79ee6e9fec8382e775c45f66ed5a7e92bc894e94a65",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-sink",
+      "publicPath": "/catalog/lower-sink-34d7a97390f0.svg",
+      "derivedChecksum": "34d7a97390f0d6cd1748b65b6668093ec905d9add585b1d43191db1024e54bd3",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-three-drawers",
+      "publicPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+      "derivedChecksum": "aa405f08d1e799f29a2b5ce1be6857a9455d6b6be4769859de5fc4afebf765a3",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "lower-two-drawers",
+      "publicPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+      "derivedChecksum": "dc0e1536436bfc2f26bc3de8f8fcc809a88aabdb1df0a0494ae1a464de37cfcf",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "mezzanine",
+      "publicPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+      "derivedChecksum": "67ba7eb5fc9a1fa0381a465834b9d2f313668426392b0e3b9c5e9b6a9c06d37f",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "plinth",
+      "publicPath": "/catalog/plinth-21a48d5fd174.svg",
+      "derivedChecksum": "21a48d5fd174b49151a805964f0f851eaf1a2dbaae6f9799289eb75ec631de5f",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-aventos",
+      "publicPath": "/catalog/wall-aventos-d62f40650b57.svg",
+      "derivedChecksum": "d62f40650b5796c69e7a6193655f6f2f8c2f80d57092556aa620a3d693dfaab5",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-corner",
+      "publicPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+      "derivedChecksum": "50e4e9f4f2eac7429af8fa95b7d8c091e41eb8135ffc310b4ea17e12332341dc",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-drying",
+      "publicPath": "/catalog/wall-drying-260781147c85.svg",
+      "derivedChecksum": "260781147c8510f430f23e8b58c03257f47e28b284df2a2a7fc523867aed6c9a",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-drying-aventos",
+      "publicPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+      "derivedChecksum": "937215b1c07cee7f56ed1f3fd2cdf2396f48e3afce0bd62b766123353ce3f2e2",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-hood",
+      "publicPath": "/catalog/wall-hood-e58c19dd2647.svg",
+      "derivedChecksum": "e58c19dd2647d4acf9765e9b26d8558480d77ba9eb7eebd9a6c2b7c3502fb16b",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-klok",
+      "publicPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+      "derivedChecksum": "0a1ff18a407d013625b6140e0fccb2a59c87ab9e5fe242a06c26e9686ea88cbd",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-removable-shelf",
+      "publicPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+      "derivedChecksum": "348c4750db1cd0a027a972293f0f6f6b997f0c7d01c2ddda956bf6337feb1ac4",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    },
+    {
+      "familyKey": "wall-shelf",
+      "publicPath": "/catalog/wall-shelf-8e8327daf841.svg",
+      "derivedChecksum": "8e8327daf841540cd4ee7e0a26f8abfa17690077c78a0094ad0b933398855ba2",
+      "status": "DEVELOPMENT",
+      "rightsApproved": true,
+      "productionApproved": false,
+      "provenance": {
+        "kind": "seriya-owned-schematic",
+        "generatorVersion": 1
+      },
+      "geometry": {
+        "viewBox": [
+          0,
+          0,
+          640,
+          520
+        ]
+      },
+      "masks": {
+        "body": "cabinet",
+        "facade": "doors"
+      }
+    }
+  ]
+}

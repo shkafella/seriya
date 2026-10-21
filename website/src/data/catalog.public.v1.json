@@ -1,0 +1,5159 @@
+{
+  "schemaVersion": 1,
+  "publicationId": "01a15ee4-0e9b-7d28-9cea-92e5d511fcfe",
+  "releaseId": "candidate-01a15ee4-0e9b-7d28-9cea-92e5d511fcfe",
+  "catalogRevision": 2,
+  "generatedAt": "2026-10-21T14:36:06.735Z",
+  "priceVersion": {
+    "id": "01a15ee4-0b39-705b-85e9-18e3372b483a",
+    "version": 1,
+    "currency": "RUB",
+    "rates": {
+      "bodyRubM2": 2050,
+      "facadeRubM2": 2225,
+      "hdfRubM2": 600,
+      "agtRubM2": 3000,
+      "packagingRubM2": 350,
+      "customerPriceMultiplier": 1.1,
+      "includedVatFraction": 0.18032786885245902,
+      "cutToWidthServiceRub": 3000,
+      "finalCustomerTotalRoundingRub": 10
+    },
+    "checksum": "cccf4d334275e5412771c233ae637decdd556e4741e9fc786eba7eaa03ef605c",
+    "publishedAt": "2026-10-21T14:36:05.816Z"
+  },
+  "families": [
+    {
+      "id": "01a15ee4-034b-7901-a170-6edb0ed09fa6",
+      "key": "mezzanine",
+      "slug": "mezzanine",
+      "publicName": "Антресоль",
+      "description": "Антресоль: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "mezzanine",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 1430,
+        "maxRub": 3660,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0806-7b2d-862c-6918e84ca3b0",
+          "sku": "А 400",
+          "publicName": "Антресоль, 400 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 400,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-080f-7e18-a649-3b5a81e1b997",
+          "sku": "АГ 400",
+          "publicName": "Антресоль, 400 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 400,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-0817-75f4-8f73-c2f13c9d4e56",
+          "sku": "А 450",
+          "publicName": "Антресоль, 450 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 450,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-0821-7341-8256-27bbdfb59f2b",
+          "sku": "АГ 450",
+          "publicName": "Антресоль, 450 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 450,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-0828-78bd-b158-4f5466267f3c",
+          "sku": "А 500",
+          "publicName": "Антресоль, 500 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 500,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-0833-7d29-8eee-afe520a7f376",
+          "sku": "АГ 500",
+          "publicName": "Антресоль, 500 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 500,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-083b-742a-a34e-95da63010761",
+          "sku": "А 550",
+          "publicName": "Антресоль, 550 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 550,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-0845-7bc8-8931-53753252d5fa",
+          "sku": "АГ 550",
+          "publicName": "Антресоль, 550 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 550,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-0856-7fcb-a4f4-9a09fd420649",
+          "sku": "АГ 600",
+          "publicName": "Антресоль, 600 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 600,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-084f-7560-b5c1-53989bb578c5",
+          "sku": "А 600",
+          "publicName": "Антресоль, 600 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-0860-75ec-8910-e4aac83a81a9",
+          "sku": "А 650",
+          "publicName": "Антресоль, 650 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 650,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-0868-7187-bed1-0b1604175906",
+          "sku": "АГ 650",
+          "publicName": "Антресоль, 650 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 650,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-0872-750c-ad4f-662ac05b4749",
+          "sku": "А 700",
+          "publicName": "Антресоль, 700 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 700,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-0879-79af-943d-ec35dea109f7",
+          "sku": "АГ 700",
+          "publicName": "Антресоль, 700 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 700,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-0883-780b-ba18-ebb4e27066d3",
+          "sku": "А 750",
+          "publicName": "Антресоль, 750 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 750,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-088a-7742-8cb6-2f0fb65bef69",
+          "sku": "АГ 750",
+          "publicName": "Антресоль, 750 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 750,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-0893-7e3d-867f-844953a03800",
+          "sku": "А 800",
+          "publicName": "Антресоль, 800 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 800,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-089a-7907-900e-b755e7eed3c5",
+          "sku": "АГ 800",
+          "publicName": "Антресоль, 800 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 800,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-08a4-710f-ab80-3ab376f9ea0d",
+          "sku": "А 850",
+          "publicName": "Антресоль, 850 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 850,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        },
+        {
+          "id": "01a15ee4-08ab-7332-b354-62eaf12de473",
+          "sku": "АГ 850",
+          "publicName": "Антресоль, 850 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 850,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-08bc-731c-8b81-15d2ffa2f21f",
+          "sku": "АГ 900",
+          "publicName": "Антресоль, 900 мм, глубина 575 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 900,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 575
+          }
+        },
+        {
+          "id": "01a15ee4-08b5-79a7-aa00-6e54f291f6c5",
+          "sku": "А 900",
+          "publicName": "Антресоль, 900 мм, глубина 320 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 900,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/mezzanine-67ba7eb5fc9a.svg",
+          "variant": {
+            "depth": 320
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0332-7744-ace6-d789bca9f6e8",
+      "key": "lower-bottle",
+      "slug": "lower-bottle",
+      "publicName": "Бутылочница",
+      "description": "Бутылочница: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        150,
+        200,
+        300
+      ],
+      "assetPath": "/catalog/lower-bottle-9a61c4d95e5e.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 2250,
+        "maxRub": 2560,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-046d-785e-8838-1763f201a14b",
+          "sku": "НГБ 150",
+          "publicName": "Бутылочница, 150 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 150,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-bottle-9a61c4d95e5e.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0475-7fe8-98b0-4a73252bdc65",
+          "sku": "НГБ 200",
+          "publicName": "Бутылочница, 200 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 200,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-bottle-9a61c4d95e5e.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0480-7214-8c32-8dbca1c34644",
+          "sku": "НГБ 300",
+          "publicName": "Бутылочница, 300 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 300,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-bottle-9a61c4d95e5e.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0343-7e38-98a4-1daf780a5688",
+      "key": "wall-hood",
+      "slug": "wall-hood",
+      "publicName": "Верхний модуль для вытяжки",
+      "description": "Верхний модуль для вытяжки: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        600
+      ],
+      "assetPath": "/catalog/wall-hood-e58c19dd2647.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 4120,
+        "maxRub": 4120,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-09df-7f40-a8a2-03dca308947d",
+          "sku": "СДВ 600",
+          "publicName": "Верхний модуль для вытяжки, 600 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-hood-e58c19dd2647.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-033f-7df6-9e61-b932ebb0f705",
+      "key": "wall-drying",
+      "slug": "wall-drying",
+      "publicName": "Верхний модуль для сушки",
+      "description": "Верхний модуль для сушки: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        450,
+        500,
+        600,
+        700,
+        800,
+        900
+      ],
+      "assetPath": "/catalog/wall-drying-260781147c85.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 2090,
+        "maxRub": 2950,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0973-71fb-8bdc-a3ada0e99452",
+          "sku": "СДСУ 450",
+          "publicName": "Верхний модуль для сушки, 450 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 450,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-260781147c85.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-097c-763a-9346-ba35626d9d01",
+          "sku": "СДСУ 500",
+          "publicName": "Верхний модуль для сушки, 500 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 500,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-260781147c85.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0983-7811-bf0f-0378924dd7fc",
+          "sku": "СДСУ 600",
+          "publicName": "Верхний модуль для сушки, 600 мм, 1 фасад",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-260781147c85.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-098c-7793-bf46-fffee910065a",
+          "sku": "СДСУ 601",
+          "publicName": "Верхний модуль для сушки, 600 мм, 2 фасада",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-260781147c85.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0994-7ac8-9a32-1806c4bd96cd",
+          "sku": "СДСУ 700",
+          "publicName": "Верхний модуль для сушки, 700 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-260781147c85.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-099d-7688-9deb-049cc405a2bd",
+          "sku": "СДСУ 800",
+          "publicName": "Верхний модуль для сушки, 800 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-260781147c85.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-09a5-737f-bce6-adea352b72cc",
+          "sku": "СДСУ 900",
+          "publicName": "Верхний модуль для сушки, 900 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 900,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-260781147c85.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0342-7152-b794-43e944463d84",
+      "key": "wall-drying-aventos",
+      "slug": "wall-drying-aventos",
+      "publicName": "Верхний модуль для сушки с Aventos HF",
+      "description": "Верхний модуль для сушки с Aventos HF: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "подъёмник"
+      ],
+      "widthsMm": [
+        450,
+        500,
+        600,
+        700,
+        800,
+        900
+      ],
+      "assetPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 2120,
+        "maxRub": 2970,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-09af-76cc-8530-6c8140a4bd3d",
+          "sku": "СДСУА 450",
+          "publicName": "Верхний модуль для сушки с Aventos HF, 450 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 450,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09b7-7096-96ae-a56d95695e8a",
+          "sku": "СДСУА 500",
+          "publicName": "Верхний модуль для сушки с Aventos HF, 500 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 500,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09c0-7591-ad57-3fa9aa44185f",
+          "sku": "СДСУА 600",
+          "publicName": "Верхний модуль для сушки с Aventos HF, 600 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09c6-7c26-916c-707dc6621ff4",
+          "sku": "СДСУА 700",
+          "publicName": "Верхний модуль для сушки с Aventos HF, 700 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09d0-7523-a4f3-a8fb7377e2c1",
+          "sku": "СДСУА 800",
+          "publicName": "Верхний модуль для сушки с Aventos HF, 800 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09d7-7159-a487-98fa3cf8b5a5",
+          "sku": "СДСУА 900",
+          "publicName": "Верхний модуль для сушки с Aventos HF, 900 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 900,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/wall-drying-aventos-937215b1c07c.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0334-7e66-ba55-7ab69f7627b0",
+      "key": "wall-aventos",
+      "slug": "wall-aventos",
+      "publicName": "Верхний модуль с подъёмником Aventos HF",
+      "description": "Верхний модуль с подъёмником Aventos HF: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "подъёмник"
+      ],
+      "widthsMm": [
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 2580,
+        "maxRub": 3490,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-08c5-7443-a8be-e0453ae55e45",
+          "sku": "СДПА 500",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 500 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 500,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-08cd-73e7-8f3b-07cd4bdcb830",
+          "sku": "СДПА 550",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 550 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 550,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-08d6-765a-90a1-5e58fbb3703f",
+          "sku": "СДПА 600",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 600 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-08dd-7250-9a3f-e9f975c2f919",
+          "sku": "СДПА 650",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 650 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 650,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-08e6-777a-aed9-7f186657bf79",
+          "sku": "СДПА 700",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 700 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-08ec-7b8d-ae11-c8d6d56b98e9",
+          "sku": "СДПА 750",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 750 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 750,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-08f5-7367-b331-067c260c4ce8",
+          "sku": "СДПА 800",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 800 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-08fc-7223-b7b1-fbab1775802d",
+          "sku": "СДПА 850",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 850 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 850,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0905-754f-9878-c1a0e16f651d",
+          "sku": "СДПА 900",
+          "publicName": "Верхний модуль с подъёмником Aventos HF, 900 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 900,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-aventos-d62f40650b57.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0336-7e22-b892-4b75dbcc4624",
+      "key": "wall-klok",
+      "slug": "wall-klok",
+      "publicName": "Верхний модуль с подъёмником KLOK",
+      "description": "Верхний модуль с подъёмником KLOK: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "подъёмник"
+      ],
+      "widthsMm": [
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 2280,
+        "maxRub": 3510,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-09e7-783b-a6fa-48e7c2c94990",
+          "sku": "СДК 400",
+          "publicName": "Верхний модуль с подъёмником KLOK, 400 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 400,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09f0-73d8-bed8-4535e737004d",
+          "sku": "СДК 450",
+          "publicName": "Верхний модуль с подъёмником KLOK, 450 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 450,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09f6-7361-822c-7c9158ceafc9",
+          "sku": "СДК 500",
+          "publicName": "Верхний модуль с подъёмником KLOK, 500 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 500,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-09fe-7b9c-832c-86cfd8d7c35a",
+          "sku": "СДК 550",
+          "publicName": "Верхний модуль с подъёмником KLOK, 550 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 550,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0a04-7ede-96cb-49142a997ab3",
+          "sku": "СДК 600",
+          "publicName": "Верхний модуль с подъёмником KLOK, 600 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0a0d-74b0-9754-7908baace662",
+          "sku": "СДК 650",
+          "publicName": "Верхний модуль с подъёмником KLOK, 650 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 650,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0a13-7ad4-a5e6-862e07dbcffd",
+          "sku": "СДК 700",
+          "publicName": "Верхний модуль с подъёмником KLOK, 700 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0a19-797a-97a3-8ff06cc33074",
+          "sku": "СДК 750",
+          "publicName": "Верхний модуль с подъёмником KLOK, 750 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 750,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0a22-73b5-b098-cc53f068cb55",
+          "sku": "СДК 800",
+          "publicName": "Верхний модуль с подъёмником KLOK, 800 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0a28-734c-8201-9d1a1fcbe838",
+          "sku": "СДК 850",
+          "publicName": "Верхний модуль с подъёмником KLOK, 850 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 850,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0a2f-7c40-9530-9b95fb39be14",
+          "sku": "СДК 900",
+          "publicName": "Верхний модуль с подъёмником KLOK, 900 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 900,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-klok-0a1ff18a407d.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0338-7e61-8e9f-85c6f1b2b713",
+      "key": "wall-shelf",
+      "slug": "wall-shelf",
+      "publicName": "Верхний модуль с распашным фасадом",
+      "description": "Верхний модуль с распашным фасадом: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        200,
+        250,
+        300,
+        350,
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 1740,
+        "maxRub": 3470,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0a95-72cd-8895-dfdc917160ed",
+          "sku": "СДП 200",
+          "publicName": "Верхний модуль с распашным фасадом, 200 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 200,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a9a-7b47-a232-1832d5d5cb70",
+          "sku": "СДП 250",
+          "publicName": "Верхний модуль с распашным фасадом, 250 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 250,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0aa2-7503-8cec-d484465ad9d2",
+          "sku": "СДП 300",
+          "publicName": "Верхний модуль с распашным фасадом, 300 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 300,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0aa8-7fcb-8dfc-72f6f2291007",
+          "sku": "СДП 350",
+          "publicName": "Верхний модуль с распашным фасадом, 350 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 350,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0ab1-7a8b-98f1-11201b1d3e32",
+          "sku": "СДП 400",
+          "publicName": "Верхний модуль с распашным фасадом, 400 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 400,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0ab7-7618-9f3e-e7b2ee5ea82a",
+          "sku": "СДП 450",
+          "publicName": "Верхний модуль с распашным фасадом, 450 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 450,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0ac4-7b27-b7b1-dcdf38bc84b6",
+          "sku": "СДП 500",
+          "publicName": "Верхний модуль с распашным фасадом, 500 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 500,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0ad2-72dc-be72-efc5d8ffe95c",
+          "sku": "СДП 550",
+          "publicName": "Верхний модуль с распашным фасадом, 550 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 550,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0aea-71ef-90f2-ff86d819da58",
+          "sku": "СДП 601",
+          "publicName": "Верхний модуль с распашным фасадом, 600 мм, 2 фасада",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0ae0-737f-a57c-d7079d162399",
+          "sku": "СДП 600",
+          "publicName": "Верхний модуль с распашным фасадом, 600 мм, 1 фасад",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0af2-74f1-8e64-45c68e6f8ea0",
+          "sku": "СДП 650",
+          "publicName": "Верхний модуль с распашным фасадом, 650 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 650,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0afe-750d-a781-06daf230596b",
+          "sku": "СДП 700",
+          "publicName": "Верхний модуль с распашным фасадом, 700 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0b09-7830-a7d3-7af9aebae63c",
+          "sku": "СДП 750",
+          "publicName": "Верхний модуль с распашным фасадом, 750 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 750,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0b11-78a2-9392-59f7cf140b00",
+          "sku": "СДП 800",
+          "publicName": "Верхний модуль с распашным фасадом, 800 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0b1e-7083-986b-38c0a3f65d7e",
+          "sku": "СДП 850",
+          "publicName": "Верхний модуль с распашным фасадом, 850 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 850,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0b25-7244-98a4-6474b45a7f98",
+          "sku": "СДП 900",
+          "publicName": "Верхний модуль с распашным фасадом, 900 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 900,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-shelf-8e8327daf841.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-033b-7aea-a3f0-15ccf9c1bd1f",
+      "key": "wall-removable-shelf",
+      "slug": "wall-removable-shelf",
+      "publicName": "Верхний модуль со съёмной полкой",
+      "description": "Верхний модуль со съёмной полкой: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        200,
+        250,
+        300,
+        350,
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800
+      ],
+      "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 1750,
+        "maxRub": 3270,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0a35-776d-8c95-c878a356b6e4",
+          "sku": "СДСП 200",
+          "publicName": "Верхний модуль со съёмной полкой, 200 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 200,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a3e-7471-91ad-ab91997cc321",
+          "sku": "СДСП 250",
+          "publicName": "Верхний модуль со съёмной полкой, 250 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 250,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a44-74e7-b068-6b453b32d694",
+          "sku": "СДСП 300",
+          "publicName": "Верхний модуль со съёмной полкой, 300 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 300,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a4a-77e3-b536-af7b5952067d",
+          "sku": "СДСП 350",
+          "publicName": "Верхний модуль со съёмной полкой, 350 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 350,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a52-728b-836a-287900539351",
+          "sku": "СДСП 400",
+          "publicName": "Верхний модуль со съёмной полкой, 400 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 400,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a58-789f-ad21-babf5f449886",
+          "sku": "СДСП 450",
+          "publicName": "Верхний модуль со съёмной полкой, 450 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 450,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a60-7fb7-ac92-bba0702e9e0b",
+          "sku": "СДСП 500",
+          "publicName": "Верхний модуль со съёмной полкой, 500 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 500,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a66-7244-8323-b7db1d2ddbbb",
+          "sku": "СДСП 550",
+          "publicName": "Верхний модуль со съёмной полкой, 550 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 550,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a75-7987-af12-e887ebaec8cf",
+          "sku": "СДСП 601",
+          "publicName": "Верхний модуль со съёмной полкой, 600 мм, 2 фасада",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0a6f-7285-b4c4-111ec3233619",
+          "sku": "СДСП 600",
+          "publicName": "Верхний модуль со съёмной полкой, 600 мм, 1 фасад",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 600,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0a7b-779a-b300-dc98feda8629",
+          "sku": "СДСП 650",
+          "publicName": "Верхний модуль со съёмной полкой, 650 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 650,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0a83-70d0-9959-cc26ff2bc796",
+          "sku": "СДСП 700",
+          "publicName": "Верхний модуль со съёмной полкой, 700 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0a88-7f71-a147-629bf063bbe8",
+          "sku": "СДСП 750",
+          "publicName": "Верхний модуль со съёмной полкой, 750 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 750,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0a8f-7895-a146-4bc6ee28e5ba",
+          "sku": "СДСП 800",
+          "publicName": "Верхний модуль со съёмной полкой, 800 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 320
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-removable-shelf-348c4750db1c.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0353-74fb-bd4a-ed1021c032c1",
+      "key": "deep-cornice",
+      "slug": "deep-cornice",
+      "publicName": "Глубокая корона",
+      "description": "Глубокая корона: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "accessory",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "доборный элемент"
+      ],
+      "widthsMm": [
+        2700
+      ],
+      "assetPath": "/catalog/deep-cornice-70397fd61379.svg",
+      "priceRange": {
+        "mode": "trim_piece",
+        "minRub": 1540,
+        "maxRub": 1770,
+        "currency": "RUB",
+        "unitLabel": "Цена за одну целую деталь 2700 мм",
+        "includesFacade": true,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-037a-724d-b181-d0c32a6e87e1",
+          "sku": "Корона Г 2700",
+          "publicName": "Глубокая корона 2700 мм",
+          "dimensionsMm": {
+            "height": 100,
+            "width": 2700,
+            "depth": 100
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/deep-cornice-70397fd61379.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0350-7dde-a2fe-0c16e136dd25",
+      "key": "cornice",
+      "slug": "cornice",
+      "publicName": "Корона",
+      "description": "Корона: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "accessory",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "доборный элемент"
+      ],
+      "widthsMm": [
+        2700
+      ],
+      "assetPath": "/catalog/cornice-bc602294170e.svg",
+      "priceRange": {
+        "mode": "trim_piece",
+        "minRub": 1280,
+        "maxRub": 1510,
+        "currency": "RUB",
+        "unitLabel": "Цена за одну целую деталь 2700 мм",
+        "includesFacade": true,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-036a-7ae8-bc54-affb4c0c8d6a",
+          "sku": "Корона 2700",
+          "publicName": "Корона 2700 мм",
+          "dimensionsMm": {
+            "height": 16,
+            "width": 2700,
+            "depth": 100
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/cornice-bc602294170e.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0310-7c6a-a5db-87a3a8778659",
+      "key": "lower-dishwasher",
+      "slug": "lower-dishwasher",
+      "publicName": "Модуль для посудомоечной машины",
+      "description": "Модуль для посудомоечной машины: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "посудомоечная машина"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        450,
+        600
+      ],
+      "assetPath": "/catalog/lower-dishwasher-b311c5298f60.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 500,
+        "maxRub": 690,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0521-77ef-904e-6ef1b67fc1de",
+          "sku": "НГПм 450",
+          "publicName": "Модуль для посудомоечной машины, 450 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 450,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-dishwasher-b311c5298f60.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0527-79ed-bb40-1ce683861763",
+          "sku": "НГПм 600",
+          "publicName": "Модуль для посудомоечной машины, 600 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-dishwasher-b311c5298f60.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0330-7e47-b994-d377e9765f90",
+      "key": "lower-oven",
+      "slug": "lower-oven",
+      "publicName": "Нижний модуль для духовки",
+      "description": "Нижний модуль для духовки: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "духовой шкаф"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        600
+      ],
+      "assetPath": "/catalog/lower-oven-e8692fb6616b.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 4440,
+        "maxRub": 4440,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-059b-7fe1-8347-06498c0983c0",
+          "sku": "НГДСК",
+          "publicName": "Нижний модуль для духовки, 600 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-oven-e8692fb6616b.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-030a-73f8-9a67-25cc08e08e7b",
+      "key": "lower-sink",
+      "slug": "lower-sink",
+      "publicName": "Нижний модуль под мойку",
+      "description": "Нижний модуль под мойку: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "мойка"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 3150,
+        "maxRub": 4090,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-06ec-79de-9569-dbf9cb10c286",
+          "sku": "НГМ 500",
+          "publicName": "Нижний модуль под мойку, 500 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 500,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-06f6-7b3d-885a-f22fb2b460c1",
+          "sku": "НГМ 550",
+          "publicName": "Нижний модуль под мойку, 550 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 550,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-06fe-7249-8115-73dd9cf23470",
+          "sku": "НГМ 600",
+          "publicName": "Нижний модуль под мойку, 600 мм, 1 фасад",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0707-7de8-993a-f41ecbed44ae",
+          "sku": "НГМ 601",
+          "publicName": "Нижний модуль под мойку, 600 мм, 2 фасада",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-070e-7ac4-b9e2-9027473b6604",
+          "sku": "НГМ 650",
+          "publicName": "Нижний модуль под мойку, 650 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 650,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0717-7ac7-ba34-5560326e5da6",
+          "sku": "НГМ 700",
+          "publicName": "Нижний модуль под мойку, 700 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 700,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-071f-72de-9965-1837ba3632c7",
+          "sku": "НГМ 750",
+          "publicName": "Нижний модуль под мойку, 750 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 750,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0727-7cc0-8ede-98a3f4c6fc92",
+          "sku": "НГМ 800",
+          "publicName": "Нижний модуль под мойку, 800 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 800,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-072e-78f4-9c9a-6b75b8beb175",
+          "sku": "НГМ 850",
+          "publicName": "Нижний модуль под мойку, 850 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 850,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0738-718b-8f0c-e375590923f2",
+          "sku": "НГМ 900",
+          "publicName": "Нижний модуль под мойку, 900 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 900,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-sink-34d7a97390f0.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0327-7502-a1a8-8b9399bc3563",
+      "key": "lower-two-drawers",
+      "slug": "lower-two-drawers",
+      "publicName": "Нижний модуль с двумя ящиками",
+      "description": "Нижний модуль с двумя ящиками: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "ящики"
+      ],
+      "widthsMm": [
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 5540,
+        "maxRub": 8880,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-07a4-7938-bd53-2bfb1f7b0e63",
+          "sku": "НГСК 402",
+          "publicName": "Нижний модуль с двумя ящиками, 400 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 400,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07ae-7628-812d-635510a1ea23",
+          "sku": "НГСК 452",
+          "publicName": "Нижний модуль с двумя ящиками, 450 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 450,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07b6-7725-b6db-0878b338ab64",
+          "sku": "НГСК 502",
+          "publicName": "Нижний модуль с двумя ящиками, 500 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 500,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07c2-7d71-bf70-8f80a6af815b",
+          "sku": "НГСК 552",
+          "publicName": "Нижний модуль с двумя ящиками, 550 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 550,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07cb-7475-82ee-df870e9295f2",
+          "sku": "НГСК 602",
+          "publicName": "Нижний модуль с двумя ящиками, 600 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07d3-76eb-86fe-a8c42889be32",
+          "sku": "НГСК 652",
+          "publicName": "Нижний модуль с двумя ящиками, 650 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 650,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07de-71b7-8589-7dc2ddde3ab2",
+          "sku": "НГСК 702",
+          "publicName": "Нижний модуль с двумя ящиками, 700 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 700,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07e5-7178-96b7-c373a3100fbb",
+          "sku": "НГСК 752",
+          "publicName": "Нижний модуль с двумя ящиками, 750 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 750,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07ee-789f-b8e8-13daa08fd90c",
+          "sku": "НГСК 802",
+          "publicName": "Нижний модуль с двумя ящиками, 800 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 800,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07f6-70bf-a348-fc6a54749883",
+          "sku": "НГСК 852",
+          "publicName": "Нижний модуль с двумя ящиками, 850 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 850,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-07ff-7bc4-81c9-0c7293cb87a2",
+          "sku": "НГСК 902",
+          "publicName": "Нижний модуль с двумя ящиками, 900 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 900,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-two-drawers-dc0e1536436b.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0313-7ab4-b2e4-fd423c445c2b",
+      "key": "lower-shelf",
+      "slug": "lower-shelf",
+      "publicName": "Нижний модуль с полкой",
+      "description": "Нижний модуль с полкой: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        200,
+        250,
+        300,
+        350,
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 2570,
+        "maxRub": 4980,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-065b-76b9-aff8-7efdacd54445",
+          "sku": "НГП 200",
+          "publicName": "Нижний модуль с полкой, 200 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 200,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0667-7759-ac4e-1bc44f27978f",
+          "sku": "НГП 250",
+          "publicName": "Нижний модуль с полкой, 250 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 250,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0674-7f0a-89ef-cff663564024",
+          "sku": "НГП 300",
+          "publicName": "Нижний модуль с полкой, 300 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 300,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0681-7351-b0bf-ac191de2057d",
+          "sku": "НГП 350",
+          "publicName": "Нижний модуль с полкой, 350 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 350,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0688-7a91-b669-12369f85c939",
+          "sku": "НГП 400",
+          "publicName": "Нижний модуль с полкой, 400 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 400,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0694-7f0c-9c1a-4948fafa49ba",
+          "sku": "НГП 450",
+          "publicName": "Нижний модуль с полкой, 450 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 450,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-069d-7561-9919-3b04a58905e6",
+          "sku": "НГП 500",
+          "publicName": "Нижний модуль с полкой, 500 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 500,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-06a8-7258-997a-a2255b781b6a",
+          "sku": "НГП 550",
+          "publicName": "Нижний модуль с полкой, 550 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 550,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-06b1-79e0-9ca7-5777d23e26e7",
+          "sku": "НГП 600",
+          "publicName": "Нижний модуль с полкой, 600 мм, 1 фасад",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-06b7-7897-84f4-eb25d441aab3",
+          "sku": "НГП 601",
+          "publicName": "Нижний модуль с полкой, 600 мм, 2 фасада",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-06bd-78e7-98f7-ddfb83f35ca9",
+          "sku": "НГП 650",
+          "publicName": "Нижний модуль с полкой, 650 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 650,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-06c5-75ed-b376-b2952713fe54",
+          "sku": "НГП 700",
+          "publicName": "Нижний модуль с полкой, 700 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 700,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-06cc-7a8d-a784-d3e033f5126a",
+          "sku": "НГП 750",
+          "publicName": "Нижний модуль с полкой, 750 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 750,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-06d5-77d3-94e6-7a0c4c02048e",
+          "sku": "НГП 800",
+          "publicName": "Нижний модуль с полкой, 800 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 800,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-06dc-75cf-9c35-f18b22aab007",
+          "sku": "НГП 850",
+          "publicName": "Нижний модуль с полкой, 850 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 850,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-06e5-7a89-a7cc-a5a8a655c3ff",
+          "sku": "НГП 900",
+          "publicName": "Нижний модуль с полкой, 900 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 900,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-shelf-b3bcdcf4d256.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-032a-70e0-95d0-f3d23ee6d39b",
+      "key": "lower-three-drawers",
+      "slug": "lower-three-drawers",
+      "publicName": "Нижний модуль с тремя ящиками",
+      "description": "Нижний модуль с тремя ящиками: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "ящики"
+      ],
+      "widthsMm": [
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 5790,
+        "maxRub": 9570,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-073e-7ee7-b076-85a293ab91a3",
+          "sku": "НГСК 403",
+          "publicName": "Нижний модуль с тремя ящиками, 400 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 400,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0750-705e-9479-c4dfaa699674",
+          "sku": "НГСК 453",
+          "publicName": "Нижний модуль с тремя ящиками, 450 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 450,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0759-76c4-92f0-88bc26d073dd",
+          "sku": "НГСК 503",
+          "publicName": "Нижний модуль с тремя ящиками, 500 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 500,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0761-729e-a691-4964828aa062",
+          "sku": "НГСК 553",
+          "publicName": "Нижний модуль с тремя ящиками, 550 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 550,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-076a-73c0-a244-4519900bae25",
+          "sku": "НГСК 603",
+          "publicName": "Нижний модуль с тремя ящиками, 600 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0773-7627-9e9b-0f0c8b0e119c",
+          "sku": "НГСК 653",
+          "publicName": "Нижний модуль с тремя ящиками, 650 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 650,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-077b-7cf3-873e-fee89f5a2c36",
+          "sku": "НГСК 703",
+          "publicName": "Нижний модуль с тремя ящиками, 700 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 700,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0784-75e9-b98b-672bae850448",
+          "sku": "НГСК 753",
+          "publicName": "Нижний модуль с тремя ящиками, 750 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 750,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-078e-745e-a9f0-fc6286e6bc6b",
+          "sku": "НГСК 803",
+          "publicName": "Нижний модуль с тремя ящиками, 800 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 800,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0795-7cd9-82e8-648ce467cf6c",
+          "sku": "НГСК 853",
+          "publicName": "Нижний модуль с тремя ящиками, 850 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 850,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-079e-742a-a352-285809a190d3",
+          "sku": "НГСК 903",
+          "publicName": "Нижний модуль с тремя ящиками, 900 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 900,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-three-drawers-aa405f08d1e7.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-032e-7e62-98cb-a26232bba487",
+      "key": "lower-hidden-drawers",
+      "slug": "lower-hidden-drawers",
+      "publicName": "Нижний модуль со скрытой парой ящиков",
+      "description": "Нижний модуль со скрытой парой ящиков: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "ящики"
+      ],
+      "widthsMm": [
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 4980,
+        "maxRub": 8500,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0547-714a-9c63-86b1558d1adf",
+          "sku": "НГСп 404",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 400 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 400,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0550-7f8a-ad4f-8a5bfacae4bc",
+          "sku": "НГСп 454",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 450 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 450,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0557-79b6-96f0-4f9b135be068",
+          "sku": "НГСп 504",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 500 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 500,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-055d-7ea2-89e2-78a0931c2f6a",
+          "sku": "НГСп 554",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 550 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 550,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0569-798e-9710-1533c909acfe",
+          "sku": "НГСп 604",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 600 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0571-7e6c-af84-0c9fd58ca77a",
+          "sku": "НГСп 654",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 650 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 650,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0577-7bd5-a25d-b0992f68bc24",
+          "sku": "НГСп 704",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 700 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 700,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-057e-7183-8379-81cacbcdfad5",
+          "sku": "НГСп 754",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 750 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 750,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0586-7dc0-aa78-11725d77074b",
+          "sku": "НГСп 804",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 800 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 800,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-058d-7014-b553-add92664d428",
+          "sku": "НГСп 854",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 850 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 850,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0595-7e47-87a6-047712f57534",
+          "sku": "НГСп 904",
+          "publicName": "Нижний модуль со скрытой парой ящиков, 900 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 900,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-hidden-drawers-4f7aeae4420a.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0316-7b22-b052-38ea44682aac",
+      "key": "lower-removable-shelf",
+      "slug": "lower-removable-shelf",
+      "publicName": "Нижний модуль со съёмной полкой",
+      "description": "Нижний модуль со съёмной полкой: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        200,
+        250,
+        300,
+        350,
+        400,
+        450,
+        500,
+        550,
+        600,
+        650,
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 2580,
+        "maxRub": 4990,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-05a6-7c9e-9d88-d17375ebeeb5",
+          "sku": "НГСП 200",
+          "publicName": "Нижний модуль со съёмной полкой, 200 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 200,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-05ac-7e0a-b3f3-b6743e54c6b0",
+          "sku": "НГСП 250",
+          "publicName": "Нижний модуль со съёмной полкой, 250 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 250,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-05b3-71df-b745-5334835e4d7b",
+          "sku": "НГСП 300",
+          "publicName": "Нижний модуль со съёмной полкой, 300 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 300,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-05be-74b2-9d58-5cb4486ce183",
+          "sku": "НГСП 350",
+          "publicName": "Нижний модуль со съёмной полкой, 350 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 350,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-05ca-71e2-8080-a6f87902aad9",
+          "sku": "НГСП 400",
+          "publicName": "Нижний модуль со съёмной полкой, 400 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 400,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-05ea-7ccb-9e72-a838eef0eb1a",
+          "sku": "НГСП 450",
+          "publicName": "Нижний модуль со съёмной полкой, 450 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 450,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-05f6-76c5-8a23-41f6c3dfa037",
+          "sku": "НГСП 500",
+          "publicName": "Нижний модуль со съёмной полкой, 500 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 500,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0601-7606-bee2-4c4227349544",
+          "sku": "НГСП 550",
+          "publicName": "Нижний модуль со съёмной полкой, 550 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 550,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0609-721b-a887-134ce7efbec3",
+          "sku": "НГСП 600",
+          "publicName": "Нижний модуль со съёмной полкой, 600 мм, 1 фасад",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 1
+          }
+        },
+        {
+          "id": "01a15ee4-0614-793c-a405-96c2340a03f6",
+          "sku": "НГСП 601",
+          "publicName": "Нижний модуль со съёмной полкой, 600 мм, 2 фасада",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 600,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-061e-7739-8c49-7ec32be0e537",
+          "sku": "НГСП 650",
+          "publicName": "Нижний модуль со съёмной полкой, 650 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 650,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0625-7ad7-ad32-f06752dabe75",
+          "sku": "НГСП 700",
+          "publicName": "Нижний модуль со съёмной полкой, 700 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 700,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-062e-75bf-92ad-4d0bf541340c",
+          "sku": "НГСП 750",
+          "publicName": "Нижний модуль со съёмной полкой, 750 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 750,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0636-729d-9e04-6f8201686cd2",
+          "sku": "НГСП 800",
+          "publicName": "Нижний модуль со съёмной полкой, 800 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 800,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-0645-7279-8315-48a4e2735bb7",
+          "sku": "НГСП 850",
+          "publicName": "Нижний модуль со съёмной полкой, 850 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 850,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        },
+        {
+          "id": "01a15ee4-064f-75f7-bc6d-edc433cbd0ed",
+          "sku": "НГСП 900",
+          "publicName": "Нижний модуль со съёмной полкой, 900 мм",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 900,
+            "depth": 525
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-removable-shelf-f8e7949ccfbd.svg",
+          "variant": {
+            "frontCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0321-7fa2-8117-156891d98d18",
+      "key": "lower-fridge",
+      "slug": "lower-fridge",
+      "publicName": "Пенал для холодильника",
+      "description": "Пенал для холодильника: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "холодильник"
+      ],
+      "functions": [
+        "распашной"
+      ],
+      "widthsMm": [
+        600
+      ],
+      "assetPath": "/catalog/lower-fridge-688e85c07ab2.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 7740,
+        "maxRub": 10930,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0540-7a35-b6da-5d6564157b26",
+          "sku": "НГХФп",
+          "publicName": "Пенал для холодильника, 600 мм, фальш-панель справа",
+          "dimensionsMm": {
+            "height": 2568,
+            "width": 600,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-fridge-688e85c07ab2.svg",
+          "variant": {
+            "fridgeSidePanel": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-0538-7978-af2b-990af574ef14",
+          "sku": "НГХФл",
+          "publicName": "Пенал для холодильника, 600 мм, фальш-панель слева",
+          "dimensionsMm": {
+            "height": 2568,
+            "width": 600,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-fridge-688e85c07ab2.svg",
+          "variant": {
+            "fridgeSidePanel": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-0530-7827-8a95-601da01338d0",
+          "sku": "НГХ",
+          "publicName": "Пенал для холодильника, 600 мм",
+          "dimensionsMm": {
+            "height": 2568,
+            "width": 600,
+            "depth": 575
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/lower-fridge-688e85c07ab2.svg",
+          "variant": {
+            "fridgeSidePanel": "none"
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0345-7cc1-afdb-96d42150054c",
+      "key": "wall-corner",
+      "slug": "wall-corner",
+      "publicName": "Угловой верхний модуль",
+      "description": "Угловой верхний модуль: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "wall",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "угловой"
+      ],
+      "widthsMm": [
+        700,
+        750,
+        800,
+        850,
+        900
+      ],
+      "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 3840,
+        "maxRub": 4350,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0917-7408-b466-3bd54474152b",
+          "sku": "СДУп 700",
+          "publicName": "Угловой верхний модуль, 700 мм, правый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-090e-7989-8e18-78c2712e704b",
+          "sku": "СДУл 700",
+          "publicName": "Угловой верхний модуль, 700 мм, левый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 700,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-091c-7db5-aa1c-c05bb050c628",
+          "sku": "СДУл 750",
+          "publicName": "Угловой верхний модуль, 750 мм, левый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 750,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-0924-7bc8-82ec-f16be3884740",
+          "sku": "СДУп 750",
+          "publicName": "Угловой верхний модуль, 750 мм, правый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 750,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-093a-7c80-ab3c-b80c17cac4e2",
+          "sku": "СДУп 800",
+          "publicName": "Угловой верхний модуль, 800 мм, правый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-0931-712a-bac2-403d3371ad75",
+          "sku": "СДУл 800",
+          "publicName": "Угловой верхний модуль, 800 мм, левый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 800,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-0941-7c87-8e50-6a0265edb142",
+          "sku": "СДУл 850",
+          "publicName": "Угловой верхний модуль, 850 мм, левый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 850,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-095a-7e4f-9754-a7eda082083e",
+          "sku": "СДУп 850",
+          "publicName": "Угловой верхний модуль, 850 мм, правый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 850,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-096b-7f8a-8895-3a2cbcb2685c",
+          "sku": "СДУп 900",
+          "publicName": "Угловой верхний модуль, 900 мм, правый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 900,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-0961-7afc-a49b-86d29b05428c",
+          "sku": "СДУл 900",
+          "publicName": "Угловой верхний модуль, 900 мм, левый",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 900,
+            "depth": 400
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/wall-corner-50e4e9f4f2ea.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0319-7dc7-b0c1-e397e5909747",
+      "key": "lower-corner-sink",
+      "slug": "lower-corner-sink",
+      "publicName": "Угловой нижний модуль под мойку",
+      "description": "Угловой нижний модуль под мойку: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "мойка"
+      ],
+      "functions": [
+        "угловой"
+      ],
+      "widthsMm": [
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 5540,
+        "maxRub": 5970,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-04dd-7e3b-90bf-6159d2eddbe6",
+          "sku": "НГУлМ 1000",
+          "publicName": "Угловой нижний модуль под мойку, 1000 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1000,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-04e3-79a6-a7d0-e189ab54809a",
+          "sku": "НГУпМ 1000",
+          "publicName": "Угловой нижний модуль под мойку, 1000 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1000,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-04f1-75ca-830d-46c194dc6b9d",
+          "sku": "НГУпМ 1050",
+          "publicName": "Угловой нижний модуль под мойку, 1050 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1050,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-04e9-761c-aa7e-ada27f6722f6",
+          "sku": "НГУлМ 1050",
+          "publicName": "Угловой нижний модуль под мойку, 1050 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1050,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-04f7-7954-8a80-1e3dee96ea06",
+          "sku": "НГУлМ 1100",
+          "publicName": "Угловой нижний модуль под мойку, 1100 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1100,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-04ff-72a5-9c9c-98b4453764dd",
+          "sku": "НГУпМ 1100",
+          "publicName": "Угловой нижний модуль под мойку, 1100 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1100,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-050d-7ea0-9aad-202d7887cc2e",
+          "sku": "НГУпМ 1150",
+          "publicName": "Угловой нижний модуль под мойку, 1150 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1150,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-0505-787b-a307-750e63f512a2",
+          "sku": "НГУлМ 1150",
+          "publicName": "Угловой нижний модуль под мойку, 1150 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1150,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-0514-729e-aa5f-641e6028277b",
+          "sku": "НГУлМ 1200",
+          "publicName": "Угловой нижний модуль под мойку, 1200 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1200,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-0519-7cc9-b2e3-a8b53ce85b79",
+          "sku": "НГУпМ 1200",
+          "publicName": "Угловой нижний модуль под мойку, 1200 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1200,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-sink-3bea6f73be4f.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-031f-78b9-a6f7-0bcb99a4ba24",
+      "key": "lower-corner-removable-shelf",
+      "slug": "lower-corner-removable-shelf",
+      "publicName": "Угловой нижний модуль со съёмной полкой",
+      "description": "Угловой нижний модуль со съёмной полкой: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "lower",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "угловой"
+      ],
+      "widthsMm": [
+        1000,
+        1050,
+        1100,
+        1150,
+        1200
+      ],
+      "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+      "priceRange": {
+        "mode": "ordinary",
+        "minRub": 6560,
+        "maxRub": 7230,
+        "currency": "RUB",
+        "unitLabel": "Цена модуля без фасадов и упаковки",
+        "includesFacade": false,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Фасады не входят",
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0493-7c97-9470-b4d8c49b8805",
+          "sku": "НГУпСП 1000",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1000 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1000,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-0488-7c63-a807-b0ba6e945992",
+          "sku": "НГУлСП 1000",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1000 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1000,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-04a5-735e-939b-863f56cda251",
+          "sku": "НГУпСП 1050",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1050 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1050,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-049e-7b01-a5c5-6e8741a999c6",
+          "sku": "НГУлСП 1050",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1050 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1050,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-04b6-7655-b994-c6fe378f9770",
+          "sku": "НГУпСП 1100",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1100 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1100,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-04ae-7b0c-a5ab-b2dd530c110c",
+          "sku": "НГУлСП 1100",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1100 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1100,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-04c5-7e02-99d3-66176236f79f",
+          "sku": "НГУпСП 1150",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1150 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1150,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-04bf-7612-80ae-f88a12a81b8f",
+          "sku": "НГУлСП 1150",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1150 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1150,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        },
+        {
+          "id": "01a15ee4-04d4-7de8-b663-dcc422411f10",
+          "sku": "НГУпСП 1200",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1200 мм, правый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1200,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "right"
+          }
+        },
+        {
+          "id": "01a15ee4-04ce-7e06-b87e-bc7153b78f95",
+          "sku": "НГУлСП 1200",
+          "publicName": "Угловой нижний модуль со съёмной полкой, 1200 мм, левый",
+          "dimensionsMm": {
+            "height": 780,
+            "width": 1200,
+            "depth": 565
+          },
+          "cutToWidth": {
+            "allowed": true,
+            "maxReductionMm": 50,
+            "stepMm": 1
+          },
+          "assetPath": "/catalog/lower-corner-removable-shelf-1c7b4ba75270.svg",
+          "variant": {
+            "openingSide": "left"
+          }
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0357-7181-a3d3-ca896d941c36",
+      "key": "false-panel",
+      "slug": "false-panel",
+      "publicName": "Фальш-панель",
+      "description": "Фальш-панель: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "accessory",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "доборный элемент"
+      ],
+      "widthsMm": [
+        341,
+        596
+      ],
+      "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+      "priceRange": {
+        "mode": "false_panel",
+        "minRub": 290,
+        "maxRub": 1720,
+        "currency": "RUB",
+        "unitLabel": "Цена за панель; зависит от фасада",
+        "includesFacade": true,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-040b-742a-a3a9-04f7602dae59",
+          "sku": "ФП 700*341",
+          "publicName": "Фальш-панель 700×341 мм",
+          "dimensionsMm": {
+            "height": 700,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0413-70f6-84f3-e0823a426c88",
+          "sku": "ФП 718*341",
+          "publicName": "Фальш-панель 718×341 мм",
+          "dimensionsMm": {
+            "height": 718,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0420-75f6-ab0a-2c0573a19af3",
+          "sku": "ФП 800*341",
+          "publicName": "Фальш-панель 800×341 мм",
+          "dimensionsMm": {
+            "height": 800,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-042a-7026-b3b4-7f74dc02bdbc",
+          "sku": "ФП 818*341",
+          "publicName": "Фальш-панель 818×341 мм",
+          "dimensionsMm": {
+            "height": 818,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0431-7872-893a-1e40b046117a",
+          "sku": "ФП 900*341",
+          "publicName": "Фальш-панель 900×341 мм",
+          "dimensionsMm": {
+            "height": 900,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-043b-7b39-a8c9-05aa4fcdf959",
+          "sku": "ФП 918*341",
+          "publicName": "Фальш-панель 918×341 мм",
+          "dimensionsMm": {
+            "height": 918,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03c2-7c55-b3ca-9f96d8bb2005",
+          "sku": "ФП 1250*341",
+          "publicName": "Фальш-панель 1250×341 мм",
+          "dimensionsMm": {
+            "height": 1250,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0399-75b6-93d5-bd8e5ab80549",
+          "sku": "ФП 1050*341",
+          "publicName": "Фальш-панель 1050×341 мм",
+          "dimensionsMm": {
+            "height": 1050,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03e0-7d1b-90a8-24795455eb93",
+          "sku": "ФП 1368*341",
+          "publicName": "Фальш-панель 1368×341 мм",
+          "dimensionsMm": {
+            "height": 1368,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03a2-7e54-8cc9-f2b3dae2ab70",
+          "sku": "ФП 1068*341",
+          "publicName": "Фальш-панель 1068×341 мм",
+          "dimensionsMm": {
+            "height": 1068,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03ed-7667-83f0-92cdb7a0c600",
+          "sku": "ФП 1450*341",
+          "publicName": "Фальш-панель 1450×341 мм",
+          "dimensionsMm": {
+            "height": 1450,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03ce-7d11-93b5-e6c7a37aba31",
+          "sku": "ФП 1268*341",
+          "publicName": "Фальш-панель 1268×341 мм",
+          "dimensionsMm": {
+            "height": 1268,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-038d-7fd6-acc7-4325ba3c830f",
+          "sku": "ФП 1018*341",
+          "publicName": "Фальш-панель 1018×341 мм",
+          "dimensionsMm": {
+            "height": 1018,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0385-7a88-8198-44da383a75dc",
+          "sku": "ФП 1000*341",
+          "publicName": "Фальш-панель 1000×341 мм",
+          "dimensionsMm": {
+            "height": 1000,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03ae-78f3-b5b1-83047bf282f2",
+          "sku": "ФП 1150*341",
+          "publicName": "Фальш-панель 1150×341 мм",
+          "dimensionsMm": {
+            "height": 1150,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03ba-7c21-9460-276bdb1c26b8",
+          "sku": "ФП 1168*341",
+          "publicName": "Фальш-панель 1168×341 мм",
+          "dimensionsMm": {
+            "height": 1168,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03d9-70c3-9e03-092609323b0a",
+          "sku": "ФП 1350*341",
+          "publicName": "Фальш-панель 1350×341 мм",
+          "dimensionsMm": {
+            "height": 1350,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-03f8-7a15-a2cb-75998bd8d8cb",
+          "sku": "ФП 350*341",
+          "publicName": "Фальш-панель 350×341 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0400-78f3-b2c8-1b6924e9cf8d",
+          "sku": "ФП 368*341",
+          "publicName": "Фальш-панель 368×341 мм",
+          "dimensionsMm": {
+            "height": 368,
+            "width": 341,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0443-7299-b929-e7566e0093de",
+          "sku": "ФП 350*596",
+          "publicName": "Фальш-панель 350×596 мм",
+          "dimensionsMm": {
+            "height": 350,
+            "width": 596,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-0457-7167-b443-a10690fb9145",
+          "sku": "ФП 878*596",
+          "publicName": "Фальш-панель 878×596 мм",
+          "dimensionsMm": {
+            "height": 878,
+            "width": 596,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        },
+        {
+          "id": "01a15ee4-044e-7e69-bbd3-dd8a99028ad8",
+          "sku": "ФП 368*596",
+          "publicName": "Фальш-панель 368×596 мм",
+          "dimensionsMm": {
+            "height": 368,
+            "width": 596,
+            "depth": 16,
+            "layoutSpan": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/false-panel-c50e0dd0a1d0.svg",
+          "variant": {}
+        }
+      ]
+    },
+    {
+      "id": "01a15ee4-0355-758c-af7d-caf919ed916f",
+      "key": "plinth",
+      "slug": "plinth",
+      "publicName": "Цоколь",
+      "description": "Цоколь: серийные размеры и варианты для быстрого расчёта кухни.",
+      "row": "accessory",
+      "purposes": [
+        "хранение"
+      ],
+      "functions": [
+        "доборный элемент"
+      ],
+      "widthsMm": [
+        2700
+      ],
+      "assetPath": "/catalog/plinth-21a48d5fd174.svg",
+      "priceRange": {
+        "mode": "trim_piece",
+        "minRub": 1280,
+        "maxRub": 1510,
+        "currency": "RUB",
+        "unitLabel": "Цена за одну целую деталь 2700 мм",
+        "includesFacade": true,
+        "includesPackaging": false
+      },
+      "exclusions": [
+        "Столешница не входит",
+        "Фурнитура клиента не входит",
+        "Упаковка не входит"
+      ],
+      "variants": [
+        {
+          "id": "01a15ee4-0460-79df-af5f-af767f44b237",
+          "sku": "Цоколь 2700",
+          "publicName": "Цоколь 2700 мм",
+          "dimensionsMm": {
+            "height": 100,
+            "width": 2700,
+            "depth": 16
+          },
+          "cutToWidth": {
+            "allowed": false,
+            "maxReductionMm": null,
+            "stepMm": null
+          },
+          "assetPath": "/catalog/plinth-21a48d5fd174.svg",
+          "variant": {}
+        }
+      ]
+    }
+  ]
+}

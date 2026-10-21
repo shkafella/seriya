@@ -5,6 +5,11 @@ const booleanStringSchema = z
   .default('false')
   .transform((value) => value === 'true')
 
+const enabledByDefaultBooleanStringSchema = z
+  .enum(['true', 'false'])
+  .default('true')
+  .transform((value) => value === 'true')
+
 const knownWeakJwtSecrets = new Set(['replace-with-at-least-32-random-characters'])
 
 const optionalStringSchema = z.preprocess((value) => {
@@ -35,6 +40,7 @@ const stringWithDefault = (defaultValue: string) =>
 const envSchema = z.object({
   NODE_ENV: z.string().optional(),
   PORT: z.coerce.number().int().positive().default(3000),
+  RELEASE_ID: optionalStringSchema,
   DATABASE_URL: z.string().min(1),
   JWT_SECRET: z.string().min(32),
   CORS_ORIGINS: z
@@ -54,6 +60,7 @@ const envSchema = z.object({
   AUTH_BODY_LIMIT_BYTES: z.coerce.number().int().positive().max(1024 * 1024).default(64 * 1024),
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
   AUTH_RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
+  AUTH_REGISTRATION_ENABLED: enabledByDefaultBooleanStringSchema,
   SHUTDOWN_GRACE_SECONDS: z.coerce.number().int().positive().max(60).default(20),
   TRUST_PROXY: booleanStringSchema,
   TRUSTED_PROXY_CLIENT_IP_HEADER: optionalHttpHeaderNameSchema,
@@ -133,6 +140,14 @@ function validateProductionRuntime(env: z.infer<typeof envSchema>, ctx: z.Refine
       code: 'custom',
       path: ['COOKIE_SECURE'],
       message: 'COOKIE_SECURE must be true in production',
+    })
+  }
+
+  if (env.AUTH_REGISTRATION_ENABLED) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['AUTH_REGISTRATION_ENABLED'],
+      message: 'AUTH_REGISTRATION_ENABLED must be false in production',
     })
   }
 }

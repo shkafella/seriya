@@ -43,7 +43,7 @@ export function HomePage() {
           </Typography>
         </div>
         <Button asChild size="lg" className="w-fit">
-          <Link to="/app">Open app</Link>
+          <Link to="/app/catalog">Открыть каталог</Link>
         </Button>
       </section>
     )

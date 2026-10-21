@@ -42,6 +42,9 @@ export function RootLayout() {
                 App
               </Link>
             </Typography>
+            {auth.isAuthenticated && <Typography asChild variant="control" tone="muted">
+              <Link to="/app/catalog" className={navLinkClass}>Каталог</Link>
+            </Typography>}
           </nav>
           {auth.isAuthenticated && (
             <Button type="button" variant="outline" size="sm" onClick={() => void logout()}>

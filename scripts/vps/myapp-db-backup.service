@@ -5,4 +5,7 @@ Description=myapp: nightly PostgreSQL backup
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash /opt/myapp/scripts/vps/db-backup.sh
+EnvironmentFile=/opt/myapp/shared/backend.env
+Environment=PROJECT_ROOT=/opt/myapp/source
+Environment=BACKUP_PROJECT_NAME=myapp
+ExecStart=/bin/bash /opt/myapp/source/scripts/vps/db-backup.sh

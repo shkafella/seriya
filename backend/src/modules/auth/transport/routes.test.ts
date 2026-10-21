@@ -17,6 +17,7 @@ const env: AppEnv = {
   AUTH_BODY_LIMIT_BYTES: 64 * 1024,
   AUTH_RATE_LIMIT_MAX: 60,
   AUTH_RATE_LIMIT_WINDOW_SECONDS: 60,
+  AUTH_REGISTRATION_ENABLED: true,
   SHUTDOWN_GRACE_SECONDS: 20,
   TRUST_PROXY: true,
   TRUSTED_PROXY_CLIENT_IP_HEADER: 'do-connecting-ip',
@@ -28,6 +29,22 @@ const env: AppEnv = {
 }
 
 describe('auth routes', () => {
+  test('closes browser and token registration before database work', async () => {
+    const app = createApp({ env: { ...env, AUTH_REGISTRATION_ENABLED: false }, prisma: {} as DbClient })
+    const body = JSON.stringify({ email: 'owner@example.com', password: 'password123' })
+    const browser = await app.request('/api/auth/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://web.example.com' }, body,
+    })
+    const token = await app.request('/api/auth/token/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body,
+    })
+
+    expect(browser.status).toBe(403)
+    expect(token.status).toBe(403)
+    expect((await browser.json()).error.code).toBe('REGISTRATION_CLOSED')
+    expect((await token.json()).error.code).toBe('REGISTRATION_CLOSED')
+  })
+
   test('limits auth request bodies before validation or password work', async () => {
     const app = createApp({ env: { ...env, AUTH_BODY_LIMIT_BYTES: 32 }, prisma: {} as DbClient })
     const response = await app.request('/api/auth/register', {

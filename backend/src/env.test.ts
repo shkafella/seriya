@@ -12,6 +12,7 @@ describe('loadEnv', () => {
 
     expect(env.PORT).toBe(3000)
     expect(env.ACCESS_TOKEN_TTL_SECONDS).toBe(900)
+    expect(env.AUTH_REGISTRATION_ENABLED).toBe(true)
     expect(env.REFRESH_REUSE_GRACE_SECONDS).toBe(10)
     expect(env.SESSION_ABSOLUTE_TTL_DAYS).toBe(90)
     expect(env.COOKIE_SECURE).toBe(false)
@@ -90,6 +91,7 @@ describe('loadEnv', () => {
       JWT_SECRET: '0123456789abcdef'.repeat(4),
       COOKIE_SECURE: 'true',
       CORS_ORIGINS: 'https://web.example.com',
+      AUTH_REGISTRATION_ENABLED: 'false',
     }
 
     expect(() => loadEnv(productionBase)).not.toThrow()
@@ -98,6 +100,8 @@ describe('loadEnv', () => {
     expect(() => loadEnv({ ...productionBase, COOKIE_SECURE: 'false' })).toThrow('COOKIE_SECURE')
     expect(() => loadEnv({ ...productionBase, CORS_ORIGINS: 'http://web.example.com' }))
       .toThrow('CORS_ORIGINS')
+    expect(() => loadEnv({ ...productionBase, AUTH_REGISTRATION_ENABLED: 'true' }))
+      .toThrow('AUTH_REGISTRATION_ENABLED')
   })
 
   test('rejects unsafe production CORS origins', () => {

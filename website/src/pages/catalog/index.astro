@@ -1,0 +1,89 @@
+---
+import catalog from '../../data/catalog.public.v1.json'
+import CatalogLayout from '../../layouts/CatalogLayout.astro'
+
+const rows = [...new Set(catalog.families.map((family) => family.row))]
+const purposes = [...new Set(catalog.families.flatMap((family) => family.purposes))].sort()
+const widths = [...new Set(catalog.families.flatMap((family) => family.widthsMm))].sort((a, b) => a - b)
+const functions = [...new Set(catalog.families.flatMap((family) => family.functions))].sort()
+const rub = new Intl.NumberFormat('ru-RU')
+const rowNames: Record<string, string> = { lower: 'Нижний ряд', wall: 'Средний ряд', mezzanine: 'Антресоль', accessory: 'Доборные элементы' }
+---
+
+<CatalogLayout title="Каталог серийных кухонных модулей — Серийка" description="25 семейств серийных кухонных модулей с размерами и точными стартовыми ценами." releaseId={catalog.releaseId}>
+  <main>
+    <p class="eyebrow">Каталог серийной мебели</p>
+    <h1>Соберите кухню<br />из готовых модулей</h1>
+    <p class="lede">Выберите тип, назначение и ширину модуля. На следующем этапе здесь появится телефонный конфигуратор кухни; сейчас каталог уже показывает весь утверждённый ассортимент и стартовые цены.</p>
+
+    <form class="filters" id="catalog-filters" aria-label="Фильтры каталога">
+      <label class="filter">Ряд
+        <select name="row"><option value="">Все ряды</option>{rows.map((row) => <option value={row}>{rowNames[row] ?? row}</option>)}</select>
+      </label>
+      <label class="filter">Назначение
+        <select name="purpose"><option value="">Любое</option>{purposes.map((purpose) => <option value={purpose}>{purpose}</option>)}</select>
+      </label>
+      <label class="filter">Ширина
+        <select name="width"><option value="">Любая</option>{widths.map((width) => <option value={String(width)}>{width} мм</option>)}</select>
+      </label>
+      <label class="filter">Функция
+        <select name="function"><option value="">Любая</option>{functions.map((item) => <option value={item}>{item}</option>)}</select>
+      </label>
+      <div class="filter-actions"><output id="catalog-count">{catalog.families.length} семейств</output><button type="reset">Сбросить</button></div>
+    </form>
+
+    <div class="catalog-grid" id="catalog-grid">
+      {catalog.families.map((family) => (
+        <article class="catalog-card" data-row={family.row} data-purposes={JSON.stringify(family.purposes)} data-widths={JSON.stringify(family.widthsMm)} data-functions={JSON.stringify(family.functions)}>
+          <a href={`/catalog/${family.slug}`} aria-label={`Открыть ${family.publicName}`}><img src={family.assetPath} alt="" width="640" height="520" loading="lazy" /></a>
+          <div class="card-body">
+            <h2><a href={`/catalog/${family.slug}`}>{family.publicName}</a></h2>
+            <span class="meta">{rowNames[family.row]} · {family.widthsMm.join(', ')} мм</span>
+            <span class="price">{rub.format(family.priceRange.minRub)}{family.priceRange.maxRub !== family.priceRange.minRub && `–${rub.format(family.priceRange.maxRub)}`} ₽<span class="price-label">{family.priceRange.unitLabel}</span></span>
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="empty" id="catalog-empty" hidden>По этим параметрам модулей нет. <button type="button" id="catalog-reset">Сбросить фильтры</button></div>
+  </main>
+</CatalogLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#catalog-filters')
+  const cards = [...document.querySelectorAll<HTMLElement>('.catalog-card')]
+  const count = document.querySelector<HTMLOutputElement>('#catalog-count')
+  const empty = document.querySelector<HTMLElement>('#catalog-empty')
+  const reset = document.querySelector<HTMLButtonElement>('#catalog-reset')
+
+  function applyFilters(updateUrl = true) {
+    if (!form) return
+    const data = new FormData(form)
+    const values = Object.fromEntries([...data].map(([key, value]) => [key, String(value)]))
+    let visible = 0
+    for (const card of cards) {
+      const matches = (!values.row || card.dataset.row === values.row)
+        && (!values.purpose || JSON.parse(card.dataset.purposes ?? '[]').includes(values.purpose))
+        && (!values.width || JSON.parse(card.dataset.widths ?? '[]').includes(Number(values.width)))
+        && (!values.function || JSON.parse(card.dataset.functions ?? '[]').includes(values.function))
+      card.hidden = !matches
+      if (matches) visible += 1
+    }
+    if (count) count.value = `${visible} семейств`
+    if (empty) empty.hidden = visible !== 0
+    if (updateUrl) {
+      const query = new URLSearchParams(Object.entries(values).filter(([, value]) => value))
+      history.replaceState(null, '', query.size ? `?${query}` : location.pathname)
+    }
+  }
+
+  if (form) {
+    const initial = new URLSearchParams(location.search)
+    for (const element of form.elements) {
+      if (element instanceof HTMLSelectElement && initial.has(element.name)) element.value = initial.get(element.name) ?? ''
+    }
+    form.addEventListener('change', () => applyFilters())
+    form.addEventListener('reset', () => setTimeout(() => applyFilters(), 0))
+    reset?.addEventListener('click', () => { form.reset(); applyFilters() })
+    applyFilters(false)
+  }
+</script>

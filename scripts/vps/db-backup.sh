@@ -6,10 +6,10 @@
 set -euo pipefail
 export PATH="/root/.bun/bin:$PATH"
 
-APP_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
-PROJECT="$(basename "$APP_DIR")"
-DB_NAME="seriya" # adjust if the database was renamed at bootstrap
-DB_USER="superuser"
+APP_DIR="${PROJECT_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
+PROJECT="${BACKUP_PROJECT_NAME:-$(basename "$APP_DIR")}"
+DB_NAME="${BACKUP_DATABASE_NAME:-seriya}"
+DB_USER="${BACKUP_DATABASE_USER:-superuser}"
 RETENTION_DAYS=30
 BACKUP_DIR="/var/backups/$PROJECT"
 
@@ -38,8 +38,17 @@ mv "$TMP" "$TARGET"
 trap - EXIT
 echo "Backup written: $TARGET ($(du -h "$TARGET" | cut -f1))"
 
+CHECKSUM="$(sha256sum "$TARGET" | cut -d' ' -f1)"
+RECEIPT_PATH="${BACKUP_RECEIPT_PATH:-$BACKUP_DIR/latest-receipt.json}"
+RECEIPT_TMP="$RECEIPT_PATH.partial"
+mkdir -p "$(dirname "$RECEIPT_PATH")"
+printf '{\n  "backupId": "%s",\n  "completedAt": "%s",\n  "database": "%s",\n  "integrity": "sha256:%s"\n}\n' \
+  "$(basename "$TARGET")" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$DB_NAME" "$CHECKSUM" >"$RECEIPT_TMP"
+mv "$RECEIPT_TMP" "$RECEIPT_PATH"
+echo "Backup receipt: $RECEIPT_PATH"
+
 find "$BACKUP_DIR" -name "*.sql.gz" -mtime +"$RETENTION_DAYS" -delete
 
-# Off-server copy. cwd=backend so Bun auto-loads backend/.env with SPACES_*.
+# Off-server copy uses SPACES_* inherited from the systemd EnvironmentFile/deploy environment.
 (cd "$APP_DIR/backend" && bun ../scripts/vps/db-backup-upload.ts "$TARGET") ||
   echo "WARN: cloud upload failed; the local backup is intact" >&2

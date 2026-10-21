@@ -1,0 +1,13 @@
+[Unit]
+Description=myapp: recover an interrupted release switch
+After=network-online.target docker.service myapp-backend.service
+Before=nginx.service
+Wants=network-online.target myapp-backend.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /opt/myapp/source/scripts/vps/recover-release.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

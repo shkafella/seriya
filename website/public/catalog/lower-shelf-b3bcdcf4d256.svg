@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 520" role="img" aria-labelledby="title desc">
+  <title id="title">Нижний модуль с полкой</title>
+  <desc id="desc">Схематичное изображение семейства серийной кухонной мебели</desc>
+  <rect width="640" height="520" rx="32" fill="#f5f1e8"/>
+  <rect x="130" y="110" width="380" height="330" rx="8" fill="#fffdf8" stroke="#2f342f" stroke-width="6"/>
+  <path d="M320 110V440" stroke="#2f342f" stroke-width="4"/>
+  <rect x="153" y="134" width="144" height="12" rx="6" fill="#4f6b5a"/>
+  <rect x="343" y="134" width="144" height="12" rx="6" fill="#4f6b5a"/>
+  <path d="M90 470H550" stroke="#b4aa98" stroke-width="4" stroke-linecap="round"/>
+  <text x="320" y="495" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#343833">Серийка · lower-shelf</text>
+</svg>

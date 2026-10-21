@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "fixtures": [
+    { "id": "mezzanine", "directory": "Антресоль", "familyKey": "mezzanine-hinged", "rightsStatus": "internal-evaluation", "expectedDimensionsMm": [650, 350, 341], "dimensionToleranceMm": 1, "placementAnchor": { "x": "left", "y": "bottom", "z": "back" }, "materialMapping": { "body": "ЛДСП Технический", "facade": "AGT Технический" } },
+    { "id": "wall", "directory": "Верхний", "familyKey": "wall-hinged", "rightsStatus": "internal-evaluation", "expectedDimensionsMm": [500, 700, 341], "dimensionToleranceMm": 1, "placementAnchor": { "x": "left", "y": "bottom", "z": "back" }, "materialMapping": { "body": "ЛДСП Технический", "facade": "AGT Технический" } },
+    { "id": "lower", "directory": "Нижний обычный", "familyKey": "lower-shelf", "rightsStatus": "internal-evaluation", "expectedDimensionsMm": [600, 880, 549], "dimensionToleranceMm": 1, "placementAnchor": { "x": "left", "y": "bottom", "z": "back" }, "materialMapping": { "body": "ЛДСП Технический", "facade": "AGT Технический" } },
+    { "id": "drawers", "directory": "Нижний ящики 3шт", "familyKey": "lower-drawers", "rightsStatus": "internal-evaluation", "expectedDimensionsMm": [600, 880, 549], "dimensionToleranceMm": 1, "placementAnchor": { "x": "left", "y": "bottom", "z": "back" }, "materialMapping": { "body": "ЛДСП Технический", "facade": "AGT Технический" } },
+    { "id": "fridge", "directory": "Пенал холодильник", "familyKey": "tall-fridge", "rightsStatus": "internal-evaluation", "expectedDimensionsMm": [600, 2570, 596], "dimensionToleranceMm": 1, "placementAnchor": { "x": "left", "y": "bottom", "z": "back" }, "materialMapping": { "body": "ЛДСП Технический", "facade": "AGT Технический" } },
+    { "id": "corner", "directory": "Угловой", "familyKey": "lower-corner-sink", "rightsStatus": "internal-evaluation", "expectedDimensionsMm": [1150, 880, 643], "dimensionToleranceMm": 1, "placementAnchor": { "x": "left", "y": "bottom", "z": "back" }, "materialMapping": { "body": "ЛДСП Технический", "facade": "AGT Технический" } }
+  ]
+}

@@ -1,0 +1,46 @@
+---
+import catalog from '../../data/catalog.public.v1.json'
+import CatalogLayout from '../../layouts/CatalogLayout.astro'
+
+export function getStaticPaths() {
+  return catalog.families.map((family) => ({ params: { slug: family.slug }, props: { family } }))
+}
+
+const { family } = Astro.props
+const rub = new Intl.NumberFormat('ru-RU')
+const rowNames: Record<string, string> = { lower: 'Нижний ряд', wall: 'Средний ряд', mezzanine: 'Антресоль', accessory: 'Доборные элементы' }
+const price = family.priceRange.minRub === family.priceRange.maxRub
+  ? rub.format(family.priceRange.minRub)
+  : `${rub.format(family.priceRange.minRub)}–${rub.format(family.priceRange.maxRub)}`
+---
+
+<CatalogLayout title={`${family.publicName} — каталог Серийка`} description={family.description} releaseId={catalog.releaseId}>
+  <main>
+    <a class="back" href="/catalog">← Все модули</a>
+    <article class="family-hero">
+      <img src={family.assetPath} alt={`Схема: ${family.publicName}`} width="640" height="520" />
+      <div>
+        <p class="eyebrow">{rowNames[family.row]}</p>
+        <h1>{family.publicName}</h1>
+        <p class="lede">{family.description}</p>
+        <p class="price">{price} ₽ <span class="price-label">{family.priceRange.unitLabel}</span></p>
+        <ul class="chips" aria-label="Доступные ширины">{family.widthsMm.map((width) => <li>{width} мм</li>)}</ul>
+        <div class="exclusions"><strong>Важно:</strong> {family.exclusions.join('. ')}.</div>
+      </div>
+    </article>
+
+    <section aria-labelledby="variants-title" style="margin-top: 42px">
+      <p class="eyebrow">Доступные варианты</p>
+      <h2 id="variants-title">Размеры и артикулы</h2>
+      <ul class="variant-list">
+        {family.variants.map((variant) => (
+          <li>
+            <strong>{variant.publicName}</strong>
+            <span class="meta">{variant.dimensionsMm.width} × {variant.dimensionsMm.height} × {variant.dimensionsMm.depth} мм · {variant.sku}</span>
+            <span class="meta">{variant.cutToWidth.allowed ? 'Можно уменьшить ширину до 50 мм с шагом 1 мм' : 'Подрезка по ширине недоступна'}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</CatalogLayout>

@@ -82,12 +82,13 @@ Host github.com
   IdentityFile /root/.ssh/github_deploy
 EOF
 
-git clone git@github.com:<owner>/<repo>.git /opt/<project>
+mkdir -p /opt/<project>/{shared,releases}
+git clone git@github.com:<owner>/<repo>.git /opt/<project>/source
 ```
 
 Create production env files on the server (never commit them):
 
-- `/opt/<project>/docker-compose.override.yml` — **critical security point**:
+- `/opt/<project>/source/docker-compose.override.yml` — **critical security point**:
 
   ```yaml
   services:
@@ -100,19 +101,36 @@ Create production env files on the server (never commit them):
 
   The `!override` tag is mandatory. Without it Docker Compose *merges* port lists and PostgreSQL stays exposed to the whole internet on `0.0.0.0`. Set the strong password **before** the first `docker compose up`, because the database volume keeps the password it was initialized with.
 
-- `/opt/<project>/backend/.env` (mode `600`):
+- `/opt/<project>/shared/backend.env` (mode `600`):
 
   ```bash
   NODE_ENV=production
   COOKIE_SECURE=true
   JWT_SECRET=<output of: openssl rand -hex 32>
-  CORS_ORIGINS=https://<domain>
+  CORS_ORIGINS=https://<domain>,https://<app-domain>
   DATABASE_URL=postgresql://superuser:<strong password>@localhost:54329/seriya?schema=public
+  BACKUP_DATABASE_NAME=seriya
+  BACKUP_DATABASE_USER=superuser
   TRUST_PROXY=true
   TRUSTED_PROXY_CLIENT_IP_HEADER=X-Real-IP
+  AUTH_REGISTRATION_ENABLED=false
   ```
 
-- `/opt/<project>/webapp/.env`: `VITE_API_URL=https://<domain>` (baked in at build time).
+- `/opt/<project>/shared/webapp.env`: `VITE_API_URL=https://<app-domain>` (baked in at build time).
+- `/opt/<project>/shared/website.env`: `PUBLIC_WEBSITE_URL=https://<domain>`.
+- `/opt/<project>/shared/catalog-assets/manifest.production.v1.json` plus every content-hashed file referenced by it. The deployment verifies file checksums, source provenance, rights approval, full family coverage, and the matching database records. Development schematics are never synchronized over approved production assets.
+
+Bootstrap the only owner from the server environment after the first migration. Do not put these values in a file or shell history:
+
+```bash
+set -a
+. /opt/<project>/shared/backend.env
+set +a
+cd /opt/<project>/current/backend
+OWNER_EMAIL='<owner email>' OWNER_PASSWORD='<temporary strong password>' bun run catalog:owner -- bootstrap
+```
+
+The recovery form of this command rotates the password and revokes every owner session.
 
 ## Step 4 — domain and HTTPS
 
@@ -136,7 +154,7 @@ server {
     listen 80;
     server_name <domain>;
 
-    root /opt/<project>/webapp/dist;
+    root /opt/<project>/current/website/dist;
     index index.html;
     client_max_body_size 10m;
 
@@ -157,28 +175,32 @@ server {
 
 Certbot rewrites this block for HTTPS and adds the HTTP→HTTPS redirect itself.
 
-When the `website` workspace (public landing) goes live later, serve `website/dist` at `/` on the main domain and move the webapp to a subdomain such as `app.<domain>` (a second `server` block plus `certbot -d app.<domain>`). Subdomains avoid SPA base-path complications.
+The checked-in nginx template also serves the owner webapp from a separate protected subdomain such as `admin.<domain>`. For this project the public host is `seriya.raspilok.ru`; add the owner subdomain only when the owner workspace is released. Obtain certificates for every enabled hostname.
+The exact owner origin must also be present in `CORS_ORIGINS`; otherwise cookie login and refresh are intentionally rejected.
 
 ## Step 6 — backend as a systemd service
 
-Copy `scripts/vps/myapp-backend.service` to `/etc/systemd/system/<project>-backend.service` (rename `myapp` to the project name inside), then:
+Copy `scripts/vps/myapp-backend.service` and `scripts/vps/myapp-release-recovery.service` to `/etc/systemd/system/<project>-backend.service` and `/etc/systemd/system/<project>-release-recovery.service` (rename `myapp` to the project name inside both). Recovery runs once on boot before backend/nginx and restores both the prior application symlink and prior publication when a machine stopped mid-switch. The backend runs `/opt/<project>/current/backend` and reads `/opt/<project>/shared/backend.env`, so it switches with both frontends. Then:
 
 ```bash
 systemctl daemon-reload
-systemctl enable --now <project>-backend
+systemctl enable <project>-release-recovery <project>-backend
+systemctl start <project>-release-recovery <project>-backend
 ```
 
 The service starts on boot and restarts automatically after crashes.
 
 ## Step 7 — one-command deploy
 
-Copy `scripts/vps/deploy.sh` to `/opt/<project>/deploy.sh` and make it executable. From then on a deploy is:
+Copy `scripts/vps/deploy.sh` to `/opt/<project>/deploy.sh` and make it executable. The Git checkout must be `/opt/<project>/source`. From then on a deploy is:
 
 ```bash
 ssh <server> /opt/<project>/deploy.sh
 ```
 
-The script: `git pull` → install dependencies → start PostgreSQL → apply database migrations → build the webapp (and website when active) → restart the backend → verify `/health/ready`.
+The script refuses a dirty/out-of-sync checkout, resolves any earlier interrupted switch, creates and verifies a database backup receipt from the source Compose project before migration, assembles a timestamped full release outside `current`, installs locked dependencies, generates Prisma, previews/applies the approved catalog, copies and verifies the shared production asset package, prepares/exports the exact candidate, builds backend plus both frontends, writes a release checksum manifest, switches the complete application symlink, verifies backend readiness, activates and verifies the matching database publication, and smoke-tests API plus HTML. Any failure after switching restores the previous application and publication together.
+
+Production activation intentionally fails until every published catalog family has a rights-approved production asset whose source and derived checksums match the shared manifest and files. The six supplied Basis packages and 25 neutral schematics are enough for development and converter validation, not for bypassing that launch gate. Supply the remaining confirmed Basis exports, approve provenance/rights, run the same batch converter, and place the complete package in `shared/catalog-assets` before the first live catalog activation.
 
 The deploy pulls `main` from GitHub on the server — **unpushed local commits never reach production**. Push first, then deploy. Before deploying, verify the release source (`git remote -v`, `git status --short --branch`); if the worktree is dirty or the branch is not pushed/synced, stop and report the blocker instead of forcing it.
 
@@ -205,7 +227,9 @@ This is also the pattern for future product background jobs (scheduled notificat
 - [ ] `ufw status` active; only OpenSSH/80/443 allowed. `fail2ban-client status sshd` shows the jail.
 - [ ] `https://<domain>` → 200; `http://` → 301 redirect; `certbot renew --dry-run` succeeds.
 - [ ] `curl https://<domain>/api/auth/me` → 401 (backend alive behind the proxy).
-- [ ] Registration round-trip works end to end (create a test user, then delete it).
+- [ ] Both registration endpoints return `403`; the bootstrapped owner can log in and a normal authenticated user receives `403` on `/api/owner/catalog`.
+- [ ] `/api/catalog`, `/catalog/`, backend runtime, and release manifest expose the same publication/release pair.
+- [ ] Production asset coverage check reports zero missing families.
 - [ ] `docker ps` shows PostgreSQL bound to `127.0.0.1:54329` only.
 - [ ] `systemctl list-timers` shows certbot, sessions-cleanup, and db-backup timers active.
 - [ ] Manual backup run produced a file; test restore matched; the server password is stored nowhere.

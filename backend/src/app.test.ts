@@ -28,6 +28,17 @@ test('liveness is process-only while readiness checks the database', async () =>
   expect((await app.request('/health/ready')).status).toBe(503)
 })
 
+test('readiness exposes the immutable application release id', async () => {
+  const releaseEnv = loadEnv({
+    DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/seriya',
+    JWT_SECRET: '12345678901234567890123456789012',
+    RELEASE_ID: 'candidate-019a0000-0000-7000-8000-000000000001',
+  })
+  const prisma = { $queryRaw: async () => [{ '?column?': 1 }] } as unknown as DbClient
+  const response = await createApp({ env: releaseEnv, prisma }).request('/health/ready')
+  expect(await response.json()).toEqual({ status: 'ok', releaseId: releaseEnv.RELEASE_ID })
+})
+
 test('CORS preflight allows the standard mutation methods exposed by the client transport', async () => {
   const prisma = { $queryRaw: async () => [{ '?column?': 1 }] } as unknown as DbClient
   const app = createApp({ env, prisma })
