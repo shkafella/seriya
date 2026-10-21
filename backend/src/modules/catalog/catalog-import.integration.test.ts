@@ -96,6 +96,76 @@ maybeDescribe('catalog import integration', () => {
     expect(await prisma.priceVersion.count()).toBe(1)
   }, 30_000)
 
+  test('records a source-row move even when commercial fields are unchanged', async () => {
+    const prisma = freshDb()
+    await resetCatalog(prisma)
+    const initial = await loadSeed()
+    await applyCatalogImport(prisma, initial, await previewCatalogImport(prisma, initial))
+    const moved = JSON.parse(initial.raw)
+    moved.modules[0].source = { ...moved.modules[0].source, row: Number(moved.modules[0].source.row) + 1 }
+    const changed = await loadSeed(JSON.stringify(moved), 'source-row-move.json')
+
+    const preview = await previewCatalogImport(prisma, changed)
+    expect(preview.updated[0]?.fields).toContain('sourceTrace')
+    const result = await applyCatalogImport(prisma, changed, preview)
+
+    expect(result.resultingRevision).toBe(2)
+    const source = await prisma.catalogSourceRecord.findUniqueOrThrow({
+      where: { sourceRecordId: moved.modules[0].sourceRecordId },
+    })
+    expect(source.sourceData).toEqual(moved.modules[0].source)
+  }, 30_000)
+
+  test('rejects an imported SKU that collides with a preserved owner rename', async () => {
+    const prisma = freshDb()
+    await resetCatalog(prisma)
+    const initial = await loadSeed()
+    await applyCatalogImport(prisma, initial, await previewCatalogImport(prisma, initial))
+    const [incomingTarget, ownerRenamed] = await prisma.catalogVariant.findMany({
+      orderBy: { sku: 'asc' }, take: 2, include: { sourceRecord: true },
+    })
+    await prisma.catalogVariant.update({
+      where: { id: ownerRenamed.id },
+      data: { sku: 'OWNER-RENAME', ownerEditedFields: ['sku'] },
+    })
+    const changedSeed = JSON.parse(initial.raw)
+    changedSeed.modules.find((item: { sourceRecordId: string }) => (
+      item.sourceRecordId === incomingTarget.sourceRecord!.sourceRecordId
+    )).sku = 'OWNER-RENAME'
+    const changed = await loadSeed(JSON.stringify(changedSeed), 'owner-sku-conflict.json')
+
+    const preview = await previewCatalogImport(prisma, changed)
+
+    expect(preview.valid).toBe(false)
+    expect(preview.invalid.some((item) => item.reason?.includes('resulting SKU'))).toBe(true)
+    await expect(applyCatalogImport(prisma, changed, preview)).rejects.toBeInstanceOf(CatalogImportError)
+  }, 30_000)
+
+  test('applies a collision-free imported SKU swap transactionally', async () => {
+    const prisma = freshDb()
+    await resetCatalog(prisma)
+    const initial = await loadSeed()
+    await applyCatalogImport(prisma, initial, await previewCatalogImport(prisma, initial))
+    const [left, right] = await prisma.catalogVariant.findMany({
+      orderBy: { sku: 'asc' }, take: 2, include: { sourceRecord: true },
+    })
+    const changedSeed = JSON.parse(initial.raw)
+    changedSeed.modules.find((item: { sourceRecordId: string }) => (
+      item.sourceRecordId === left.sourceRecord!.sourceRecordId
+    )).sku = right.sku
+    changedSeed.modules.find((item: { sourceRecordId: string }) => (
+      item.sourceRecordId === right.sourceRecord!.sourceRecordId
+    )).sku = left.sku
+    const changed = await loadSeed(JSON.stringify(changedSeed), 'sku-swap.json')
+
+    const preview = await previewCatalogImport(prisma, changed)
+    expect(preview.valid).toBe(true)
+    await applyCatalogImport(prisma, changed, preview)
+
+    expect((await prisma.catalogVariant.findUniqueOrThrow({ where: { id: left.id } })).sku).toBe(right.sku)
+    expect((await prisma.catalogVariant.findUniqueOrThrow({ where: { id: right.id } })).sku).toBe(left.sku)
+  }, 30_000)
+
   test('rejects incomplete launch rates before any catalog write', async () => {
     const prisma = freshDb()
     await resetCatalog(prisma)

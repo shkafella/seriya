@@ -8,6 +8,8 @@ import {
 describe('catalog asset file validation', () => {
   test('accepts a lightweight asset and rejects a phone-hostile payload', () => {
     expect(() => assertLightweightPublicAsset('/catalog/light.svg', new Uint8Array(1024))).not.toThrow()
+    expect(() => assertLightweightPublicAsset('/catalog/private-model.obj', new Uint8Array(1024)))
+      .toThrow('must be a derived SVG')
     expect(() => assertLightweightPublicAsset(
       '/catalog/full-mesh.svg',
       new Uint8Array(MAX_PUBLIC_ASSET_BYTES + 1),

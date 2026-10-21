@@ -14,6 +14,7 @@ const recoveryService = await readFile(new URL('./vps/myapp-release-recovery.ser
 const deploymentDocs = await readFile(new URL('../docs/DEPLOYMENT.md', import.meta.url), 'utf8')
 const gitignore = await readFile(new URL('../.gitignore', import.meta.url), 'utf8')
 const assetSync = await readFile(new URL('../backend/scripts/catalog-assets.ts', import.meta.url), 'utf8')
+const assetPackage = await readFile(new URL('../backend/scripts/catalog-asset-package.ts', import.meta.url), 'utf8')
 const receiptVerifier = fileURLToPath(new URL('./vps/verify-backup-receipt.ts', import.meta.url))
 
 describe('production release contract', () => {
@@ -112,6 +113,10 @@ describe('production release contract', () => {
     expect(assetSync).toContain('Refusing to replace approved production asset')
     expect(assetSync).toContain('revision: { increment: 1 }')
     expect(assetSync).toContain('assertLightweightPublicAsset')
+    expect(deploy).toContain('catalog-asset-package.ts')
+    expect(deploy).not.toContain('cp -a "$PRODUCTION_ASSET_DIR/."')
+    expect(assetPackage).toContain("filename.endsWith('.svg')")
+    expect(assetPackage).toContain('copyFile(source')
   })
 
   test('publishes 25 content-hashed schematics and no raw Basis files', async () => {

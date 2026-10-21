@@ -70,6 +70,12 @@ export async function previewCatalogImport(
   const updated: CatalogImportPreview['updated'] = []
   const unchanged: CatalogImportPreview['unchanged'] = []
   const conflicts: CatalogImportPreview['conflicts'] = []
+  const conflictingSkuSources = resultingSkuConflictSourceIds(existing, loaded.seed.modules)
+  for (const item of loaded.seed.modules) {
+    if (conflictingSkuSources.has(item.sourceRecordId)) {
+      invalid.push(record(item, 'resulting SKU collides with another catalog identity'))
+    }
+  }
 
   for (const item of loaded.seed.modules) {
     const current = bySource.get(item.sourceRecordId)
@@ -79,6 +85,7 @@ export async function previewCatalogImport(
       continue
     }
     const fields = changedImportedFields(current.importedData, importedData(item))
+    if (sourceTraceChanged(current.sourceRecord?.sourceData, item.source)) fields.push('sourceTrace')
     if (current.sourceRecord?.isActive === false) fields.push('sourcePresence')
     if (fields.length === 0) {
       unchanged.push(record(item))
@@ -197,6 +204,22 @@ export async function applyCatalogImport(
         },
       })
       familyIds.set(family.id, saved.id)
+    }
+
+    const incomingBySource = new Map(loaded.seed.modules.map((item) => [item.sourceRecordId, item]))
+    const variantsBeforeSkuUpdate = await tx.catalogVariant.findMany({
+      where: { sourceManaged: true },
+      include: { sourceRecord: true },
+    })
+    for (const current of variantsBeforeSkuUpdate) {
+      const sourceRecordId = current.sourceRecord?.sourceRecordId
+      const incoming = sourceRecordId ? incomingBySource.get(sourceRecordId) : undefined
+      if (incoming && current.sku !== incoming.sku && !stringArray(current.ownerEditedFields).includes('sku')) {
+        await tx.catalogVariant.update({
+          where: { id: current.id },
+          data: { sku: `__catalog_import_${state.revision}_${current.id}` },
+        })
+      }
     }
 
     for (const item of loaded.seed.modules) {
@@ -354,6 +377,56 @@ function changedImportedFields(current: unknown, next: ReturnType<typeof importe
     }
   }
   return changed
+}
+
+export function sourceTraceChanged(current: unknown, next: unknown) {
+  return canonicalJson(current ?? null) !== canonicalJson(next ?? null)
+}
+
+type ExistingVariantForSku = {
+  id: string
+  sku: string
+  sourceManaged: boolean
+  ownerEditedFields: unknown
+  sourceRecord: { sourceRecordId: string } | null
+}
+
+export function resultingSkuConflictSourceIds(
+  existing: ExistingVariantForSku[],
+  modules: CatalogSeedModule[],
+) {
+  const incomingBySource = new Map(modules.map((item) => [item.sourceRecordId, item]))
+  const existingSourceIds = new Set(
+    existing.flatMap((item) => item.sourceRecord ? [item.sourceRecord.sourceRecordId] : []),
+  )
+  const occupants = new Map<string, Array<{ identity: string; incomingSourceId: string | null }>>()
+  const add = (sku: string, identity: string, incomingSourceId: string | null) => {
+    const entries = occupants.get(sku) ?? []
+    entries.push({ identity, incomingSourceId })
+    occupants.set(sku, entries)
+  }
+
+  for (const current of existing) {
+    const sourceRecordId = current.sourceRecord?.sourceRecordId ?? null
+    const incoming = sourceRecordId ? incomingBySource.get(sourceRecordId) : undefined
+    const keepsOwnerSku = stringArray(current.ownerEditedFields).includes('sku')
+    const resultingSku = current.sourceManaged && incoming && !keepsOwnerSku ? incoming.sku : current.sku
+    add(resultingSku, `variant:${current.id}`, incoming?.sourceRecordId ?? null)
+  }
+  for (const item of modules) {
+    if (!existingSourceIds.has(item.sourceRecordId)) {
+      add(item.sku, `source:${item.sourceRecordId}`, item.sourceRecordId)
+    }
+  }
+
+  const conflicts = new Set<string>()
+  for (const entries of occupants.values()) {
+    if (new Set(entries.map((entry) => entry.identity)).size < 2) continue
+    for (const entry of entries) {
+      if (entry.incomingSourceId) conflicts.add(entry.incomingSourceId)
+    }
+  }
+  return conflicts
 }
 
 function stringArray(value: unknown) {

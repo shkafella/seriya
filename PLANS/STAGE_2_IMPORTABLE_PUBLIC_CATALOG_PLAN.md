@@ -148,9 +148,10 @@ Stage 2 is complete when all of the following are observable:
 - [x] Stage 2.3 complete
 - [ ] Stage 2.4 complete — the conversion pipeline and six fixtures are ready, but production activation still requires the full owner-approved, rights-cleared 25-family Basis asset batch
 - [ ] Stage 2.5 complete — the release implementation and automated contract checks are ready; a live Linux/systemd failure-injection rehearsal remains
-- [ ] Stage 2.6 complete — an explicitly authorized sixth review scored 6.8/10 and was not accepted; all four reported findings were fixed and post-fix validation is green, but there is no post-fix acceptance score
-- [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — the sixth review found one blocker, one serious, and two medium defects; remediation is complete but has not received another independent acceptance round
+- [ ] Stage 2.6 complete — the seventh review scored 8.0/10 with three medium findings and no level 1–3 defects; all three findings are fixed with PostgreSQL integration coverage, and the eighth independent round is pending
+- [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — seventh-round remediation is complete but must receive a fresh eighth-round acceptance score
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
 - [x] Sixth-review remediation committed and pushed in `95fd7d7` (`fix: close sixth review findings`)
+- [ ] Seventh-review remediation committed and pushed
 
 Last updated: 2026-10-21.

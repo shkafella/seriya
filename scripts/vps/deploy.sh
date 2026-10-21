@@ -127,7 +127,8 @@ if [ ! -f "$PRODUCTION_ASSET_MANIFEST" ]; then
   echo "ERROR: production asset manifest is missing: $PRODUCTION_ASSET_MANIFEST" >&2
   exit 1
 fi
-cp -a "$PRODUCTION_ASSET_DIR/." "$RELEASE_DIR/website/public/catalog/"
+bun "$RELEASE_DIR/backend/scripts/catalog-asset-package.ts" \
+  "$PRODUCTION_ASSET_MANIFEST" "$PRODUCTION_ASSET_DIR" "$RELEASE_DIR/website/public/catalog"
 (cd backend && bun run catalog:assets sync "$RELEASE_DIR/website/public/catalog/manifest.production.v1.json")
 (cd backend && bun run catalog:assets check-production "$RELEASE_DIR/website/public/catalog/manifest.production.v1.json")
 (cd backend && bun run catalog:release prepare "$RELEASE_DIR/candidate.json")
