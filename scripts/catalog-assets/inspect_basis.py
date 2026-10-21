@@ -10,6 +10,7 @@ import math
 from pathlib import Path
 
 SOURCE_EXTENSIONS = {".obj", ".mtl", ".xml", ".pdf", ".b3d"}
+MAX_DERIVED_ASSET_BYTES = 64 * 1024
 
 
 def sha256(path: Path) -> str:
@@ -67,6 +68,27 @@ def validate_dimensions(actual: list[float], expected: list[float], tolerance: f
         raise ValueError(f"Nominal dimensions mismatch for {fixture_id}: actual={actual}, expected={expected}, tolerance={tolerance}")
 
 
+def convex_hull(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    unique = sorted(set(points))
+    if len(unique) <= 2:
+        return unique
+
+    def cross(origin: tuple[float, float], a: tuple[float, float], b: tuple[float, float]) -> float:
+        return (a[0] - origin[0]) * (b[1] - origin[1]) - (a[1] - origin[1]) * (b[0] - origin[0])
+
+    lower: list[tuple[float, float]] = []
+    for point in unique:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], point) <= 0:
+            lower.pop()
+        lower.append(point)
+    upper: list[tuple[float, float]] = []
+    for point in reversed(unique):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], point) <= 0:
+            upper.pop()
+        upper.append(point)
+    return lower[:-1] + upper[:-1]
+
+
 def projected_svg(model: dict, fixture: dict, masks: dict[str, str]) -> bytes:
     vertices = model["vertices"]
     bounds = model["bounds"]
@@ -80,21 +102,26 @@ def projected_svg(model: dict, fixture: dict, masks: dict[str, str]) -> bytes:
         x, y, _ = vertices[index]
         return padding + (x - minimum[0]) * scale, height - padding - (y - minimum[1]) * scale
 
-    groups: dict[str, list[str]] = {"body": [], "facade": [], "other": []}
+    groups: dict[str, set[int]] = {"body": set(), "facade": set()}
     for face in model["faces"]:
-        semantic = next((name for name, mapped in masks.items() if face["material"] == mapped), "other")
-        coordinates = [point(index) for index in face["indices"]]
-        command = "M" + " L".join(f"{x:.2f},{y:.2f}" for x, y in coordinates) + " Z"
-        groups[semantic].append(command)
+        semantic = next((name for name, mapped in masks.items() if face["material"] == mapped), None)
+        if semantic in groups:
+            groups[semantic].update(face["indices"])
 
-    colors = {"body": "#d8d2c7", "facade": "#ede9df", "other": "#b7afa1"}
-    paths = "\n".join(
-        f'<path id="mask-{semantic}" data-semantic="{semantic}" d="{html.escape(" ".join(commands))}" fill="{colors[semantic]}" fill-rule="evenodd" stroke="#383b37" stroke-width="0.65"/>'
-        for semantic, commands in groups.items() if commands
-    )
+    colors = {"body": "#d8d2c7", "facade": "#ede9df"}
+    paths = []
+    for semantic in ("body", "facade"):
+        hull = convex_hull([point(index) for index in groups[semantic]])
+        if len(hull) < 3:
+            continue
+        command = "M" + " L".join(f"{x:.2f},{y:.2f}" for x, y in hull) + " Z"
+        paths.append(
+            f'<path id="mask-{semantic}" data-semantic="{semantic}" d="{command}" '
+            f'fill="{colors[semantic]}" stroke="#383b37" stroke-width="2"/>'
+        )
     title = html.escape(fixture["id"])
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-labelledby="title">\n'
-            f'<title id="title">Basis projection {title}</title>\n{paths}\n</svg>\n').encode("utf-8")
+            f'<title id="title">Basis projection {title}</title>\n{"\n".join(paths)}\n</svg>\n').encode("utf-8")
 
 
 def inspect(source: Path, manifest_path: Path, output: Path) -> dict:
@@ -128,6 +155,8 @@ def inspect(source: Path, manifest_path: Path, output: Path) -> dict:
         sources = [{"name": item.name, "sha256": sha256(item)} for item in files]
         source_checksum = hashlib.sha256(json.dumps(sources, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
         svg = projected_svg(model, fixture, resolved_mapping)
+        if len(svg) > MAX_DERIVED_ASSET_BYTES:
+            raise ValueError(f'Derived asset exceeds {MAX_DERIVED_ASSET_BYTES} bytes for {fixture["id"]}: {len(svg)}')
         derived_checksum = hashlib.sha256(svg).hexdigest()
         filename = f'{fixture["familyKey"]}-{derived_checksum[:12]}.svg'
         (output / filename).write_bytes(svg)
@@ -145,8 +174,8 @@ def inspect(source: Path, manifest_path: Path, output: Path) -> dict:
             "sourceChecksum": source_checksum, "derivedChecksum": derived_checksum,
             "status": "APPROVED" if rights_approved else "DEVELOPMENT",
             "rightsApproved": rights_approved, "productionApproved": rights_approved,
-            "provenance": {"kind": "basis-obj-derived", "converterVersion": 2, "fixtureId": fixture["id"], "sources": sources},
-            "geometry": {"nominalDimensionsMm": expected, "actualDimensionsMm": model["bounds"]["size"], "dimensionToleranceMm": tolerance, "placementAnchor": fixture["placementAnchor"], "vertexCount": model["bounds"]["vertexCount"], "faceCount": model["bounds"]["faceCount"]},
+            "provenance": {"kind": "basis-obj-derived", "converterVersion": 3, "fixtureId": fixture["id"], "sources": sources},
+            "geometry": {"nominalDimensionsMm": expected, "actualDimensionsMm": model["bounds"]["size"], "dimensionToleranceMm": tolerance, "placementAnchor": fixture["placementAnchor"], "vertexCount": model["bounds"]["vertexCount"], "faceCount": model["bounds"]["faceCount"], "derivedBytes": len(svg), "semanticContourCount": svg.count(b"<path ")},
             "masks": resolved_mapping,
         })
     report = {"schemaVersion": 2, "fixtures": results}

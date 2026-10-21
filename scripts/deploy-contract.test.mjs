@@ -31,7 +31,7 @@ describe('production release contract', () => {
     expect(deploy).toContain('build:webapp')
     expect(deploy).toContain('build:website')
     expect(deploy).toContain('rollback_application')
-    expect(deploy).toContain('RECOVERY_LOCK_HELD=true "$SOURCE_DIR/scripts/vps/recover-release.sh"')
+    expect(deploy).toContain('RECOVERY_LOCK_HELD=true bash "$SOURCE_DIR/scripts/vps/recover-release.sh"')
     expect(deploy).toContain('recovery_args+=("$CANDIDATE_ID")')
     expect(deploy.indexOf('catalog:release begin')).toBeLessThan(deploy.indexOf('ln -sfn "$RELEASE_DIR"'))
     expect(deploy.indexOf('catalog:release mark-application')).toBeLessThan(deploy.indexOf('catalog:release activate'))
@@ -70,6 +70,15 @@ describe('production release contract', () => {
     expect(gitignore.split(/\r?\n/)).toContain('docker-compose.override.yml')
   })
 
+  test('requires, embeds, and smoke-tests the owner workspace production origin', () => {
+    expect(deploy).toContain('missing $SHARED_DIR/webapp.env')
+    expect(deploy).toContain('VITE_API_URL must be the owner workspace HTTPS origin')
+    expect(deploy).toContain('install -m 600 "$SHARED_DIR/webapp.env"')
+    expect(deploy).toContain('grep -R -F "$VITE_API_URL" "$RELEASE_DIR/webapp/dist"')
+    expect(deploy).toContain('curl -fsS --proto \'=https\' "$VITE_API_URL/"')
+    expect(deploy).toContain('"$VITE_API_URL/api/auth/me"')
+  })
+
   test('verifies the actual backup bytes and rejects tampering before migration', async () => {
     const root = await mkdtemp(join(tmpdir(), 'seriya-backup-'))
     try {
@@ -102,6 +111,7 @@ describe('production release contract', () => {
     expect(deploy).not.toContain('bun run catalog:assets\n')
     expect(assetSync).toContain('Refusing to replace approved production asset')
     expect(assetSync).toContain('revision: { increment: 1 }')
+    expect(assetSync).toContain('assertLightweightPublicAsset')
   })
 
   test('publishes 25 content-hashed schematics and no raw Basis files', async () => {

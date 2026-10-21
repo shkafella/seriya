@@ -116,7 +116,7 @@ Create production env files on the server (never commit them):
   AUTH_REGISTRATION_ENABLED=false
   ```
 
-- `/opt/<project>/shared/webapp.env`: `VITE_API_URL=https://<app-domain>` (baked in at build time).
+- `/opt/<project>/shared/webapp.env`: `VITE_API_URL=https://<app-domain>` (required and baked in at build time). Deployment stops before migration if this file or HTTPS origin is missing, confirms that the origin is present in the built bundle, and smoke-tests the owner host plus its authenticated API route before verifying the release.
 - `/opt/<project>/shared/website.env`: `PUBLIC_WEBSITE_URL=https://<domain>`.
 - `/opt/<project>/shared/catalog-assets/manifest.production.v1.json` plus every content-hashed file referenced by it. The deployment verifies file checksums, source provenance, rights approval, full family coverage, and the matching database records. Development schematics are never synchronized over approved production assets.
 
@@ -198,7 +198,7 @@ Copy `scripts/vps/deploy.sh` to `/opt/<project>/deploy.sh` and make it executabl
 ssh <server> /opt/<project>/deploy.sh
 ```
 
-The script refuses a dirty/out-of-sync checkout, resolves any earlier interrupted switch, creates and verifies a database backup receipt from the source Compose project before migration, assembles a timestamped full release outside `current`, installs locked dependencies, generates Prisma, previews/applies the approved catalog, copies and verifies the shared production asset package, prepares/exports the exact candidate, builds backend plus both frontends, writes a release checksum manifest, switches the complete application symlink, verifies backend readiness, activates and verifies the matching database publication, and smoke-tests API plus HTML. Any failure after switching restores the previous application and publication together.
+The script refuses a dirty/out-of-sync checkout, resolves any earlier interrupted switch through Bash even when a fresh Git clone does not preserve a local executable bit, requires all three production env files, creates and verifies a database backup receipt from the source Compose project before migration, assembles a timestamped full release outside `current`, installs locked dependencies, generates Prisma, previews/applies the approved catalog, copies and verifies the shared production asset package, prepares/exports the exact candidate, builds backend plus both frontends, verifies the owner API origin embedded in its bundle, writes a release checksum manifest, switches the complete application symlink, verifies backend readiness, activates and verifies the matching database publication, and smoke-tests the public site, owner workspace, and APIs. Any failure after switching restores the previous application and publication together.
 
 Production activation intentionally fails until every published catalog family has a rights-approved production asset whose source and derived checksums match the shared manifest and files. The six supplied Basis packages and 25 neutral schematics are enough for development and converter validation, not for bypassing that launch gate. Supply the remaining confirmed Basis exports, approve provenance/rights, run the same batch converter, and place the complete package in `shared/catalog-assets` before the first live catalog activation.
 

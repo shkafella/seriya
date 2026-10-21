@@ -148,8 +148,9 @@ Stage 2 is complete when all of the following are observable:
 - [x] Stage 2.3 complete
 - [ ] Stage 2.4 complete — the conversion pipeline and six fixtures are ready, but production activation still requires the full owner-approved, rights-cleared 25-family Basis asset batch
 - [ ] Stage 2.5 complete — the release implementation and automated contract checks are ready; a live Linux/systemd failure-injection rehearsal remains
-- [ ] Stage 2.6 complete — the five-pass review limit was reached at 8.3/10; every reported finding was fixed and post-fix validation is green, but no sixth acceptance score was permitted
-- [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — review loop stopped incomplete at its mandatory five-pass limit
+- [ ] Stage 2.6 complete — an explicitly authorized sixth review scored 6.8/10 and was not accepted; all four reported findings were fixed and post-fix validation is green, but there is no post-fix acceptance score
+- [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — the sixth review found one blocker, one serious, and two medium defects; remediation is complete but has not received another independent acceptance round
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
+- [ ] Sixth-review remediation committed and pushed
 
 Last updated: 2026-10-21.

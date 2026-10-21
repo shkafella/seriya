@@ -25,6 +25,10 @@ if [ ! -f "$SHARED_DIR/website.env" ]; then
   echo "ERROR: missing $SHARED_DIR/website.env" >&2
   exit 1
 fi
+if [ ! -f "$SHARED_DIR/webapp.env" ]; then
+  echo "ERROR: missing $SHARED_DIR/webapp.env" >&2
+  exit 1
+fi
 exec 9>"$SHARED_DIR/release.lock"
 if ! flock -n 9; then
   echo "ERROR: another deploy or recovery operation is already running" >&2
@@ -35,6 +39,8 @@ set -a
 . "$SHARED_DIR/backend.env"
 # shellcheck disable=SC1090
 . "$SHARED_DIR/website.env"
+# shellcheck disable=SC1090
+. "$SHARED_DIR/webapp.env"
 set +a
 TARGET_DATABASE="$(bun -e 'console.log(decodeURIComponent(new URL(process.env.DATABASE_URL).pathname.slice(1)))')"
 if [ -z "$TARGET_DATABASE" ] || [ "${BACKUP_DATABASE_NAME:-seriya}" != "$TARGET_DATABASE" ]; then
@@ -45,8 +51,12 @@ if [[ "${PUBLIC_WEBSITE_URL:-}" != https://* ]]; then
   echo "ERROR: PUBLIC_WEBSITE_URL must be the production HTTPS origin" >&2
   exit 1
 fi
+if [[ "${VITE_API_URL:-}" != https://* ]]; then
+  echo "ERROR: VITE_API_URL must be the owner workspace HTTPS origin" >&2
+  exit 1
+fi
 cd "$SOURCE_DIR"
-RECOVERY_LOCK_HELD=true "$SOURCE_DIR/scripts/vps/recover-release.sh"
+RECOVERY_LOCK_HELD=true bash "$SOURCE_DIR/scripts/vps/recover-release.sh"
 if [ -n "$(git status --porcelain)" ]; then
   echo "ERROR: source checkout is dirty; refusing deploy" >&2
   exit 1
@@ -75,7 +85,7 @@ rollback_application() {
   trap - ERR
   local recovery_args=()
   if [ -n "${CANDIDATE_ID:-}" ]; then recovery_args+=("$CANDIDATE_ID"); fi
-  if ! RECOVERY_LOCK_HELD=true "$SOURCE_DIR/scripts/vps/recover-release.sh" "${recovery_args[@]}"; then
+  if ! RECOVERY_LOCK_HELD=true bash "$SOURCE_DIR/scripts/vps/recover-release.sh" "${recovery_args[@]}"; then
     echo "ERROR: automatic recovery did not finish; catalog remains closed for operator recovery" >&2
   fi
 }
@@ -104,8 +114,8 @@ echo "==> Assembling immutable release $RELEASE_ID"
 mkdir "$RELEASE_DIR"
 git archive HEAD | tar -x -C "$RELEASE_DIR"
 install -m 600 "$SHARED_DIR/backend.env" "$RELEASE_DIR/backend/.env"
-if [ -f "$SHARED_DIR/webapp.env" ]; then install -m 600 "$SHARED_DIR/webapp.env" "$RELEASE_DIR/webapp/.env"; fi
-if [ -f "$SHARED_DIR/website.env" ]; then install -m 600 "$SHARED_DIR/website.env" "$RELEASE_DIR/website/.env"; fi
+install -m 600 "$SHARED_DIR/webapp.env" "$RELEASE_DIR/webapp/.env"
+install -m 600 "$SHARED_DIR/website.env" "$RELEASE_DIR/website/.env"
 
 cd "$RELEASE_DIR"
 bun install --frozen-lockfile
@@ -132,6 +142,10 @@ echo "==> Building backend and both frontends"
 bun run build:backend
 bun run build:webapp
 bun run build:website
+grep -R -F "$VITE_API_URL" "$RELEASE_DIR/webapp/dist" >/dev/null || {
+  echo "ERROR: owner workspace build does not contain VITE_API_URL" >&2
+  exit 1
+}
 find backend webapp/dist website/dist website/public/catalog -type f -print0 | sort -z | xargs -0 sha256sum >"$RELEASE_DIR/release-files.sha256"
 printf '{"releaseId":"%s","releaseDirectory":"%s","gitRevision":"%s","candidateId":"%s"}\n' "$APP_RELEASE_ID" "$RELEASE_ID" "$GIT_REVISION" "$CANDIDATE_ID" >"$RELEASE_DIR/release-manifest.json"
 
@@ -149,6 +163,8 @@ echo "==> Activating the matching immutable publication"
 curl -fsS --proto '=https' "$PUBLIC_WEBSITE_URL/api/catalog/_release-smoke/$CANDIDATE_ID" | grep -F "$APP_RELEASE_ID" >/dev/null
 curl -fsS --proto '=https' "$PUBLIC_WEBSITE_URL/" >/dev/null
 curl -fsS --proto '=https' "$PUBLIC_WEBSITE_URL/catalog/" | grep -F "$APP_RELEASE_ID" >/dev/null
+curl -fsS --proto '=https' "$VITE_API_URL/" >/dev/null
+test "$(curl -sS -o /dev/null -w '%{http_code}' --proto '=https' "$VITE_API_URL/api/auth/me")" = "401"
 grep -F "$APP_RELEASE_ID" "$CURRENT_LINK/release-manifest.json" >/dev/null
 (cd "$CURRENT_LINK/backend" && bun run catalog:release verify "$CANDIDATE_ID" "$RELEASE_DIR")
 curl -fsS --proto '=https' "$PUBLIC_WEBSITE_URL/api/catalog" | grep -F "$APP_RELEASE_ID" >/dev/null

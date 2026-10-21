@@ -1,5 +1,5 @@
 import type { OwnerCatalogResponse } from '@seriya/contracts'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -12,48 +12,70 @@ import { Switch } from '@/components/ui/switch'
 import { Typography } from '@/components/ui/typography'
 import { useAuth } from '@/features/auth'
 import { CatalogApi } from './api'
+import {
+  scopeValueToPrincipal,
+  valueVisibleToPrincipal,
+  type PrincipalScopedValue,
+} from './catalog-session'
 
 type Variant = OwnerCatalogResponse['variants'][number]
 
 export function CatalogPage() {
   const auth = useAuth()
+  const principalId = auth.user?.id ?? null
   const api = useMemo(() => new CatalogApi(auth.transport), [auth.transport])
-  const [catalog, setCatalog] = useState<OwnerCatalogResponse | null>(null)
+  const [scopedCatalog, setScopedCatalog] = useState<PrincipalScopedValue<OwnerCatalogResponse> | null>(null)
+  const catalog = valueVisibleToPrincipal(scopedCatalog, principalId)
+  const [scopedMessage, setScopedMessage] = useState<PrincipalScopedValue<string> | null>(null)
+  const message = valueVisibleToPrincipal(scopedMessage, principalId) ?? ''
+  const setMessage = useCallback((next: string) => {
+    setScopedMessage(principalId ? scopeValueToPrincipal(principalId, next) : null)
+  }, [principalId])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [state, setState] = useState<'loading' | 'ready' | 'saving' | 'error'>('loading')
-  const [message, setMessage] = useState('')
 
   const load = async () => {
+    const requestedPrincipalId = principalId
+    setScopedCatalog(null)
+    setSelectedId(null)
+    setMessage('')
     setState('loading')
+    if (!requestedPrincipalId) return
     try {
       const next = await api.list()
-      setCatalog(next)
+      setScopedCatalog(scopeValueToPrincipal(requestedPrincipalId, next))
       setSelectedId((current) => current && next.variants.some((item) => item.id === current) ? current : next.variants[0]?.id ?? null)
       setState('ready')
     } catch (error) {
+      setScopedCatalog(null)
+      setSelectedId(null)
       setMessage(error instanceof Error ? error.message : 'Не удалось загрузить каталог')
       setState('error')
     }
   }
 
   useEffect(() => {
+    const requestedPrincipalId = principalId
     let active = true
+    if (!requestedPrincipalId) return () => { active = false }
     void api.list().then((next) => {
       if (!active) return
-      setCatalog(next)
+      setScopedCatalog(scopeValueToPrincipal(requestedPrincipalId, next))
       setSelectedId((current) => current && next.variants.some((item) => item.id === current) ? current : next.variants[0]?.id ?? null)
       setState('ready')
     }).catch((error: unknown) => {
       if (!active) return
+      setScopedCatalog(null)
+      setSelectedId(null)
       setMessage(error instanceof Error ? error.message : 'Не удалось загрузить каталог')
       setState('error')
     })
     return () => { active = false }
-  }, [api])
+  }, [api, principalId, setMessage])
 
   if (!auth.user) return <CatalogShell><Typography>Сначала войдите в аккаунт владельца.</Typography></CatalogShell>
-  if (state === 'loading' && !catalog) return <CatalogShell><div className="flex items-center gap-3"><Spinner /><Typography as="span">Загружаем каталог…</Typography></div></CatalogShell>
+  if (!catalog && !message) return <CatalogShell><div className="flex items-center gap-3"><Spinner /><Typography as="span">Загружаем каталог…</Typography></div></CatalogShell>
   if (!catalog) return <CatalogShell><Typography role="alert" tone="destructive">{message}</Typography><Button onClick={() => void load()}>Повторить</Button></CatalogShell>
 
   const normalized = query.trim().toLowerCase()

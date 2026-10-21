@@ -6,6 +6,7 @@ import { dirname, resolve, sep } from 'node:path'
 
 import type { Prisma } from '../src/generated/prisma/client'
 import { createPrisma } from '../src/db'
+import { assertLightweightPublicAsset } from './catalog-asset-file'
 
 type ManifestAsset = {
   familyKey: string
@@ -100,7 +101,9 @@ async function validateManifestFiles(assets: ManifestAsset[], path: string) {
     const filePath = resolve(publicRoot, asset.publicPath.slice(1))
     if (!filePath.startsWith(`${publicRoot}${sep}`)) throw new Error(`Asset path escapes public root: ${asset.publicPath}`)
     await stat(filePath)
-    const actual = createHash('sha256').update(await readFile(filePath)).digest('hex')
+    const bytes = await readFile(filePath)
+    assertLightweightPublicAsset(asset.publicPath, bytes)
+    const actual = createHash('sha256').update(bytes).digest('hex')
     if (actual !== asset.derivedChecksum) throw new Error(`Asset checksum mismatch for ${asset.familyKey}`)
   }
 }
