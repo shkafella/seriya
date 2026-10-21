@@ -30,6 +30,8 @@ assertTestDatabaseUrl(databaseUrlForContainer, {
 const dockerEnv = composeEnv({
   POSTGRES_TEST_PORT: postgresPortFromDatabaseUrl(databaseUrlForHost),
 })
+const smokeOwnerEmail = `docker-smoke-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`
+const smokeOwnerPassword = `Docker-smoke-${Math.random().toString(36).slice(2)}-123`
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -119,7 +121,6 @@ async function waitForHealth() {
 
 async function smokeAuthApi() {
   const baseUrl = `http://127.0.0.1:${hostPort}`
-  const email = `docker-smoke-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`
 
   const register = await fetch(`${baseUrl}/api/auth/token/register`, {
     method: 'POST',
@@ -127,24 +128,39 @@ async function smokeAuthApi() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      email,
-      password: 'password123',
+      email: 'registration-must-stay-closed@example.com',
+      password: smokeOwnerPassword,
       displayName: 'Docker Smoke',
     }),
   })
 
-  if (register.status !== 201) {
-    throw new Error(`Register failed with HTTP ${register.status}: ${await register.text()}`)
+  if (register.status !== 403) {
+    throw new Error(`Registration closure smoke failed with HTTP ${register.status}: ${await register.text()}`)
   }
 
-  const registerBody = await register.json()
-  if (!registerBody.accessToken || !registerBody.refreshToken) {
-    throw new Error('Register response did not include mobile auth tokens')
+  const login = await fetch(`${baseUrl}/api/auth/token/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: smokeOwnerEmail,
+      password: smokeOwnerPassword,
+    }),
+  })
+
+  if (login.status !== 200) {
+    throw new Error(`Owner login failed with HTTP ${login.status}: ${await login.text()}`)
+  }
+
+  const loginBody = await login.json()
+  if (!loginBody.accessToken || !loginBody.refreshToken) {
+    throw new Error('Owner login response did not include mobile auth tokens')
   }
 
   const me = await fetch(`${baseUrl}/api/auth/me`, {
     headers: {
-      Authorization: `Bearer ${registerBody.accessToken}`,
+      Authorization: `Bearer ${loginBody.accessToken}`,
     },
   })
 
@@ -152,7 +168,12 @@ async function smokeAuthApi() {
     throw new Error(`/me failed with HTTP ${me.status}: ${await me.text()}`)
   }
 
-  process.stdout.write('Backend Docker DB-backed auth smoke passed\n')
+  const meBody = await me.json()
+  if (meBody.user?.email !== smokeOwnerEmail) {
+    throw new Error(`/me returned the wrong owner: ${JSON.stringify(meBody)}`)
+  }
+
+  process.stdout.write('Backend Docker production auth smoke passed\n')
 }
 
 try {
@@ -163,6 +184,16 @@ try {
     env: {
       ...process.env,
       DATABASE_URL: databaseUrlForHost,
+    },
+  })
+  run('bun', ['run', '--cwd', 'backend', 'prisma:generate'])
+  run('bun', ['run', '--cwd', 'backend', 'catalog:owner', '--', 'bootstrap'], {
+    env: {
+      ...process.env,
+      DATABASE_URL: databaseUrlForHost,
+      OWNER_EMAIL: smokeOwnerEmail,
+      OWNER_PASSWORD: smokeOwnerPassword,
+      OWNER_DISPLAY_NAME: 'Docker Smoke Owner',
     },
   })
 
@@ -188,6 +219,8 @@ try {
     'CORS_ORIGINS=https://web.example.com',
     '-e',
     'COOKIE_SECURE=true',
+    '-e',
+    'AUTH_REGISTRATION_ENABLED=false',
     imageName,
   ])
 

@@ -148,11 +148,12 @@ Stage 2 is complete when all of the following are observable:
 - [x] Stage 2.3 complete
 - [ ] Stage 2.4 complete — the conversion pipeline and six fixtures are ready, but production activation still requires the full owner-approved, rights-cleared 25-family Basis asset batch
 - [ ] Stage 2.5 complete — the release implementation and automated contract checks are ready; a live Linux/systemd failure-injection rehearsal remains
-- [ ] Stage 2.6 complete — the eighth review scored 8.5/10 with one medium finding and no level 1–3 defects; the finding is fixed with PostgreSQL integration coverage, but no ninth post-fix acceptance score was requested
-- [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — both requested extra rounds are complete, but the last scoring pass found an issue before its subsequent remediation
+- [ ] Stage 2.6 complete — the ninth review on the user-requested `gpt-5.6-sol` (`high`) scored 8.0/10 with two medium findings and no level 1–3 defects; both findings are fixed and validated, but no tenth post-fix acceptance score was requested
+- [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — nine scoring passes are complete, but the latest score was issued before its two medium findings were remediated
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
 - [x] Sixth-review remediation committed and pushed in `95fd7d7` (`fix: close sixth review findings`)
 - [x] Seventh-review remediation committed and pushed in `821e460` (`fix: close seventh review findings`)
 - [x] Eighth-review remediation committed and pushed in `cd476d8` (`fix: allow reassigned imported skus`)
+- [x] Ninth-review remediation implemented and validated: production Docker smoke now runs with closed registration and a bootstrapped owner, and production assets must parse as a strict passive SVG subset
 
-Last updated: 2026-10-21.
+Last updated: 2026-10-22.

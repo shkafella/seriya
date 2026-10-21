@@ -46,7 +46,7 @@ Backend tests live next to backend code and verify auth and catalog behavior thr
 
 The integration and Docker smoke runners refuse database names that do not end with `_test` unless an override is set intentionally. This protects `seriya` development data from test writes.
 
-The Docker smoke test builds the backend image, starts it against `postgres_test`, waits for `/health/ready`, and removes only the smoke container it created.
+The Docker smoke test builds the backend image, starts it in production mode against `postgres_test` with public registration disabled, bootstraps an ephemeral owner through the server-only command, verifies registration stays closed, signs that owner in, checks `/api/auth/me`, and removes only the smoke container and test database resources it created.
 
 `.github/workflows/ci.yml` runs typecheck, repository script tests, contract tests, webapp client tests, backend tests, and the webapp Playwright smoke flow on pushes to `main` plus pull requests.
 

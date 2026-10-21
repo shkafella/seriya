@@ -5,6 +5,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { assertLightweightPublicAsset } from '../backend/scripts/catalog-asset-file.ts'
+
 const deploy = await readFile(new URL('./vps/deploy.sh', import.meta.url), 'utf8')
 const backup = await readFile(new URL('./vps/db-backup.sh', import.meta.url), 'utf8')
 const service = await readFile(new URL('./vps/myapp-backend.service', import.meta.url), 'utf8')
@@ -15,6 +17,7 @@ const deploymentDocs = await readFile(new URL('../docs/DEPLOYMENT.md', import.me
 const gitignore = await readFile(new URL('../.gitignore', import.meta.url), 'utf8')
 const assetSync = await readFile(new URL('../backend/scripts/catalog-assets.ts', import.meta.url), 'utf8')
 const assetPackage = await readFile(new URL('../backend/scripts/catalog-asset-package.ts', import.meta.url), 'utf8')
+const dockerSmoke = await readFile(new URL('../backend/scripts/docker-smoke.mjs', import.meta.url), 'utf8')
 const receiptVerifier = fileURLToPath(new URL('./vps/verify-backup-receipt.ts', import.meta.url))
 
 describe('production release contract', () => {
@@ -80,6 +83,13 @@ describe('production release contract', () => {
     expect(deploy).toContain('"$VITE_API_URL/api/auth/me"')
   })
 
+  test('runs the Docker smoke with production registration closed and a bootstrapped owner', () => {
+    expect(dockerSmoke).toContain('AUTH_REGISTRATION_ENABLED=false')
+    expect(dockerSmoke).toContain("'catalog:owner', '--', 'bootstrap'")
+    expect(dockerSmoke).toContain('/api/auth/token/login')
+    expect(dockerSmoke).toContain('Registration closure smoke failed')
+  })
+
   test('verifies the actual backup bytes and rejects tampering before migration', async () => {
     const root = await mkdtemp(join(tmpdir(), 'seriya-backup-'))
     try {
@@ -128,6 +138,7 @@ describe('production release contract', () => {
     for (const asset of manifest.assets) {
       const filename = asset.publicPath.split('/').at(-1)
       const bytes = await readFile(new URL(filename, catalogDir))
+      expect(() => assertLightweightPublicAsset(asset.publicPath, bytes)).not.toThrow()
       expect(createHash('sha256').update(bytes).digest('hex')).toBe(asset.derivedChecksum)
       expect(filename).toContain(asset.derivedChecksum.slice(0, 12))
     }
