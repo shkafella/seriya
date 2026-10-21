@@ -1,0 +1,2251 @@
+{
+  "schemaVersion": 1,
+  "spreadsheetId": "19mCVoEg77-RVP0nzLKURPjWgAWv_yLM3WIhi8AbRx4I",
+  "records": [
+    {
+      "sourceRecordId": "catalog-source-0001",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 2,
+        "sourceName": "Низ гола мойка 500",
+        "sourceSku": "НГМ 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0002",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 3,
+        "sourceName": "Низ гола мойка 550",
+        "sourceSku": "НГМ 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0003",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 4,
+        "sourceName": "Низ гола мойка 600",
+        "sourceSku": "НГМ 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0004",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 5,
+        "sourceName": "Низ гола мойка 601",
+        "sourceSku": "НГМ 601"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0005",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 6,
+        "sourceName": "Низ гола мойка 650",
+        "sourceSku": "НГМ 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0006",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 7,
+        "sourceName": "Низ гола мойка 700",
+        "sourceSku": "НГМ 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0007",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 8,
+        "sourceName": "Низ гола мойка 750",
+        "sourceSku": "НГМ 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0008",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 9,
+        "sourceName": "Низ гола мойка 800",
+        "sourceSku": "НГМ 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0009",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 10,
+        "sourceName": "Низ гола мойка 850",
+        "sourceSku": "НГМ 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0010",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 11,
+        "sourceName": "Низ гола мойка 900",
+        "sourceSku": "НГМ 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0011",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 21,
+        "sourceName": "Низ гола посудомойка 450",
+        "sourceSku": "НГПм 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0012",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 22,
+        "sourceName": "Низ гола посудомойка 600",
+        "sourceSku": "НГПм 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0013",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 37,
+        "sourceName": "Низ гола полка 200",
+        "sourceSku": "НГП 200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0014",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 38,
+        "sourceName": "Низ гола полка 250",
+        "sourceSku": "НГП 250"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0015",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 39,
+        "sourceName": "Низ гола полка 300",
+        "sourceSku": "НГП 300"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0016",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 40,
+        "sourceName": "Низ гола полка 350",
+        "sourceSku": "НГП 350"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0017",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 41,
+        "sourceName": "Низ гола полка 400",
+        "sourceSku": "НГП 400"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0018",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 42,
+        "sourceName": "Низ гола полка 450",
+        "sourceSku": "НГП 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0019",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 43,
+        "sourceName": "Низ гола полка 500",
+        "sourceSku": "НГП 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0020",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 44,
+        "sourceName": "Низ гола полка 550",
+        "sourceSku": "НГП 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0021",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 45,
+        "sourceName": "Низ гола полка 600",
+        "sourceSku": "НГП 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0022",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 46,
+        "sourceName": "Низ гола полка 650",
+        "sourceSku": "НГП 601"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0023",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 47,
+        "sourceName": "Низ гола полка 700",
+        "sourceSku": "НГП 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0024",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 48,
+        "sourceName": "Низ гола полка 750",
+        "sourceSku": "НГП 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0025",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 49,
+        "sourceName": "Низ гола полка 800",
+        "sourceSku": "НГП 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0026",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 50,
+        "sourceName": "Низ гола полка 850",
+        "sourceSku": "НГП 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0027",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 51,
+        "sourceName": "Низ гола полка 900",
+        "sourceSku": "НГП 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0028",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 52,
+        "sourceName": "Низ гола полка 950",
+        "sourceSku": "НГП 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0029",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 56,
+        "sourceName": "Низ гола съем.полка 200",
+        "sourceSku": "НГСП 200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0030",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 57,
+        "sourceName": "Низ гола съем.полка 250",
+        "sourceSku": "НГСП 250"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0031",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 58,
+        "sourceName": "Низ гола съем.полка 300",
+        "sourceSku": "НГСП 300"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0032",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 59,
+        "sourceName": "Низ гола съем.полка 350",
+        "sourceSku": "НГСП 350"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0033",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 60,
+        "sourceName": "Низ гола съем.полка 400",
+        "sourceSku": "НГСП 400"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0034",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 61,
+        "sourceName": "Низ гола съем.полка 450",
+        "sourceSku": "НГСП 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0035",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 62,
+        "sourceName": "Низ гола съем.полка 500",
+        "sourceSku": "НГСП 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0036",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 63,
+        "sourceName": "Низ гола съем.полка 550",
+        "sourceSku": "НГСП 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0037",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 64,
+        "sourceName": "Низ гола съем.полка 600",
+        "sourceSku": "НГСП 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0038",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 65,
+        "sourceName": "Низ гола съем.полка 650",
+        "sourceSku": "НГСП 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0039",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 66,
+        "sourceName": "Низ гола съем.полка 700",
+        "sourceSku": "НГСП 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0040",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 67,
+        "sourceName": "Низ гола съем.полка 750",
+        "sourceSku": "НГСП 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0041",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 68,
+        "sourceName": "Низ гола съем.полка 800",
+        "sourceSku": "НГСП 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0042",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 69,
+        "sourceName": "Низ гола съем.полка 850",
+        "sourceSku": "НГСП 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0043",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 70,
+        "sourceName": "Низ гола съем.полка 900",
+        "sourceSku": "НГСП 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0044",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 71,
+        "sourceName": "Низ гола съем.полка 950",
+        "sourceSku": "НГСП 950"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0045",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 75,
+        "sourceName": "Низ гола угол Л 1000",
+        "sourceSku": "НГУлМ 1000"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0046",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 76,
+        "sourceName": "Низ гола угол Л 1050",
+        "sourceSku": "НГУлМ 1050"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0047",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 77,
+        "sourceName": "Низ гола угол Л 1100",
+        "sourceSku": "НГУлМ 1100"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0048",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 78,
+        "sourceName": "Низ гола угол Л 1150",
+        "sourceSku": "НГУлМ 1150"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0049",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 79,
+        "sourceName": "Низ гола угол Л 1200",
+        "sourceSku": "НГУлМ 1200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0050",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 80,
+        "sourceName": "Низ гола угол Пр 1000",
+        "sourceSku": "НГУпМ 1000"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0051",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 81,
+        "sourceName": "Низ гола угол Пр 1050",
+        "sourceSku": "НГУпМ 1050"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0052",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 82,
+        "sourceName": "Низ гола угол Пр 1100",
+        "sourceSku": "НГУпМ 1100"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0053",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 83,
+        "sourceName": "Низ гола угол Пр 1150",
+        "sourceSku": "НГУпМ 1150"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0054",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 84,
+        "sourceName": "Низ гола угол Пр 1200",
+        "sourceSku": "НГУпМ 1200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0055",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 88,
+        "sourceName": "Низ гола угол съем полка Л 1000",
+        "sourceSku": "НГУлСП 1000"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0056",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 89,
+        "sourceName": "Низ гола угол съем полка Л 1050",
+        "sourceSku": "НГУлСП 1050"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0057",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 90,
+        "sourceName": "Низ гола угол съем полка Л 1100",
+        "sourceSku": "НГУлСП 1100"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0058",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 91,
+        "sourceName": "Низ гола угол съем полка Л 1150",
+        "sourceSku": "НГУлСП 1150"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0059",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 92,
+        "sourceName": "Низ гола угол съем полка Л 1200",
+        "sourceSku": "НГУлСП 1200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0060",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 93,
+        "sourceName": "Низ гола угол съем полка Пр 1000",
+        "sourceSku": "НГУпСП 1000"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0061",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 94,
+        "sourceName": "Низ гола угол съем полка Пр 1050",
+        "sourceSku": "НГУпСП 1050"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0062",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 95,
+        "sourceName": "Низ гола угол съем полка Пр 1100",
+        "sourceSku": "НГУпСП 1100"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0063",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 96,
+        "sourceName": "Низ гола угол съем полка Пр 1150",
+        "sourceSku": "НГУпСП 1150"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0064",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 97,
+        "sourceName": "Низ гола угол съем полка Пр 1200",
+        "sourceSku": "НГУпСП 1200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0065",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 101,
+        "sourceName": "Низ гола хол 600",
+        "sourceSku": "НГХ"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0066",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 102,
+        "sourceName": "Низ гола хол 600 Фальш слева",
+        "sourceSku": "НГХФл"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0067",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 103,
+        "sourceName": "Низ гола хол 600 Фальш справа",
+        "sourceSku": "НГХФп"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0068",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 126,
+        "sourceName": "Низ гола 2 ящика 400",
+        "sourceSku": "НГСК 402"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0069",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 127,
+        "sourceName": "Низ гола 2 ящика 450",
+        "sourceSku": "НГСК 452"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0070",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 128,
+        "sourceName": "Низ гола 2 ящика 500",
+        "sourceSku": "НГСК 502"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0071",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 129,
+        "sourceName": "Низ гола 2 ящика 550",
+        "sourceSku": "НГСК 552"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0072",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 130,
+        "sourceName": "Низ гола 2 ящика 600",
+        "sourceSku": "НГСК 602"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0073",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 131,
+        "sourceName": "Низ гола 2 ящика 650",
+        "sourceSku": "НГСК 652"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0074",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 132,
+        "sourceName": "Низ гола 2 ящика 700",
+        "sourceSku": "НГСК 702"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0075",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 133,
+        "sourceName": "Низ гола 2 ящика 750",
+        "sourceSku": "НГСК 752"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0076",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 134,
+        "sourceName": "Низ гола 2 ящика 800",
+        "sourceSku": "НГСК 802"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0077",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 135,
+        "sourceName": "Низ гола 2 ящика 850",
+        "sourceSku": "НГСК 852"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0078",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 136,
+        "sourceName": "Низ гола 2 ящика 900",
+        "sourceSku": "НГСК 902"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0079",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 146,
+        "sourceName": "Низ гола 3 ящика 400",
+        "sourceSku": "НГСК 403"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0080",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 147,
+        "sourceName": "Низ гола 3 ящика 450",
+        "sourceSku": "НГСК 453"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0081",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 148,
+        "sourceName": "Низ гола 3 ящика 500",
+        "sourceSku": "НГСК 503"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0082",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 149,
+        "sourceName": "Низ гола 3 ящика 550",
+        "sourceSku": "НГСК 553"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0083",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 150,
+        "sourceName": "Низ гола 3 ящика 600",
+        "sourceSku": "НГСК 603"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0084",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 151,
+        "sourceName": "Низ гола 3 ящика 650",
+        "sourceSku": "НГСК 653"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0085",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 152,
+        "sourceName": "Низ гола 3 ящика 700",
+        "sourceSku": "НГСК 703"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0086",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 153,
+        "sourceName": "Низ гола 3 ящика 750",
+        "sourceSku": "НГСК 753"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0087",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 154,
+        "sourceName": "Низ гола 3 ящика 800",
+        "sourceSku": "НГСК 803"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0088",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 155,
+        "sourceName": "Низ гола 3 ящика 850",
+        "sourceSku": "НГСК 853"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0089",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 156,
+        "sourceName": "Низ гола 3 ящика 900",
+        "sourceSku": "НГСК 903"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0090",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 164,
+        "sourceName": "Низ гола скрытая пара 400",
+        "sourceSku": "НГСп 404"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0091",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 165,
+        "sourceName": "Низ гола скрытая пара 450",
+        "sourceSku": "НГСп 454"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0092",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 166,
+        "sourceName": "Низ гола скрытая пара 500",
+        "sourceSku": "НГСп 504"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0093",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 167,
+        "sourceName": "Низ гола скрытая пара 550",
+        "sourceSku": "НГСп 554"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0094",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 168,
+        "sourceName": "Низ гола скрытая пара 600",
+        "sourceSku": "НГСп 604"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0095",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 169,
+        "sourceName": "Низ гола скрытая пара 650",
+        "sourceSku": "НГСп 654"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0096",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 170,
+        "sourceName": "Низ гола скрытая пара 700",
+        "sourceSku": "НГСп 704"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0097",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 171,
+        "sourceName": "Низ гола скрытая пара 750",
+        "sourceSku": "НГСп 754"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0098",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 172,
+        "sourceName": "Низ гола скрытая пара 800",
+        "sourceSku": "НГСп 804"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0099",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 173,
+        "sourceName": "Низ гола скрытая пара 850",
+        "sourceSku": "НГСп 854"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0100",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 174,
+        "sourceName": "Низ гола скрытая пара 900",
+        "sourceSku": "НГСп 904"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0101",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 183,
+        "sourceName": "Низ гола духовка 600",
+        "sourceSku": "НГДСК"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0102",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 201,
+        "sourceName": "Низ гола бутыл 150",
+        "sourceSku": "НГБ 150"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0103",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 202,
+        "sourceName": "Низ гола бутыл 200",
+        "sourceSku": "НГБ 200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0104",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "низ гола",
+        "row": 203,
+        "sourceName": "Низ гола бутыл 300",
+        "sourceSku": "НГБ 300"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0105",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 3,
+        "sourceName": "Средний ряд проем авентос 500",
+        "sourceSku": "СДПА 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0106",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 4,
+        "sourceName": "Средний ряд проем авентос 550",
+        "sourceSku": "СДПА 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0107",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 5,
+        "sourceName": "Средний ряд проем авентос 600",
+        "sourceSku": "СДПА 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0108",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 6,
+        "sourceName": "Средний ряд проем авентос 650",
+        "sourceSku": "СДПА 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0109",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 7,
+        "sourceName": "Средний ряд проем авентос 700",
+        "sourceSku": "СДПА 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0110",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 8,
+        "sourceName": "Средний ряд проем авентос 750",
+        "sourceSku": "СДПА 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0111",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 9,
+        "sourceName": "Средний ряд проем авентос 800",
+        "sourceSku": "СДПА 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0112",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 10,
+        "sourceName": "Средний ряд проем авентос 850",
+        "sourceSku": "СДПА 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0113",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 11,
+        "sourceName": "Средний ряд проем авентос 900",
+        "sourceSku": "СДПА 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0114",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 18,
+        "sourceName": "Средний ряд проем клок 400",
+        "sourceSku": "СДК 400"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0115",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 19,
+        "sourceName": "Средний ряд проем клок 450",
+        "sourceSku": "СДК 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0116",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 20,
+        "sourceName": "Средний ряд проем клок 500",
+        "sourceSku": "СДК 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0117",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 21,
+        "sourceName": "Средний ряд проем клок 550",
+        "sourceSku": "СДК 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0118",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 22,
+        "sourceName": "Средний ряд проем клок 600",
+        "sourceSku": "СДК 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0119",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 23,
+        "sourceName": "Средний ряд проем клок 650",
+        "sourceSku": "СДК 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0120",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 24,
+        "sourceName": "Средний ряд проем клок 700",
+        "sourceSku": "СДК 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0121",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 25,
+        "sourceName": "Средний ряд проем клок 750",
+        "sourceSku": "СДК 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0122",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 26,
+        "sourceName": "Средний ряд проем клок 800",
+        "sourceSku": "СДК 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0123",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 27,
+        "sourceName": "Средний ряд проем клок 850",
+        "sourceSku": "СДК 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0124",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 28,
+        "sourceName": "Средний ряд проем клок 900",
+        "sourceSku": "СДК 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0125",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 37,
+        "sourceName": "Средний ряд проем полка 200",
+        "sourceSku": "СДП 200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0126",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 38,
+        "sourceName": "Средний ряд проем полка 250",
+        "sourceSku": "СДП 250"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0127",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 39,
+        "sourceName": "Средний ряд проем полка 300",
+        "sourceSku": "СДП 300"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0128",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 40,
+        "sourceName": "Средний ряд проем полка 350",
+        "sourceSku": "СДП 350"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0129",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 41,
+        "sourceName": "Средний ряд проем полка 400",
+        "sourceSku": "СДП 400"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0130",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 42,
+        "sourceName": "Средний ряд проем полка 450",
+        "sourceSku": "СДП 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0131",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 43,
+        "sourceName": "Средний ряд проем полка 500",
+        "sourceSku": "СДП 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0132",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 44,
+        "sourceName": "Средний ряд проем полка 550",
+        "sourceSku": "СДП 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0133",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 45,
+        "sourceName": "Средний ряд проем полка 600",
+        "sourceSku": "СДП 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0134",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 46,
+        "sourceName": "Средний ряд проем полка 650",
+        "sourceSku": "СДП 601"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0135",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 47,
+        "sourceName": "Средний ряд проем полка 700",
+        "sourceSku": "СДП 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0136",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 48,
+        "sourceName": "Средний ряд проем полка 750",
+        "sourceSku": "СДП 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0137",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 49,
+        "sourceName": "Средний ряд проем полка 800",
+        "sourceSku": "СДП 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0138",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 50,
+        "sourceName": "Средний ряд проем полка 850",
+        "sourceSku": "СДП 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0139",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 51,
+        "sourceName": "Средний ряд проем полка 900",
+        "sourceSku": "СДП 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0140",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 52,
+        "sourceName": "Средний ряд проем полка 950",
+        "sourceSku": "СДП 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0141",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 56,
+        "sourceName": "Средний ряд проем съем полка 200",
+        "sourceSku": "СДСП 200"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0142",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 57,
+        "sourceName": "Средний ряд проем съем полка 250",
+        "sourceSku": "СДСП 250"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0143",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 58,
+        "sourceName": "Средний ряд проем съем полка 300",
+        "sourceSku": "СДСП 300"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0144",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 59,
+        "sourceName": "Средний ряд проем съем полка 350",
+        "sourceSku": "СДСП 350"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0145",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 60,
+        "sourceName": "Средний ряд проем съем полка 400",
+        "sourceSku": "СДСП 400"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0146",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 61,
+        "sourceName": "Средний ряд проем съем полка 450",
+        "sourceSku": "СДСП 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0147",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 62,
+        "sourceName": "Средний ряд проем съем полка 500",
+        "sourceSku": "СДСП 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0148",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 63,
+        "sourceName": "Средний ряд проем съем полка 550",
+        "sourceSku": "СДСП 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0149",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 64,
+        "sourceName": "Средний ряд проем съем полка 600",
+        "sourceSku": "СДСП 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0150",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 65,
+        "sourceName": "Средний ряд проем съем полка 650",
+        "sourceSku": "СДСП 601"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0151",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 66,
+        "sourceName": "Средний ряд проем съем полка 700",
+        "sourceSku": "СДСП 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0152",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 67,
+        "sourceName": "Средний ряд проем съем полка 750",
+        "sourceSku": "СДСП 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0153",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 68,
+        "sourceName": "Средний ряд проем съем полка 800",
+        "sourceSku": "СДСП 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0154",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 69,
+        "sourceName": "Средний ряд проем съем полка 850",
+        "sourceSku": "СДСП 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0155",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 73,
+        "sourceName": "Средний ряд проем сушка 450",
+        "sourceSku": "СДСУ 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0156",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 74,
+        "sourceName": "Средний ряд проем сушка 500",
+        "sourceSku": "СДСУ 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0157",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 75,
+        "sourceName": "Средний ряд проем сушка 600",
+        "sourceSku": "СДСУ 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0158",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 76,
+        "sourceName": "Средний ряд проем сушка 600",
+        "sourceSku": "СДСУ 601"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0159",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 77,
+        "sourceName": "Средний ряд проем сушка 700",
+        "sourceSku": "СДСУ 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0160",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 78,
+        "sourceName": "Средний ряд проем сушка 800",
+        "sourceSku": "СДСУ 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0161",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 79,
+        "sourceName": "Средний ряд проем сушка 900",
+        "sourceSku": "СДСУ 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0162",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 89,
+        "sourceName": "Средний ряд проем сушка авентос 450",
+        "sourceSku": "СДСУА 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0163",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 90,
+        "sourceName": "Средний ряд проем сушка авентос 600",
+        "sourceSku": "СДСУА 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0164",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 91,
+        "sourceName": "Средний ряд проем сушка авентос 700",
+        "sourceSku": "СДСУА 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0165",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 92,
+        "sourceName": "Средний ряд проем сушка авентос 800",
+        "sourceSku": "СДСУА 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0166",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 93,
+        "sourceName": "Средний ряд проем сушка авентос 900",
+        "sourceSku": "СДСУА 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0167",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 102,
+        "sourceName": "Средний ряд проем вытяшка 600",
+        "sourceSku": "СДП 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0168",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 117,
+        "sourceName": "Средний ряд проем Пр угол 700",
+        "sourceSku": "СДУп 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0169",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 118,
+        "sourceName": "Средний ряд проем Пр угол 750",
+        "sourceSku": "СДУп 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0170",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 119,
+        "sourceName": "Средний ряд проем Пр угол 800",
+        "sourceSku": "СДУп 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0171",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 120,
+        "sourceName": "Средний ряд проем Пр угол 850",
+        "sourceSku": "СДУп 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0172",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 121,
+        "sourceName": "Средний ряд проем Пр угол 900",
+        "sourceSku": "СДУп 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0173",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 122,
+        "sourceName": "Средний ряд проем Л угол 700",
+        "sourceSku": "СДУл 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0174",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 123,
+        "sourceName": "Средний ряд проем Л угол 750",
+        "sourceSku": "СДУл 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0175",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 124,
+        "sourceName": "Средний ряд проем Л угол 800",
+        "sourceSku": "СДУл 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0176",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 125,
+        "sourceName": "Средний ряд проем Л угол 850",
+        "sourceSku": "СДУл 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0177",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "среднии",
+        "row": 126,
+        "sourceName": "Средний ряд проем Л угол 900",
+        "sourceSku": "СДУл 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0178",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 2,
+        "sourceName": "антресоль пуш 400*320",
+        "sourceSku": "А 400"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0179",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 3,
+        "sourceName": "антресоль пуш 450*320",
+        "sourceSku": "А 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0180",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 4,
+        "sourceName": "антресоль пуш 500*320",
+        "sourceSku": "А 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0181",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 5,
+        "sourceName": "антресоль пуш 550*320",
+        "sourceSku": "А 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0182",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 6,
+        "sourceName": "антресоль пуш 600*320",
+        "sourceSku": "А 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0183",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 7,
+        "sourceName": "антресоль пуш 650*320",
+        "sourceSku": "А 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0184",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 8,
+        "sourceName": "антресоль пуш 700*320",
+        "sourceSku": "А 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0185",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 9,
+        "sourceName": "антресоль пуш 750*320",
+        "sourceSku": "А 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0186",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 10,
+        "sourceName": "антресоль пуш 800*320",
+        "sourceSku": "А 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0187",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 11,
+        "sourceName": "антресоль пуш 850*320",
+        "sourceSku": "А 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0188",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 12,
+        "sourceName": "антресоль пуш 900*320",
+        "sourceSku": "А 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0189",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 16,
+        "sourceName": "антресоль пуш 400*575",
+        "sourceSku": "АГ 400"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0190",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 17,
+        "sourceName": "антресоль пуш 450*575",
+        "sourceSku": "АГ 450"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0191",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 18,
+        "sourceName": "антресоль пуш 500*575",
+        "sourceSku": "АГ 500"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0192",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 19,
+        "sourceName": "антресоль пуш 550*575",
+        "sourceSku": "АГ 550"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0193",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 20,
+        "sourceName": "антресоль пуш 600*575",
+        "sourceSku": "АГ 600"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0194",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 21,
+        "sourceName": "антресоль пуш 650*575",
+        "sourceSku": "АГ 650"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0195",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 22,
+        "sourceName": "антресоль пуш 700*575",
+        "sourceSku": "АГ 700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0196",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 23,
+        "sourceName": "антресоль пуш 750*575",
+        "sourceSku": "АГ 750"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0197",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 24,
+        "sourceName": "антресоль пуш 800*575",
+        "sourceSku": "АГ 800"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0198",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 25,
+        "sourceName": "антресоль пуш 850*575",
+        "sourceSku": "АГ 850"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0199",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Антресоль",
+        "row": 26,
+        "sourceName": "антресоль пуш 900*575",
+        "sourceSku": "АГ 900"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0200",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Корона",
+        "row": 2,
+        "sourceName": "Корона 2700*16",
+        "sourceSku": "Корона 2700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0201",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Корона",
+        "row": 9,
+        "sourceName": "Корона Г 2700*100",
+        "sourceSku": "Корона Г 2700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0202",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Корона",
+        "row": 18,
+        "sourceName": "Цоколь 2700*100",
+        "sourceSku": "Цоколь 2700"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0203",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 2,
+        "sourceName": "Фальш.П 350*341",
+        "sourceSku": "ФП 350*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0204",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 3,
+        "sourceName": "Фальш.П 350*596",
+        "sourceSku": "ФП 350*596"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0205",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 4,
+        "sourceName": "Фальш.П 368*341",
+        "sourceSku": "ФП 368*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0206",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 5,
+        "sourceName": "Фальш.П 368*596",
+        "sourceSku": "ФП 368*596"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0207",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 6,
+        "sourceName": "Фальш.П 700*341",
+        "sourceSku": "ФП 700*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0208",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 7,
+        "sourceName": "Фальш.П 718*341",
+        "sourceSku": "ФП 718*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0209",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 8,
+        "sourceName": "Фальш.П 800*341",
+        "sourceSku": "ФП 800*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0210",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 9,
+        "sourceName": "Фальш.П 818*341",
+        "sourceSku": "ФП 818*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0211",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 10,
+        "sourceName": "Фальш.П 878*596",
+        "sourceSku": "ФП 878*596"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0212",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 11,
+        "sourceName": "Фальш.П 900*341",
+        "sourceSku": "ФП 900*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0213",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 12,
+        "sourceName": "Фальш.П 918*341",
+        "sourceSku": "ФП 918*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0214",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 13,
+        "sourceName": "Фальш.П 1000*341",
+        "sourceSku": "ФП 1000*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0215",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 14,
+        "sourceName": "Фальш.П 1018*341",
+        "sourceSku": "ФП 1018*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0216",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 15,
+        "sourceName": "Фальш.П 1050*341",
+        "sourceSku": "ФП 1050*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0217",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 16,
+        "sourceName": "Фальш.П 1068*341",
+        "sourceSku": "ФП 1068*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0218",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 17,
+        "sourceName": "Фальш.П 1150*341",
+        "sourceSku": "ФП 1150*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0219",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 18,
+        "sourceName": "Фальш.П 1168*341",
+        "sourceSku": "ФП 1168*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0220",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 19,
+        "sourceName": "Фальш.П 1250*341",
+        "sourceSku": "ФП 1250*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0221",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 20,
+        "sourceName": "Фальш.П 1268*341",
+        "sourceSku": "ФП 1268*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0222",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 21,
+        "sourceName": "Фальш.П 1350*341",
+        "sourceSku": "ФП 1350*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0223",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 22,
+        "sourceName": "Фальш.П 1368*341",
+        "sourceSku": "ФП 1368*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0224",
+      "kind": "sheet-row",
+      "locator": {
+        "sheet": "Фальш панели",
+        "row": 23,
+        "sourceName": "Фальш.П 1450*341",
+        "sourceSku": "ФП 1450*341"
+      }
+    },
+    {
+      "sourceRecordId": "catalog-source-0225",
+      "kind": "derived",
+      "derivedKey": "wall-drying-aventos-450"
+    }
+  ]
+}

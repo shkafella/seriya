@@ -1,0 +1,425 @@
+{
+  "status": "valid_launch_rules_approved",
+  "checks": {
+    "moduleCount": 225,
+    "expectedModuleCount": 225,
+    "rowCounts": {
+      "accessory": 25,
+      "lower": 104,
+      "mezzanine": 22,
+      "wall": 74
+    },
+    "familyCounts": {
+      "cornice": 1,
+      "deep-cornice": 1,
+      "false-panel": 22,
+      "lower-bottle": 3,
+      "lower-corner-removable-shelf": 10,
+      "lower-corner-sink": 10,
+      "lower-dishwasher": 2,
+      "lower-fridge": 3,
+      "lower-hidden-drawers": 11,
+      "lower-oven": 1,
+      "lower-removable-shelf": 16,
+      "lower-shelf": 16,
+      "lower-sink": 10,
+      "lower-three-drawers": 11,
+      "lower-two-drawers": 11,
+      "mezzanine": 22,
+      "plinth": 1,
+      "wall-aventos": 9,
+      "wall-corner": 10,
+      "wall-drying": 7,
+      "wall-drying-aventos": 6,
+      "wall-hood": 1,
+      "wall-klok": 11,
+      "wall-removable-shelf": 14,
+      "wall-shelf": 16
+    },
+    "uniqueSkuCount": 225,
+    "uniqueSourceRecordIdCount": 225,
+    "sourceMapRecordCount": 225,
+    "uniqueImageUrlCount": 26,
+    "missingImageSkus": [],
+    "negativeFastenerCharges": []
+  },
+  "corrections": [
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 5,
+      "originalSku": "НГМ 601",
+      "normalizedSku": "НГМ 601",
+      "notes": [
+        "D-37: ширина приведена к подтверждённой конструкции 600/601 и последовательности SKU"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 6,
+      "originalSku": "НГМ 650",
+      "normalizedSku": "НГМ 650",
+      "notes": [
+        "D-37: ширина приведена к подтверждённой конструкции 600/601 и последовательности SKU"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 7,
+      "originalSku": "НГМ 700",
+      "normalizedSku": "НГМ 700",
+      "notes": [
+        "D-37: ширина приведена к подтверждённой конструкции 600/601 и последовательности SKU"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 8,
+      "originalSku": "НГМ 750",
+      "normalizedSku": "НГМ 750",
+      "notes": [
+        "D-37: ширина приведена к подтверждённой конструкции 600/601 и последовательности SKU"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 9,
+      "originalSku": "НГМ 800",
+      "normalizedSku": "НГМ 800",
+      "notes": [
+        "D-37: ширина приведена к подтверждённой конструкции 600/601 и последовательности SKU"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 10,
+      "originalSku": "НГМ 850",
+      "normalizedSku": "НГМ 850",
+      "notes": [
+        "D-37: ширина приведена к подтверждённой конструкции 600/601 и последовательности SKU"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 11,
+      "originalSku": "НГМ 900",
+      "normalizedSku": "НГМ 900",
+      "notes": [
+        "D-37: ширина приведена к подтверждённой конструкции 600/601 и последовательности SKU"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 46,
+      "originalSku": "НГП 601",
+      "normalizedSku": "НГП 601",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 47,
+      "originalSku": "НГП 650",
+      "normalizedSku": "НГП 650",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 48,
+      "originalSku": "НГП 700",
+      "normalizedSku": "НГП 700",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 49,
+      "originalSku": "НГП 750",
+      "normalizedSku": "НГП 750",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 50,
+      "originalSku": "НГП 800",
+      "normalizedSku": "НГП 800",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 51,
+      "originalSku": "НГП 850",
+      "normalizedSku": "НГП 850",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 52,
+      "originalSku": "НГП 900",
+      "normalizedSku": "НГП 900",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 65,
+      "originalSku": "НГСП 650",
+      "normalizedSku": "НГСП 601",
+      "notes": [
+        "D-58: исправлена сдвинутая последовательность НГСП"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 66,
+      "originalSku": "НГСП 700",
+      "normalizedSku": "НГСП 650",
+      "notes": [
+        "D-58: исправлена сдвинутая последовательность НГСП"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 67,
+      "originalSku": "НГСП 750",
+      "normalizedSku": "НГСП 700",
+      "notes": [
+        "D-58: исправлена сдвинутая последовательность НГСП"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 68,
+      "originalSku": "НГСП 800",
+      "normalizedSku": "НГСП 750",
+      "notes": [
+        "D-58: исправлена сдвинутая последовательность НГСП"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 69,
+      "originalSku": "НГСП 850",
+      "normalizedSku": "НГСП 800",
+      "notes": [
+        "D-58: исправлена сдвинутая последовательность НГСП"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 70,
+      "originalSku": "НГСП 900",
+      "normalizedSku": "НГСП 850",
+      "notes": [
+        "D-58: исправлена сдвинутая последовательность НГСП"
+      ]
+    },
+    {
+      "sourceSheet": "низ гола",
+      "sourceRow": 71,
+      "originalSku": "НГСП 950",
+      "normalizedSku": "НГСП 900",
+      "notes": [
+        "D-58: исправлена сдвинутая последовательность НГСП"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 46,
+      "originalSku": "СДП 601",
+      "normalizedSku": "СДП 601",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 47,
+      "originalSku": "СДП 650",
+      "normalizedSku": "СДП 650",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 48,
+      "originalSku": "СДП 700",
+      "normalizedSku": "СДП 700",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 49,
+      "originalSku": "СДП 750",
+      "normalizedSku": "СДП 750",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 50,
+      "originalSku": "СДП 800",
+      "normalizedSku": "СДП 800",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 51,
+      "originalSku": "СДП 850",
+      "normalizedSku": "СДП 850",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 52,
+      "originalSku": "СДП 900",
+      "normalizedSku": "СДП 900",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 65,
+      "originalSku": "СДСП 601",
+      "normalizedSku": "СДСП 601",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 66,
+      "originalSku": "СДСП 650",
+      "normalizedSku": "СДСП 650",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 67,
+      "originalSku": "СДСП 700",
+      "normalizedSku": "СДСП 700",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 68,
+      "originalSku": "СДСП 750",
+      "normalizedSku": "СДСП 750",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 69,
+      "originalSku": "СДСП 800",
+      "normalizedSku": "СДСП 800",
+      "notes": [
+        "Подтверждено владельцем: исправлена сдвинутая последовательность"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 102,
+      "originalSku": "СДП 600",
+      "normalizedSku": "СДВ 600",
+      "notes": [
+        "D-54: вытяжке назначен уникальный SKU СДВ 600"
+      ]
+    },
+    {
+      "sourceSheet": "среднии",
+      "sourceRow": 89,
+      "originalSku": "СДСУА 500",
+      "normalizedSku": "СДСУА 450 + СДСУА 500",
+      "notes": [
+        "D-39 и D-47: разделены варианты 450 и 500 мм"
+      ]
+    }
+  ],
+  "fastenerUnitRateConflicts": [
+    {
+      "item": "Заглушка евровинта",
+      "observedUnitRatesRub": [
+        0.2,
+        0.5,
+        1
+      ],
+      "selectedUnitRateRub": 1
+    },
+    {
+      "item": "Полкодержатель Duplo",
+      "observedUnitRatesRub": [
+        1.5,
+        3
+      ],
+      "selectedUnitRateRub": 3
+    },
+    {
+      "item": "Саморез 3.5х16мм",
+      "observedUnitRatesRub": [
+        0.5,
+        0.75,
+        1
+      ],
+      "selectedUnitRateRub": 1
+    },
+    {
+      "item": "Саморез 4х16мм",
+      "observedUnitRatesRub": [
+        0.5,
+        1
+      ],
+      "selectedUnitRateRub": 1
+    },
+    {
+      "item": "Саморез 4х35мм",
+      "observedUnitRatesRub": [
+        0.625,
+        1
+      ],
+      "selectedUnitRateRub": 1
+    },
+    {
+      "item": "Шток эксцентрика D5 (34 мм)",
+      "observedUnitRatesRub": [
+        7.6,
+        8
+      ],
+      "selectedUnitRateRub": 8
+    },
+    {
+      "item": "Эксцентрик для плит толщиной 16 мм",
+      "observedUnitRatesRub": [
+        5.6,
+        6
+      ],
+      "selectedUnitRateRub": 6
+    }
+  ],
+  "pendingOwnerReviews": [],
+  "pendingLaunchReviews": []
+}

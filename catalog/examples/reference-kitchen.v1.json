@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "status": "approved_reference",
+  "name": "Контрольная прямая кухня 2700 мм",
+  "countertopThicknessMm": 38,
+  "completeHeightMm": 2568,
+  "wallLengthMm": 2700,
+  "options": {
+    "facades": true,
+    "packaging": true,
+    "cutToWidth": []
+  },
+  "materials": {
+    "body": "ldsp-white",
+    "facade": "ultradecor-1",
+    "hdf": "hdf-white"
+  },
+  "rows": {
+    "lower": [
+      "НГБ 300",
+      "НГМ 600",
+      "НГДСК",
+      "НГПм 600",
+      "НГСК 602"
+    ],
+    "wall": [
+      "СДК 600",
+      "СДП 600",
+      "СДСУ 600",
+      "СДПА 500",
+      "СДК 400"
+    ],
+    "mezzanine": [
+      "А 600",
+      "А 600",
+      "А 600",
+      "А 500",
+      "А 400"
+    ]
+  },
+  "expected": {
+    "rowWidthMm": {
+      "lower": 2700,
+      "wall": 2700,
+      "mezzanine": 2700
+    },
+    "calculatedExVatRub": 50257.75,
+    "packagingRub": 5078.5,
+    "customerTotalRub": 55280,
+    "includedVatRub": 9968.52
+  },
+  "accessoryRegression": {
+    "falsePanel": {
+      "sku": "ФП 350*341",
+      "layoutSpanMm": 16,
+      "continuesPlinthFrontLine": true,
+      "continuesCrownFrontLine": false,
+      "calculatedExVatRub": 267
+    },
+    "plinth": {
+      "sku": "Цоколь 2700",
+      "contributingSpansMm": {
+        "floorStandingFrontIncludingTallUnit": 5400,
+        "tallUnitIncludedInFloorStandingFront": 600,
+        "falsePanelContinuingFrontLine": 16,
+        "sideReturns": 0
+      },
+      "coveredRunMm": 5416,
+      "stockPieceLengthMm": 2700,
+      "quantity": 3,
+      "unitCalculatedExVatRub": 1166.25,
+      "subtotalCalculatedExVatRub": 3498.75
+    },
+    "crown": {
+      "sku": "Корона 2700",
+      "contributingSpansMm": {
+        "mezzanineFront": 2700,
+        "tallUnitTop": 600,
+        "falsePanelContinuingFrontLine": 0,
+        "sideReturns": 0
+      },
+      "coveredRunMm": 3300,
+      "stockPieceLengthMm": 2700,
+      "quantity": 2,
+      "unitCalculatedExVatRub": 1160.25,
+      "subtotalCalculatedExVatRub": 2320.5
+    }
+  },
+  "lead": {
+    "company": "Контрольная мебельная компания",
+    "contactName": "Тестовый клиент",
+    "phone": "+7 900 000-00-00",
+    "preferredMessenger": "telegram",
+    "messengerContact": "@test",
+    "comment": "Тестовая заявка; не отправлять."
+  }
+}
