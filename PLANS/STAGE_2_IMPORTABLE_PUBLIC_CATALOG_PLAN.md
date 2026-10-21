@@ -150,6 +150,6 @@ Stage 2 is complete when all of the following are observable:
 - [ ] Stage 2.5 complete — the release implementation and automated contract checks are ready; a live Linux/systemd failure-injection rehearsal remains
 - [ ] Stage 2.6 complete — the five-pass review limit was reached at 8.3/10; every reported finding was fixed and post-fix validation is green, but no sixth acceptance score was permitted
 - [ ] Code accepted by `/loop-code-review-3` at levels 1–4 — review loop stopped incomplete at its mandatory five-pass limit
-- [ ] Committed and pushed
+- [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)
 
 Last updated: 2026-10-21.
