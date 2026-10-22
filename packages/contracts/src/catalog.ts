@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { configurationMetadataSchema } from './configuration'
 import { priceVersionSchema, publicPriceRangeSchema, rubleAmountSchema } from './pricing'
 
 export const catalogRowSchema = z.enum(['lower', 'wall', 'mezzanine', 'accessory'])
@@ -155,6 +156,7 @@ export const ownerCatalogVariantSchema = z.object({
   consumptionM2: consumptionM2Schema,
   fastenerChargeRub: rubleAmountSchema,
   cutPolicy: cutPolicySchema,
+  configuration: configurationMetadataSchema,
   isActive: z.boolean(),
   isComplete: z.boolean(),
   sourceManaged: z.boolean(),
@@ -194,6 +196,9 @@ export const ownerCatalogVariantEditSchema = z.object({
     layoutSpanMm: z.number().int().positive().nullable().optional(),
     isActive: z.boolean().optional(),
     cutPolicy: cutPolicySchema.optional(),
+    consumptionM2: consumptionM2Schema.optional(),
+    fastenerChargeRub: rubleAmountSchema.optional(),
+    configuration: configurationMetadataSchema.optional(),
     assetId: z.string().uuid().nullable().optional(),
   }).strict().refine((changes) => Object.keys(changes).length > 0, {
     message: 'At least one catalog field must change',
@@ -208,6 +213,7 @@ export const ownerCatalogVariantCreateSchema = z.object({
   consumptionM2: consumptionM2Schema,
   fastenerChargeRub: rubleAmountSchema,
   cutPolicy: cutPolicySchema,
+  configuration: configurationMetadataSchema,
   assetId: z.string().uuid().nullable(),
   isActive: z.boolean().default(false),
 }).strict()

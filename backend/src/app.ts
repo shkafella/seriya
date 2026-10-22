@@ -8,6 +8,8 @@ import { errorResponse, handleError, validationErrorHook } from './http/errors'
 import { createAuthSecurity } from './http/security'
 import { createAuthModule, type AuthHttpEnv } from './modules/auth'
 import { CatalogService, createCatalogRoutes } from './modules/catalog'
+import { ConfigurationService, createConfigurationRoutes } from './modules/configuration'
+import { PricingService, createPricingRoutes } from './modules/pricing'
 
 type CreateAppOptions = {
   env: AppEnv
@@ -17,6 +19,8 @@ type CreateAppOptions = {
 export function createApp({ env, prisma }: CreateAppOptions) {
   const auth = createAuthModule({ db: prisma, env })
   const catalog = createCatalogRoutes({ service: new CatalogService(prisma), requireAuth: auth.requireAuth })
+  const pricing = createPricingRoutes({ service: new PricingService(prisma), requireAuth: auth.requireAuth })
+  const configuration = createConfigurationRoutes({ service: new ConfigurationService(prisma) })
   const app = new OpenAPIHono<AuthHttpEnv>({
     defaultHook: validationErrorHook,
   })
@@ -77,6 +81,8 @@ export function createApp({ env, prisma }: CreateAppOptions) {
   app.route('/api/auth', auth.routes)
   app.route('/api/catalog', catalog.publicRoutes)
   app.route('/api/owner/catalog', catalog.ownerRoutes)
+  app.route('/api/owner/pricing', pricing)
+  app.route('/api/configurator', configuration)
 
   app.doc('/openapi.json', {
     openapi: '3.0.0',

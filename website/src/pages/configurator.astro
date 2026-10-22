@@ -1,0 +1,495 @@
+---
+import CatalogLayout from '../layouts/CatalogLayout.astro'
+
+const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
+---
+
+<CatalogLayout title="Конфигуратор прямой кухни — Серийка" description="Соберите прямую кухню из серийных модулей и получите точную цену." releaseId="live-configurator">
+  <main class="configurator" data-api-base={apiBase}>
+    <p class="eyebrow">Конфигуратор кухни</p>
+    <h1>Соберите прямую кухню</h1>
+    <p class="lede">Выберите модули — цена и спецификация считаются на сервере. Столешница показана условно и в стоимость не входит.</p>
+
+    <div id="config-error" class="config-message" role="alert" hidden></div>
+    <div id="config-loading" class="config-message">Загружаем опубликованный каталог…</div>
+
+    <section id="config-app" hidden>
+      <div class="config-toolbar" aria-label="Параметры кухни">
+        <label>Длина стены, мм <input id="wall-length" inputmode="numeric" min="1" placeholder="Необязательно" /></label>
+        <label>Начинать от <select id="start-side"><option value="left">левой стены</option><option value="right">правой стены</option></select></label>
+        <label>Корпус <select id="body-material"></select></label>
+        <label>Фасад <select id="facade-material"></select></label>
+        <label class="toggle"><input id="facades-enabled" type="checkbox" checked /> Фасады нужны</label>
+        <label class="toggle"><input id="packaging-enabled" type="checkbox" /> Упаковка</label>
+        <label>Столешница <select id="countertop"><option value="38">38 мм</option><option value="20">20 мм</option><option value="12">12 мм</option></select></label>
+      </div>
+
+      <section class="scene-card" aria-label="Фронтальный вид кухни">
+        <div class="scene-status"><strong id="scene-height">Высота кухни: —</strong><span id="scene-length">Занятая длина: —</span></div>
+        <div id="kitchen-scene" class="kitchen-scene"></div>
+      </section>
+      <section id="free-intervals" class="free-intervals" aria-label="Свободные интервалы ряда" hidden></section>
+      <section id="module-properties" class="module-properties" aria-live="polite" hidden></section>
+
+      <section class="row-picker" aria-label="Ряд модулей">
+        <button type="button" data-row="lower" class="is-active">Нижний ряд</button>
+        <button type="button" data-row="wall">Средний ряд</button>
+        <button type="button" data-row="mezzanine">Антресоль</button>
+      </section>
+
+      <section class="module-sheet" aria-label="Модули выбранного ряда">
+        <div class="sheet-heading"><div><strong id="active-row-title">Нижний ряд</strong><span>Нажмите модуль, чтобы добавить его в конец ряда</span></div><div class="sheet-actions"><button id="suggest-upper" type="button" hidden>Предложить верх</button><label>Фальш‑панель <select id="false-panel-position"><option value="start">в начале</option><option value="between">между модулями</option><option value="end" selected>в конце</option></select></label><button id="add-false-panel" type="button">Добавить</button></div></div>
+        <label class="replace-mode"><input id="replace-mode" type="checkbox" /> Заменять выбранный модуль вместо добавления</label>
+        <div id="module-catalog" class="module-catalog"></div>
+      </section>
+
+      <section class="trim-options" aria-label="Доборные элементы">
+        <label>Цоколь <select id="plinth-select"><option value="">Не добавлять</option></select></label>
+        <label>Корона <select id="crown-select"><option value="">Не добавлять</option></select></label>
+      </section>
+
+      <section class="quote-card" aria-live="polite">
+        <div><span class="quote-caption">Точная цена кухни</span><strong id="quote-total">Добавьте модуль</strong><span id="quote-vat"></span></div>
+        <span id="quote-status">Цена появится после выбора модуля.</span>
+      </section>
+      <details class="specification"><summary>Спецификация</summary><div id="specification-lines">Пока нет позиций.</div></details>
+    </section>
+  </main>
+</CatalogLayout>
+
+<script>
+  type Row = 'lower' | 'wall' | 'mezzanine'
+  type Module = { variantId: string; startMm: number; cutWidthMm: number | null; withoutFacade: boolean }
+  type FalsePanel = { variantId: string; row: Row; startMm: number; widthMm: number; position: 'start' | 'between' | 'end'; anchorIndex?: number }
+  type Variant = { id: string; familyKey: string; row: Row | 'accessory'; sku: string; publicName: string; dimensionsMm: { height: number; width: number; depth: number; layoutSpan?: number }; cutToWidth: { allowed: boolean }; configuration: { role: string; straightEligible: boolean; reservedUpperRows: Row[]; falsePanelPositions: string[] } }
+  type Bootstrap = { publicationId: string; priceVersionId: string; materials: Array<{ id: string; name: string; kind: 'body' | 'facade' | 'hdf'; isActive: boolean }>; variants: Variant[] }
+
+  const root = document.querySelector<HTMLElement>('.configurator')
+  const apiBase = root?.dataset.apiBase ?? '/api'
+  const loading = document.querySelector<HTMLElement>('#config-loading')
+  const app = document.querySelector<HTMLElement>('#config-app')
+  const error = document.querySelector<HTMLElement>('#config-error')
+  const scene = document.querySelector<HTMLElement>('#kitchen-scene')
+  const catalog = document.querySelector<HTMLElement>('#module-catalog')
+  const activeTitle = document.querySelector<HTMLElement>('#active-row-title')
+  const quoteTotal = document.querySelector<HTMLElement>('#quote-total')
+  const quoteVat = document.querySelector<HTMLElement>('#quote-vat')
+  const quoteStatus = document.querySelector<HTMLElement>('#quote-status')
+  const specification = document.querySelector<HTMLElement>('#specification-lines')
+  const height = document.querySelector<HTMLElement>('#scene-height')
+  const length = document.querySelector<HTMLElement>('#scene-length')
+  const bodySelect = document.querySelector<HTMLSelectElement>('#body-material')
+  const facadeSelect = document.querySelector<HTMLSelectElement>('#facade-material')
+  const facadesEnabled = document.querySelector<HTMLInputElement>('#facades-enabled')
+  const packagingEnabled = document.querySelector<HTMLInputElement>('#packaging-enabled')
+  const countertop = document.querySelector<HTMLSelectElement>('#countertop')
+  const wallLength = document.querySelector<HTMLInputElement>('#wall-length')
+  const startSide = document.querySelector<HTMLSelectElement>('#start-side')
+  const plinthSelect = document.querySelector<HTMLSelectElement>('#plinth-select')
+  const crownSelect = document.querySelector<HTMLSelectElement>('#crown-select')
+  const properties = document.querySelector<HTMLElement>('#module-properties')
+  const replaceMode = document.querySelector<HTMLInputElement>('#replace-mode')
+  const suggestUpperButton = document.querySelector<HTMLButtonElement>('#suggest-upper')
+  const falsePanelPosition = document.querySelector<HTMLSelectElement>('#false-panel-position')
+  const freeIntervalsHost = document.querySelector<HTMLElement>('#free-intervals')
+  const rows: Row[] = ['lower', 'wall', 'mezzanine']
+  const rowNames: Record<Row, string> = { lower: 'Нижний ряд', wall: 'Средний ряд', mezzanine: 'Антресоль' }
+  const rubles = new Intl.NumberFormat('ru-RU')
+
+  let bootstrap: Bootstrap | null = null
+  let activeRow: Row = 'lower'
+  let selected: { row: Row; index: number } | null = null
+  let selectedInterval: { row: Row; startMm: number; endMm: number } | null = null
+  let quotedFreeIntervals: Array<{ row: Row; startMm: number; endMm: number }> | null = null
+  let quoteAbort: AbortController | null = null
+  let intent = 0
+  const state: { rows: Record<Row, Module[]>; falsePanels: FalsePanel[] } = {
+    rows: { lower: [], wall: [], mezzanine: [] }, falsePanels: [],
+  }
+
+  function escape(value: string) { return value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char] ?? char) }
+  function span(variant: Variant) { return variant.dimensionsMm.layoutSpan ?? variant.dimensionsMm.width }
+  function currentEnd(row: Row) { return state.rows[row].reduce((end, item) => Math.max(end, item.startMm + (item.cutWidthMm ?? span(findVariant(item.variantId)))), 0) }
+  function rowEnd(row: Row) {
+    return Math.max(0, currentEnd(row), ...state.falsePanels.filter((item) => item.row === row).map((item) => item.startMm + item.widthMm))
+  }
+  function wallMm() {
+    const value = Number(wallLength?.value)
+    return Number.isInteger(value) && value > 0 ? value : null
+  }
+  function reservedIntervals(row: Row) {
+    if (row === 'lower') return []
+    return state.rows.lower.flatMap((item) => {
+      const variant = findVariant(item.variantId)
+      if (variant.configuration.role !== 'tall' || !variant.configuration.reservedUpperRows.includes(row)) return []
+      const itemSpan = item.cutWidthMm ?? span(variant)
+      return [{ startMm: item.startMm, endMm: item.startMm + itemSpan }]
+    }).sort((left, right) => left.startMm - right.startMm)
+  }
+  function nextFreeStart(row: Row, startMm: number, itemSpan: number) {
+    let candidate = startMm
+    while (true) {
+      const reserved = reservedIntervals(row).find((interval) => candidate < interval.endMm && candidate + itemSpan > interval.startMm)
+      if (!reserved) return candidate
+      candidate = reserved.endMm
+    }
+  }
+  function flowRowEnd(row: Row, moduleSpans: number[], panels = state.falsePanels.filter((item) => item.row === row)) {
+    let startMm = 0
+    const place = (itemSpan: number) => { startMm = nextFreeStart(row, startMm, itemSpan) + itemSpan }
+    const rowPanels = panels.filter((item) => item.row === row)
+    for (const panel of rowPanels.filter((item) => item.position === 'start')) place(panel.widthMm)
+    for (const [index, itemSpan] of moduleSpans.entries()) {
+      place(itemSpan)
+      for (const panel of rowPanels.filter((item) => item.position === 'between' && item.anchorIndex === index)) place(panel.widthMm)
+    }
+    for (const panel of rowPanels.filter((item) => item.position === 'end')) place(panel.widthMm)
+    return startMm
+  }
+  function fitsWall(row: Row, nextModuleSpan = 0, replacedIndex: number | null = null) {
+    const wall = wallMm()
+    const spans = state.rows[row].map((item) => item.cutWidthMm ?? span(findVariant(item.variantId)))
+    if (replacedIndex === null) spans.push(nextModuleSpan)
+    else spans[replacedIndex] = nextModuleSpan
+    return wall === null || flowRowEnd(row, spans) <= wall
+  }
+  function fitsFalsePanel(row: Row, nextPanelSpan: number, position: FalsePanel['position'], anchorIndex?: number) {
+    const wall = wallMm()
+    const panels = [
+      ...state.falsePanels.filter((item) => item.row !== row),
+      { variantId: '', row, startMm: 0, widthMm: nextPanelSpan, position, ...(anchorIndex === undefined ? {} : { anchorIndex }) },
+    ]
+    const spans = state.rows[row].map((item) => item.cutWidthMm ?? span(findVariant(item.variantId)))
+    return wall === null || flowRowEnd(row, spans, panels) <= wall
+  }
+  function intervalsForRow(row: Row) {
+    const wall = wallMm()
+    if (wall === null) return []
+    const occupied = [
+      ...state.rows[row].map((item) => ({ startMm: item.startMm, endMm: item.startMm + (item.cutWidthMm ?? span(findVariant(item.variantId))) })),
+      ...state.falsePanels.filter((item) => item.row === row).map((item) => ({ startMm: item.startMm, endMm: item.startMm + item.widthMm })),
+      ...reservedIntervals(row),
+    ].sort((left, right) => left.startMm - right.startMm)
+    const intervals: Array<{ row: Row; startMm: number; endMm: number }> = []
+    let cursor = 0
+    for (const item of occupied) {
+      if (item.startMm > cursor) intervals.push({ row, startMm: cursor, endMm: Math.min(item.startMm, wall) })
+      cursor = Math.max(cursor, item.endMm)
+    }
+    if (cursor < wall) intervals.push({ row, startMm: cursor, endMm: wall })
+    return intervals.filter((item) => item.endMm > item.startMm)
+  }
+  function isFreeInterval(interval: { row: Row; startMm: number; endMm: number }) {
+    return intervalsForRow(interval.row).some((item) => item.startMm === interval.startMm && item.endMm === interval.endMm)
+  }
+  function renderFreeIntervals() {
+    if (!freeIntervalsHost) return
+    const intervals = (quotedFreeIntervals ?? intervalsForRow(activeRow)).filter((item) => item.row === activeRow && isFreeInterval(item))
+    if (selectedInterval && !intervals.some((item) => item.startMm === selectedInterval!.startMm && item.endMm === selectedInterval!.endMm)) selectedInterval = null
+    freeIntervalsHost.hidden = intervals.length === 0
+    freeIntervalsHost.innerHTML = intervals.map((item) => `<button type="button" class="${selectedInterval?.row === item.row && selectedInterval.startMm === item.startMm ? 'is-selected' : ''}" data-interval-start="${item.startMm}" data-interval-end="${item.endMm}">Свободно ${item.endMm - item.startMm} мм</button>`).join('')
+    freeIntervalsHost.querySelectorAll<HTMLButtonElement>('[data-interval-start]').forEach((button) => button.addEventListener('click', () => {
+      selectedInterval = { row: activeRow, startMm: Number(button.dataset.intervalStart), endMm: Number(button.dataset.intervalEnd) }
+      render()
+    }))
+  }
+  function showLocalMessage(message: string) { if (quoteStatus) quoteStatus.textContent = message }
+  function renderWallStatus(spans?: Record<Row, number>) {
+    if (!length) return
+    const occupied = Math.max(...(spans ? rows.map((row) => spans[row]) : rows.map(rowEnd)))
+    const wall = wallMm()
+    const side = startSide?.value === 'right' ? 'от правой стены' : 'от левой стены'
+    if (wall === null) { length.textContent = `Занято: ${occupied} мм · ${side}`; return }
+    const difference = wall - occupied
+    length.textContent = difference >= 0
+      ? `Занято: ${occupied} из ${wall} мм · свободно ${difference} мм · ${side}`
+      : `Занято: ${occupied} из ${wall} мм · выходит на ${Math.abs(difference)} мм · ${side}`
+  }
+  function findVariant(id: string) { const variant = bootstrap?.variants.find((item) => item.id === id); if (!variant) throw new Error('Модуль больше недоступен'); return variant }
+  function options(items: Bootstrap['materials']) { return items.map((item) => `<option value="${escape(item.id)}">${escape(item.name)}</option>`).join('') }
+
+  function render() {
+    if (!bootstrap || !catalog || !scene || !activeTitle) return
+    quotedFreeIntervals = null
+    activeTitle.textContent = rowNames[activeRow]
+    document.querySelectorAll<HTMLButtonElement>('.row-picker button').forEach((button) => button.classList.toggle('is-active', button.dataset.row === activeRow))
+    const selectedSpan = selectedInterval?.row === activeRow ? selectedInterval.endMm - selectedInterval.startMm : null
+    const available = bootstrap.variants.filter((item) => item.row === activeRow && item.configuration.straightEligible && ['ordinary', 'tall'].includes(item.configuration.role) && (selectedSpan === null || span(item) <= selectedSpan))
+    catalog.innerHTML = available.map((item) => {
+      const replacingIndex = replaceMode?.checked && selected?.row === activeRow ? selected.index : null
+      const fits = fitsWall(activeRow, span(item), replacingIndex)
+      return `<button type="button" data-add="${item.id}" ${fits ? '' : 'disabled'}><strong>${escape(item.publicName)}</strong><span>${item.dimensionsMm.width} мм · ${escape(item.sku)}${fits ? '' : ' · не помещается'}</span></button>`
+    }).join('') || '<p>Для этого ряда пока нет совместимых модулей.</p>'
+    catalog.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((button) => button.addEventListener('click', () => { void addModule(button.dataset.add!) }))
+
+    scene.innerHTML = rows.map((row) => {
+      const entries = [
+        ...state.rows[row].map((item, index) => ({ kind: 'module' as const, item, index, startMm: item.startMm })),
+        ...state.falsePanels.map((item, index) => ({ kind: 'panel' as const, item, index, startMm: item.startMm })).filter((item) => item.item.row === row),
+      ].sort((left, right) => left.startMm - right.startMm)
+      let previousEnd = 0
+      const items = entries.map((entry) => {
+        const itemSpan = entry.kind === 'panel' ? entry.item.widthMm : entry.item.cutWidthMm ?? span(findVariant(entry.item.variantId))
+        const gap = Math.max(0, entry.startMm - previousEnd)
+        previousEnd = entry.startMm + itemSpan
+        const gapMarkup = gap > 0 ? `<span class="scene-gap" style="--span:${gap}" aria-label="Свободное место ${gap} мм"></span>` : ''
+        if (entry.kind === 'panel') return `${gapMarkup}<button type="button" class="scene-module false-panel" style="--span:${itemSpan}" data-remove-panel="${entry.index}" aria-label="Удалить фальш-панель">Фальш<br /><small>${itemSpan} мм</small></button>`
+        const variant = findVariant(entry.item.variantId)
+        return `${gapMarkup}<button type="button" class="scene-module ${entry.item.withoutFacade ? 'without-facade' : ''} ${selected?.row === row && selected.index === entry.index ? 'is-selected' : ''}" style="--span:${itemSpan}" data-select-row="${row}" data-select-index="${entry.index}" aria-label="Настроить ${escape(variant.publicName)}"><span>${escape(variant.publicName)}</span><small>${itemSpan} мм</small></button>`
+      }).join('')
+      return `<div class="scene-row scene-${row}"><strong>${rowNames[row]}</strong><div class="scene-modules ${startSide?.value === 'right' ? 'from-right' : ''}">${items || '<span class="scene-empty">Пусто</span>'}</div></div>`
+    }).join('')
+    scene.querySelectorAll<HTMLButtonElement>('[data-select-row]').forEach((button) => button.addEventListener('click', () => { selected = { row: button.dataset.selectRow as Row, index: Number(button.dataset.selectIndex) }; render() }))
+    scene.querySelectorAll<HTMLButtonElement>('[data-remove-panel]').forEach((button) => button.addEventListener('click', () => {
+      const panel = state.falsePanels[Number(button.dataset.removePanel)]
+      if (panel) { state.falsePanels.splice(Number(button.dataset.removePanel), 1); reflow(panel.row) }
+      render()
+    }))
+    if (suggestUpperButton) suggestUpperButton.hidden = !(['wall', 'mezzanine'].includes(activeRow) && state.rows.lower.length > 0)
+    renderProperties()
+    renderWallStatus()
+    renderFreeIntervals()
+    void requestQuote()
+  }
+
+  async function replacementProposal(replacementVariantId: string, selectedIndex: number) {
+    if (!bootstrap) return null
+    const response = await fetch(`${apiBase}/configurator/replacement-proposal`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        publicationId: bootstrap.publicationId, row: activeRow, selectedIndex, replacementVariantId, wallLengthMm: wallMm(),
+        rows: rows.map((row) => ({ row, modules: state.rows[row] })),
+        falsePanels: state.falsePanels.map(({ anchorIndex: _anchorIndex, ...panel }) => panel),
+      }),
+    }).catch(() => null)
+    if (!response?.ok) {
+      const payload = await response?.json().catch(() => null)
+      showLocalMessage(payload?.error?.message ?? 'Не удалось подобрать безопасную замену.')
+      return null
+    }
+    return response.json() as Promise<{ requiresConfirmation: boolean; changes: Array<{ row: Row; index: number; variantId: string; startMm: number }> }>
+  }
+  async function addModule(id: string) {
+    findVariant(id)
+    if (replaceMode?.checked && selected?.row === activeRow) {
+      const selectedIndex = selected.index
+      const current = state.rows[activeRow][selectedIndex]
+      const nextVariant = findVariant(id)
+      if (current) {
+        if (!fitsWall(activeRow, span(nextVariant), selectedIndex)) { showLocalMessage('Этот модуль не помещается в заданную длину стены.'); return }
+        const currentWidth = current.cutWidthMm ?? span(findVariant(current.variantId))
+        if (['wall', 'mezzanine'].includes(activeRow) && currentWidth !== span(nextVariant)) {
+          const proposal = await replacementProposal(id, selectedIndex)
+          if (!proposal) return
+          if (proposal.requiresConfirmation && !window.confirm('Изменится соседний верхний модуль. Применить предложенную пару модулей?')) return
+          for (const change of proposal.changes) {
+            const item = state.rows[change.row][change.index]
+            if (item) { item.variantId = change.variantId; item.startMm = change.startMm; item.cutWidthMm = null }
+          }
+          render(); return
+        }
+        current.variantId = id; current.cutWidthMm = null; reflow(activeRow); render(); return
+      }
+    }
+    if (selectedInterval?.row === activeRow) {
+      const nextVariant = findVariant(id)
+      if (span(nextVariant) > selectedInterval.endMm - selectedInterval.startMm || !isFreeInterval(selectedInterval)) { showLocalMessage('Выбранный модуль не помещается в свободный интервал.'); return }
+      state.rows[activeRow].push({ variantId: id, startMm: selectedInterval.startMm, cutWidthMm: null, withoutFacade: !facadesEnabled?.checked })
+      state.rows[activeRow].sort((left, right) => left.startMm - right.startMm)
+      selectedInterval = null
+      render(); return
+    }
+    if (!fitsWall(activeRow, span(findVariant(id)))) { showLocalMessage('Этот модуль не помещается в заданную длину стены.'); return }
+    state.rows[activeRow].push({ variantId: id, startMm: currentEnd(activeRow), cutWidthMm: null, withoutFacade: !facadesEnabled?.checked })
+    reflow(activeRow)
+    render()
+  }
+  function removeModule(row: Row, index: number) {
+    state.rows[row].splice(index, 1)
+    for (const panel of state.falsePanels) {
+      if (panel.row === row && panel.position === 'between' && panel.anchorIndex !== undefined && panel.anchorIndex >= index) panel.anchorIndex -= 1
+    }
+    normalizePanels(row)
+    selected = null
+    reflow(row)
+    render()
+  }
+
+  function reflow(row: Row) {
+    let startMm = 0
+    const panels = state.falsePanels.filter((item) => item.row === row)
+    const place = (item: { startMm: number }, itemSpan: number) => { item.startMm = nextFreeStart(row, startMm, itemSpan); startMm = item.startMm + itemSpan }
+    for (const panel of panels.filter((item) => item.position === 'start')) place(panel, panel.widthMm)
+    for (const [index, item] of state.rows[row].entries()) {
+      place(item, item.cutWidthMm ?? span(findVariant(item.variantId)))
+      for (const panel of panels.filter((candidate) => candidate.position === 'between' && candidate.anchorIndex === index)) place(panel, panel.widthMm)
+    }
+    for (const panel of panels.filter((item) => item.position === 'end')) place(panel, panel.widthMm)
+    if (row === 'lower') { reflow('wall'); reflow('mezzanine') }
+  }
+  function normalizePanels(row: Row) {
+    const count = state.rows[row].length
+    state.falsePanels = state.falsePanels.filter((item) => item.row !== row || item.position !== 'between' || count >= 2)
+    for (const panel of state.falsePanels) {
+      if (panel.row === row && panel.position === 'between') panel.anchorIndex = Math.min(Math.max(panel.anchorIndex ?? 0, 0), count - 2)
+    }
+  }
+  function renderProperties() {
+    if (!properties || !selected) { properties?.setAttribute('hidden', ''); return }
+    const item = state.rows[selected.row][selected.index]
+    if (!item) { selected = null; properties.setAttribute('hidden', ''); return }
+    const variant = findVariant(item.variantId)
+    const selectedWidth = item.cutWidthMm ?? span(variant)
+    properties.removeAttribute('hidden')
+    properties.innerHTML = `<div><strong>${escape(variant.publicName)}</strong><span>${selectedWidth} мм</span></div><div class="property-actions"><button type="button" data-action="left" ${selected.index === 0 ? 'disabled' : ''}>←</button><button type="button" data-action="right" ${selected.index === state.rows[selected.row].length - 1 ? 'disabled' : ''}>→</button><button type="button" data-action="duplicate">Дублировать</button><button type="button" data-action="remove">Удалить</button><button type="button" data-action="facade">${item.withoutFacade ? 'Вернуть фасад' : 'Без фасада'}</button></div>${variant.cutToWidth.allowed ? `<label class="cut-control">Подрезать до, мм <input id="cut-width" type="number" inputmode="numeric" min="${Math.max(1, span(variant) - 50)}" max="${span(variant)}" value="${selectedWidth}" /><button type="button" data-action="cut">Применить</button><button type="button" data-action="reset-cut">Стандарт</button></label>` : ''}`
+    properties.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => button.addEventListener('click', () => updateSelected(button.dataset.action!)))
+  }
+  function updateSelected(action: string) {
+    if (!selected) return
+    const items = state.rows[selected.row]; const item = items[selected.index]
+    if (!item) return
+    if (action === 'remove') { removeModule(selected.row, selected.index); return }
+    if (action === 'left' && selected.index > 0) { [items[selected.index - 1], items[selected.index]] = [items[selected.index]!, items[selected.index - 1]!]; selected.index -= 1 }
+    if (action === 'right' && selected.index < items.length - 1) { [items[selected.index + 1], items[selected.index]] = [items[selected.index]!, items[selected.index + 1]!]; selected.index += 1 }
+    if (action === 'duplicate') { items.splice(selected.index + 1, 0, { ...item }); selected.index += 1 }
+    if (action === 'facade') item.withoutFacade = !item.withoutFacade
+    if (action === 'cut') { const width = Number(properties?.querySelector<HTMLInputElement>('#cut-width')?.value); item.cutWidthMm = Number.isInteger(width) ? width : null }
+    if (action === 'reset-cut') item.cutWidthMm = null
+    reflow(selected.row); render()
+  }
+  function suggestUpper() {
+    if (!bootstrap || !['wall', 'mezzanine'].includes(activeRow)) return
+    if (state.rows[activeRow].length > 0 && !window.confirm(`Заменить текущий ${rowNames[activeRow].toLowerCase()} предложением?`)) return
+    const familyKey = activeRow === 'wall' ? 'wall-shelf' : 'mezzanine'
+    state.falsePanels = state.falsePanels.filter((item) => item.row !== activeRow)
+    state.rows[activeRow] = state.rows.lower.flatMap((lower) => {
+      const lowerVariant = findVariant(lower.variantId)
+      if (lowerVariant.configuration.role === 'tall') return []
+      const candidate = bootstrap!.variants.find((item) => item.familyKey === familyKey && span(item) === (lower.cutWidthMm ?? span(lowerVariant)))
+      return candidate ? [{ variantId: candidate.id, startMm: lower.startMm, cutWidthMm: null, withoutFacade: !facadesEnabled?.checked }] : []
+    })
+    selected = null; normalizePanels(activeRow); reflow(activeRow); render()
+  }
+
+  async function requestQuote() {
+    if (!bootstrap || !quoteTotal || !quoteStatus || !specification || !height || !length) return
+    const selectedRows = rows.filter((row) => state.rows[row].length > 0).map((row) => ({ row, modules: state.rows[row] }))
+    const currentIntent = ++intent
+    const fingerprint = JSON.stringify({ rows: state.rows, falsePanels: state.falsePanels, wallLengthMm: wallMm() })
+    quoteAbort?.abort()
+    if (selectedRows.length === 0) { quoteTotal.textContent = 'Добавьте модуль'; quoteStatus.textContent = 'Цена появится после выбора модуля.'; specification.textContent = 'Пока нет позиций.'; return }
+    quoteStatus.textContent = 'Пересчитываем цену…'
+    quoteAbort = new AbortController()
+    const response = await fetch(`${apiBase}/configurator/quote`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      publicationId: bootstrap.publicationId, intentId: `phone-${currentIntent}`, wallLengthMm: wallLength?.value ? Number(wallLength.value) : null,
+      bodyMaterialId: bodySelect?.value, facadeMaterialId: facadeSelect?.value || null, facadesIncluded: Boolean(facadesEnabled?.checked),
+      packagingIncluded: Boolean(packagingEnabled?.checked), countertopThicknessMm: Number(countertop?.value ?? '38'), rows: selectedRows,
+      falsePanels: state.falsePanels.map(({ anchorIndex: _anchorIndex, ...panel }) => panel), plinthVariantId: plinthSelect?.value || null, crownVariantId: crownSelect?.value || null,
+    }), signal: quoteAbort.signal }).catch(() => null)
+    if (currentIntent !== intent || fingerprint !== JSON.stringify({ rows: state.rows, falsePanels: state.falsePanels, wallLengthMm: wallMm() })) return
+    if (!response || !response.ok) {
+      const payload = await response?.json().catch(() => null)
+      quoteStatus.textContent = payload?.error?.message ?? 'Не удалось посчитать. Проверьте подключение и повторите.'
+      return
+    }
+    const quote = await response.json()
+    if (quote.intentId !== `phone-${currentIntent}`) return
+    quoteTotal.textContent = `${rubles.format(quote.totalRub)} ₽`
+    if (quoteVat) quoteVat.textContent = `в том числе НДС ${Number(quote.includedVatRub).toLocaleString('ru-RU', { minimumFractionDigits: 2 })} ₽`
+    quoteStatus.textContent = quote.warnings.length ? quote.warnings.join(' ') : 'Цена рассчитана по опубликованной версии каталога.'
+    height.textContent = `Высота кухни: ${quote.kitchenHeightMm} мм`
+    renderWallStatus(quote.rowSpansMm)
+    quotedFreeIntervals = quote.freeIntervals
+    renderFreeIntervals()
+    specification.innerHTML = quote.specification.map((line: { label: string; quantity: number; unit: string; amountRub: number; customerSupplied: boolean }) => `<div class="spec-line ${line.customerSupplied ? 'customer-supplied' : ''}"><span>${escape(line.label)} · ${line.quantity} ${escape(line.unit)}</span><strong>${line.customerSupplied ? 'покупают сами' : `${rubles.format(line.amountRub)} ₽`}</strong></div>`).join('')
+  }
+
+  function fillTrimOptions() {
+    if (!bootstrap || !plinthSelect || !crownSelect) return
+    for (const variant of bootstrap.variants) {
+      if (variant.configuration.role === 'plinth') plinthSelect.insertAdjacentHTML('beforeend', `<option value="${variant.id}">${escape(variant.publicName)}</option>`)
+      if (variant.configuration.role === 'crown') crownSelect.insertAdjacentHTML('beforeend', `<option value="${variant.id}">${escape(variant.publicName)}</option>`)
+    }
+  }
+
+  async function start() {
+    try {
+      const response = await fetch(`${apiBase}/configurator/bootstrap`)
+      if (!response.ok) throw new Error((await response.json().catch(() => null))?.error?.message ?? 'Конфигуратор пока не опубликован')
+      const nextBootstrap: Bootstrap = await response.json()
+      bootstrap = nextBootstrap
+      if (!bodySelect || !facadeSelect) throw new Error('Не удалось подготовить форму')
+      bodySelect.innerHTML = options(nextBootstrap.materials.filter((item) => item.kind === 'body'))
+      facadeSelect.innerHTML = options(nextBootstrap.materials.filter((item) => item.kind === 'facade'))
+      fillTrimOptions()
+      loading?.setAttribute('hidden', '')
+      app?.removeAttribute('hidden')
+      render()
+    } catch (caught) {
+      loading?.setAttribute('hidden', '')
+      if (error) { error.hidden = false; error.textContent = caught instanceof Error ? caught.message : 'Не удалось открыть конфигуратор' }
+    }
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.row-picker button').forEach((button) => button.addEventListener('click', () => { activeRow = button.dataset.row as Row; render() }))
+  ;[bodySelect, facadeSelect, packagingEnabled, countertop, plinthSelect, crownSelect].forEach((element) => element?.addEventListener('change', () => void requestQuote()))
+  wallLength?.addEventListener('change', () => {
+    // Blurring this input happens immediately before tapping a catalogue card.
+    // Do not replace the card synchronously, or that tap is lost on mobile.
+    renderWallStatus()
+    renderFreeIntervals()
+    void requestQuote()
+  })
+  startSide?.addEventListener('change', () => render())
+  replaceMode?.addEventListener('change', () => render())
+  facadesEnabled?.addEventListener('change', () => {
+    for (const row of rows) for (const module of state.rows[row]) module.withoutFacade = !facadesEnabled.checked
+    render()
+  })
+  document.querySelector<HTMLButtonElement>('#add-false-panel')?.addEventListener('click', () => {
+    if (!bootstrap) return
+    const position = (falsePanelPosition?.value ?? 'end') as FalsePanel['position']
+    const panel = bootstrap.variants.find((item) => item.configuration.role === 'false_panel' && item.configuration.falsePanelPositions.includes(position))
+    if (!panel) { showLocalMessage('В опубликованном каталоге нет фальш‑панели для этой позиции.'); return }
+    if (!panel.configuration.falsePanelPositions.includes(position)) { showLocalMessage('Эта фальш‑панель не поддерживает выбранную позицию.'); return }
+    if (position === 'between' && state.rows[activeRow].length < 2) { showLocalMessage('Чтобы поставить панель между модулями, добавьте в ряд минимум два модуля.'); return }
+    const selectedIndex = selected?.row === activeRow ? selected.index : 0
+    const anchorIndex = position === 'between' ? Math.min(selectedIndex, state.rows[activeRow].length - 2) : undefined
+    if (!fitsFalsePanel(activeRow, span(panel), position, anchorIndex)) { showLocalMessage('Фальш‑панель не помещается в заданную длину стены.'); return }
+    state.falsePanels = state.falsePanels.filter((item) => item.row !== activeRow)
+    state.falsePanels.push({ variantId: panel.id, row: activeRow, startMm: 0, widthMm: span(panel), position, ...(anchorIndex === undefined ? {} : { anchorIndex }) })
+    reflow(activeRow)
+    render()
+  })
+  suggestUpperButton?.addEventListener('click', suggestUpper)
+  void start()
+</script>
+
+<style>
+  .configurator { max-width: 980px; }
+  .config-message { margin: 18px 0; padding: 14px; border: 1px solid #d9c7a2; border-radius: 14px; background: #fff9ed; }
+  .config-toolbar, .trim-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 20px 0; padding: 12px; border: 1px solid #ddd6c8; border-radius: 16px; background: #fff; }
+  .config-toolbar label, .trim-options label { display: grid; gap: 5px; color: #4d5b51; font-size: .75rem; font-weight: 750; }
+  .config-toolbar .toggle { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: .86rem; }
+  .config-toolbar .toggle input { min-height: 18px; width: 18px; }
+  .scene-card { overflow: hidden; margin: 20px 0; border: 1px solid #d5ddcf; border-radius: 20px; background: #f7faf4; }
+  .scene-status { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; color: #536357; font-size: .78rem; background: #e6ede2; }
+  .kitchen-scene { display: grid; gap: 5px; min-height: 245px; padding: 16px 10px; overflow: hidden; }
+  .scene-row { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 6px; align-items: center; min-width: 0; }
+  .scene-row > strong { color: #5d6a60; font-size: .7rem; }
+  .scene-modules { display: flex; min-width: 0; min-height: 62px; gap: 2px; align-items: stretch; overflow: hidden; }
+  .scene-modules.from-right { flex-direction: row-reverse; }
+  .scene-gap { flex: var(--span) 1 0; min-width: 0; background: repeating-linear-gradient(135deg, transparent, transparent 5px, rgba(111, 126, 112, .16) 5px, rgba(111, 126, 112, .16) 7px); }
+  .free-intervals { display: flex; flex-wrap: wrap; gap: 7px; margin: -8px 0 16px; } .free-intervals button { min-height: 36px; padding: 6px 9px; border-style: dashed; font-size: .75rem; } .free-intervals .is-selected { color: white; border-style: solid; border-color: #274b33; background: #274b33; }
+  .scene-module { flex: var(--span) 1 0; min-width: 0; display: grid; align-content: center; gap: 2px; min-height: 62px; padding: 4px; overflow: hidden; color: #26392b; border: 1px solid #78927a; border-radius: 5px; background: #d8e7d6; font-size: .61rem; text-align: left; }
+  .scene-wall .scene-module { background: #ece5cf; border-color: #a99052; } .scene-mezzanine .scene-module { background: #dce2eb; border-color: #8091a7; }
+  .scene-module.without-facade { background: repeating-linear-gradient(45deg, #f4f1e9, #f4f1e9 5px, #ded8cb 5px, #ded8cb 10px); }
+  .scene-module.is-selected { outline: 3px solid #244f39; outline-offset: 1px; } .scene-module.false-panel { flex: 16 0 0; min-width: 26px; background: #cdd4c5; border-color: #6d7965; }
+  .scene-module span, .scene-module small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .scene-module small { color: #546054; } .scene-empty { padding: 18px; color: #829085; border: 1px dashed #b3c0b2; border-radius: 6px; }
+  .row-picker { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 4px; } .row-picker button { flex: 0 0 auto; } .row-picker .is-active { color: white; border-color: #274b33; background: #274b33; }
+  .module-properties { display: grid; gap: 10px; margin-top: -10px; padding: 14px; border: 1px solid #b9c9b9; border-radius: 0 0 16px 16px; background: #fff; } .module-properties > div:first-child { display: grid; gap: 2px; } .module-properties > div:first-child span { color: #66716a; font-size: .78rem; } .property-actions { display: flex; flex-wrap: wrap; gap: 7px; } .cut-control { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 7px; font-size: .78rem; font-weight: 750; } .cut-control input { min-width: 0; }
+  .module-sheet { margin-top: 14px; padding: 14px; border-radius: 18px 18px 0 0; background: #e8ede4; } .sheet-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; } .sheet-heading div { display: grid; gap: 3px; } .sheet-heading span { color: #617065; font-size: .75rem; } .sheet-actions { display: flex; flex-wrap: wrap; gap: 6px; } .replace-mode { display: flex; align-items: center; gap: 7px; margin-top: 12px; color: #526055; font-size: .78rem; font-weight: 700; } .replace-mode input { min-height: 18px; width: 18px; }
+  .module-catalog { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; max-height: 280px; overflow: auto; } .module-catalog button { display: grid; min-height: 74px; gap: 3px; padding: 9px; text-align: left; } .module-catalog button span { color: #637067; font-size: .72rem; }
+  .quote-card { position: sticky; bottom: 0; z-index: 3; display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; padding: 16px; border-radius: 16px; color: white; background: #254731; box-shadow: 0 -8px 28px rgba(23, 46, 31, .18); } .quote-card > div { display: grid; gap: 3px; } .quote-caption, #quote-status, #quote-vat { color: #d8e5da; font-size: .75rem; } #quote-total { font-size: 1.35rem; } #quote-status { max-width: 42%; text-align: right; align-self: center; }
+  .specification { margin-top: 12px; padding: 14px; border: 1px solid #ddd6c8; border-radius: 14px; background: #fff; } .specification summary { cursor: pointer; font-weight: 800; } #specification-lines { display: grid; gap: 8px; margin-top: 12px; } .spec-line { display: flex; justify-content: space-between; gap: 10px; color: #445247; font-size: .82rem; } .spec-line.customer-supplied { color: #8a6833; }
+  @media (min-width: 720px) { .config-toolbar { grid-template-columns: repeat(3, minmax(0, 1fr)); } .module-catalog { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

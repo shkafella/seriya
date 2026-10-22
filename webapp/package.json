@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "e2e": "playwright test",
+    "e2e:configurator": "playwright test -c e2e/configurator.playwright.config.ts",
     "e2e:ui": "playwright test --ui",
     "e2e:install": "playwright install chromium",
     "ui": "shadcn",

@@ -2,6 +2,7 @@ import { afterAll, describe, expect, test } from 'bun:test'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+import type { Prisma } from '../../generated/prisma/client'
 import { createPrisma, type DbClient } from '../../db'
 import { createApp } from '../../app'
 import type { AppEnv } from '../../env'
@@ -40,6 +41,8 @@ maybeDescribe('catalog import integration', () => {
     await prisma.catalogAsset.deleteMany()
     await prisma.catalogSourceRecord.deleteMany()
     await prisma.catalogImportHistory.deleteMany()
+    await prisma.priceDraft.deleteMany()
+    await prisma.pricingState.deleteMany()
     await prisma.priceVersion.deleteMany()
     await prisma.catalogState.deleteMany()
     await prisma.ownerIdentity.deleteMany()
@@ -212,6 +215,30 @@ maybeDescribe('catalog import integration', () => {
     expect(await prisma.catalogImportHistory.count()).toBe(0)
   })
 
+  test('opens the owner catalog after a Stage 2 price-version upgrade without reimporting', async () => {
+    const prisma = freshDb()
+    await resetCatalog(prisma)
+    const loaded = await loadSeed()
+    await applyCatalogImport(prisma, loaded, await previewCatalogImport(prisma, loaded))
+    const versionOne = await prisma.priceVersion.findUniqueOrThrow({ where: { version: 1 } })
+    const { palette: _palette, bodyRatesRubM2: _bodyRates, facadeRatesRubM2: _facadeRates, hdfRatesRubM2: _hdfRates, ...legacyRates } = versionOne.rates as Record<string, unknown>
+    await prisma.priceDraft.deleteMany()
+    await prisma.pricingState.deleteMany()
+    await prisma.priceVersion.update({ where: { id: versionOne.id }, data: { rates: legacyRates as Prisma.InputJsonValue } })
+    const legacyVariant = await prisma.catalogVariant.findFirstOrThrow({ where: { family: { key: 'lower-shelf' } } })
+    await prisma.catalogVariant.update({ where: { id: legacyVariant.id }, data: { configurationData: {} } })
+
+    const ownerCatalog = await new CatalogService(freshDb()).ownerCatalog()
+
+    expect(ownerCatalog.priceVersion.version).toBe(2)
+    expect(ownerCatalog.variants.find((variant) => variant.id === legacyVariant.id)?.configuration).toMatchObject({
+      role: 'ordinary', straightEligible: true,
+    })
+    const migrated = await prisma.priceVersion.findUniqueOrThrow({ where: { version: 2 } })
+    expect((migrated.rates as { palette?: unknown }).palette).toBeInstanceOf(Array)
+    expect(await prisma.priceDraft.count()).toBe(1)
+  }, 30_000)
+
   test('rejects a stale preview without catalog mutation', async () => {
     const prisma = freshDb()
     await resetCatalog(prisma)
@@ -254,7 +281,7 @@ maybeDescribe('catalog import integration', () => {
     await ownerDb.catalogVariant.update({
       where: { id: current.id },
       data: { publicName: 'Название владельца', ownerEditedFields: ['publicName'] },
-    })
+  })
 
     const parsed = JSON.parse(initial.raw)
     const sourceId = (await ownerDb.catalogVariant.findUniqueOrThrow({ where: { id: current.id }, include: { sourceRecord: true } })).sourceRecord!.sourceRecordId
@@ -266,6 +293,37 @@ maybeDescribe('catalog import integration', () => {
     expect(preview.counts.conflicts).toBe(1)
     await expect(applyCatalogImport(conflictDb, changed, preview)).rejects.toBeInstanceOf(CatalogImportError)
     expect((await conflictDb.catalogVariant.findUniqueOrThrow({ where: { id: current.id } })).publicName).toBe('Название владельца')
+  }, 30_000)
+
+  test('preserves owner-managed consumption and fastener charges on a later source import', async () => {
+    const prisma = freshDb()
+    await resetCatalog(prisma)
+    const initial = await loadSeed()
+    await applyCatalogImport(prisma, initial, await previewCatalogImport(prisma, initial))
+    const target = await prisma.catalogVariant.findFirstOrThrow({ orderBy: { sku: 'asc' }, include: { sourceRecord: true } })
+    await prisma.catalogVariant.update({
+      where: { id: target.id },
+      data: {
+        bodyM2: 9.1, facadeM2: 8.2, hdfM2: 7.3, fastenerChargeRub: 654,
+        configurationData: {
+          role: 'ordinary', straightEligible: false, reservedUpperRows: [], falsePanelPositions: [], trimLine: null, trimLines: [],
+        },
+        ownerEditedFields: ['consumptionM2', 'fastenerChargeRub', 'configuration'],
+      },
+    })
+    const changedSeed = JSON.parse(initial.raw)
+    changedSeed.modules.find((item: { sourceRecordId: string }) => item.sourceRecordId === target.sourceRecord!.sourceRecordId).publicName = 'Изменено в источнике'
+    const changed = await loadSeed(JSON.stringify(changedSeed), 'preserve-commercial-overrides.json')
+
+    await applyCatalogImport(prisma, changed, await previewCatalogImport(prisma, changed))
+
+    const preserved = await prisma.catalogVariant.findUniqueOrThrow({ where: { id: target.id } })
+    expect({ body: Number(preserved.bodyM2), facade: Number(preserved.facadeM2), hdf: Number(preserved.hdfM2), fasteners: Number(preserved.fastenerChargeRub) }).toEqual({
+      body: 9.1, facade: 8.2, hdf: 7.3, fasteners: 654,
+    })
+    expect(preserved.configurationData).toEqual({
+      role: 'ordinary', straightEligible: false, reservedUpperRows: [], falsePanelPositions: [], trimLine: null, trimLines: [],
+    })
   }, 30_000)
 
   test('deactivates a removed source record but never an owner-created record', async () => {
@@ -521,5 +579,100 @@ maybeDescribe('catalog import integration', () => {
     expect(recovered?.status).toBe('FAILED')
     expect((await appDb.catalogActivationAttempt.findFirstOrThrow({ where: { nextPublicationId: candidate.candidateId } })).status).toBe('ROLLED_BACK')
     expect((await app.request('/api/catalog')).status).toBe(404)
+  }, 30_000)
+
+  test('keeps owner price drafts isolated until the matching configurator publication is active', async () => {
+    const prisma = freshDb()
+    await resetCatalog(prisma)
+    const loaded = await loadSeed()
+    await applyCatalogImport(prisma, loaded, await previewCatalogImport(prisma, loaded))
+    await seedDevelopmentAssets(prisma)
+    const appDb = freshDb()
+    const app = createApp({ env, prisma: appDb })
+    const register = async (email: string) => {
+      const response = await app.request('/api/auth/token/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: 'password123' }),
+      })
+      return response.json()
+    }
+    const owner = await register('pricing-owner@example.com')
+    const other = await register('pricing-other@example.com')
+    await appDb.ownerIdentity.create({ data: { userId: owner.user.id } })
+    const ownerHeaders = { Authorization: `Bearer ${owner.accessToken}`, 'Content-Type': 'application/json' }
+
+    expect((await app.request('/api/owner/pricing', { headers: { Authorization: `Bearer ${other.accessToken}` } })).status).toBe(403)
+    const legacyVariant = await appDb.catalogVariant.findFirstOrThrow({ where: { family: { key: 'lower-shelf' } } })
+    await appDb.catalogVariant.update({ where: { id: legacyVariant.id }, data: { configurationData: {} } })
+    const legacyCatalog = await app.request('/api/owner/catalog', { headers: ownerHeaders })
+    expect(legacyCatalog.status).toBe(200)
+    expect((await legacyCatalog.json()).variants.find((item: { id: string }) => item.id === legacyVariant.id)?.configuration).toMatchObject({
+      role: 'ordinary', straightEligible: true,
+    })
+    const before = await app.request('/api/owner/pricing', { headers: ownerHeaders })
+    const beforePayload = await before.json()
+    expect(before.status, JSON.stringify(beforePayload)).toBe(200)
+    const beforeBody = beforePayload
+    const candidateP1 = await app.request('/api/owner/catalog/candidate', { method: 'POST', headers: ownerHeaders })
+    const p1 = await candidateP1.json()
+
+    const unchangedPublish = await app.request('/api/owner/pricing/publish', {
+      method: 'POST', headers: ownerHeaders, body: JSON.stringify({ revision: beforeBody.draft.revision }),
+    })
+    expect(unchangedPublish.status).toBe(409)
+    expect((await unchangedPublish.json()).error.code).toBe('PRICE_DRAFT_UNCHANGED')
+
+    const saved = await app.request('/api/owner/pricing/draft', {
+      method: 'PATCH', headers: ownerHeaders,
+      body: JSON.stringify({ revision: beforeBody.draft.revision, materialRates: [], packagingRubM2: beforeBody.draft.rates.packagingRubM2 + 10 }),
+    })
+    expect(saved.status).toBe(200)
+    const savedBody = await saved.json()
+    const publishedRates = await app.request('/api/owner/pricing/publish', {
+      method: 'POST', headers: ownerHeaders, body: JSON.stringify({ revision: savedBody.draft.revision }),
+    })
+    expect(publishedRates.status).toBe(201)
+    const p2Rates = await publishedRates.json()
+    expect(p2Rates.currentPriceVersion.version).toBe(2)
+    expect(p2Rates.currentPriceVersion.rates).toEqual(p2Rates.draft.rates)
+    expect(p2Rates.currentPriceVersion.rates.palette).toHaveLength(13)
+    const ownerAfterP2 = await app.request('/api/owner/catalog', { headers: ownerHeaders })
+    expect((await ownerAfterP2.json())).toMatchObject({ publicationStatus: 'UNPREPARED', hasUnpreparedChanges: true })
+
+    const staleInput = {
+      candidateId: p1.candidateId, releaseId: `candidate-${p1.candidateId}`, releasePath: `/opt/seriya/releases/${p1.candidateId}`,
+      backupReceipt: { backupId: 'price-test', completedAt: new Date().toISOString(), database: 'seriya_test', integrity: `sha256:${'b'.repeat(64)}` }, expectedDatabase: 'seriya_test', requireProductionAssets: false,
+    }
+    await expect(new CatalogService(freshDb()).beginActivation(staleInput)).rejects.toMatchObject({ code: 'STALE_CANDIDATE' })
+
+    const candidateP2 = await app.request('/api/owner/catalog/candidate', { method: 'POST', headers: ownerHeaders })
+    const p2 = await candidateP2.json()
+    const activationInput = { ...staleInput, candidateId: p2.candidateId, releaseId: `candidate-${p2.candidateId}`, releasePath: `/opt/seriya/releases/${p2.candidateId}` }
+    await new CatalogService(freshDb()).beginActivation(activationInput)
+    const blockedPublish = await app.request('/api/owner/pricing/publish', {
+      method: 'POST', headers: ownerHeaders, body: JSON.stringify({ revision: p2Rates.draft.revision }),
+    })
+    expect(blockedPublish.status).toBe(409)
+    await new CatalogService(appDb).markApplicationSwitched(activationInput.candidateId, activationInput.releasePath)
+    await new CatalogService(appDb).activateCandidate(activationInput)
+    await new CatalogService(appDb).verifyActivation(activationInput.candidateId, activationInput.releasePath)
+
+    const bootstrapResponse = await app.request('/api/configurator/bootstrap')
+    expect(bootstrapResponse.status).toBe(200)
+    const bootstrap = await bootstrapResponse.json()
+    const lower = bootstrap.variants.find((variant: { row: string; configuration: { role: string; straightEligible: boolean } }) => variant.row === 'lower' && variant.configuration.role === 'ordinary' && variant.configuration.straightEligible)
+    const body = bootstrap.materials.find((material: { kind: string }) => material.kind === 'body')
+    const facade = bootstrap.materials.find((material: { kind: string }) => material.kind === 'facade')
+    const quoteRequest = {
+      publicationId: bootstrap.publicationId, intentId: 'stage3-integration', bodyMaterialId: body.id, facadeMaterialId: facade.id,
+      facadesIncluded: true, packagingIncluded: true, countertopThicknessMm: 38,
+      rows: [{ row: 'lower', modules: [{ variantId: lower.id, startMm: 0, cutWidthMm: null, withoutFacade: false }] }],
+      falsePanels: [], plinthVariantId: null, crownVariantId: null,
+    }
+    const quote = await app.request('/api/configurator/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(quoteRequest) })
+    expect(quote.status).toBe(200)
+    expect((await quote.json()).totalRub).toBeGreaterThan(0)
+    const forged = await app.request('/api/configurator/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...quoteRequest, totalRub: 1 }) })
+    expect(forged.status).toBe(400)
   }, 30_000)
 })

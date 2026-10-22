@@ -1,8 +1,9 @@
-import { catalogImportPreviewSchema, catalogSeedSchema, type CatalogImportPreview, type CatalogSeed, type CatalogSeedModule } from '@seriya/contracts'
+import { catalogImportPreviewSchema, catalogSeedSchema, pricingRatesSchema, type CatalogImportPreview, type CatalogSeed, type CatalogSeedModule } from '@seriya/contracts'
 import type { Prisma } from '../../../generated/prisma/client'
 
 import type { DbClient } from '../../../db'
 import { canonicalJson, sha256 } from '../application/canonical-json'
+import { configurationDefaultsForFamily } from '../application/configuration-defaults'
 
 export type LoadedCatalogSeed = {
   sourcePath: string
@@ -102,8 +103,9 @@ export async function previewCatalogImport(
       updated.push({ sourceRecordId: `family:${family.id}`, sku: family.id, fields: ['family'] })
     }
   }
-  const rateChecksum = sha256(canonicalJson(launchRates(loaded.seed)))
-  if (launchPrice && launchPrice.checksum !== rateChecksum) {
+  const launchRateChecksum = sha256(canonicalJson(launchRates(loaded.seed)))
+  const legacyRateChecksum = sha256(canonicalJson(legacyLaunchRates(loaded.seed)))
+  if (launchPrice && ![launchRateChecksum, legacyRateChecksum].includes(launchPrice.checksum)) {
     invalid.push({ sourceRecordId: 'price-version:1', sku: 'price-version:1', reason: 'approved launch rates differ from immutable price version 1' })
   }
 
@@ -165,6 +167,7 @@ export async function applyCatalogImport(
     && observedPreview.counts.updated === 0
     && observedPreview.counts.deactivated === 0
   ) {
+    await db.$transaction(async (tx) => { await ensurePricingBootstrap(tx, loaded.seed) })
     return { ...observedPreview, resultingRevision: observedState.revision }
   }
 
@@ -280,6 +283,7 @@ export async function applyCatalogImport(
       create: { version: 1, currency: 'RUB', rates, checksum: priceChecksum },
       update: {},
     })
+    await ensurePricingBootstrap(tx, loaded.seed)
 
     const resultingRevision = state.revision
     await tx.catalogImportHistory.create({
@@ -318,6 +322,7 @@ function importedData(item: CatalogSeedModule) {
     consumptionM2: item.consumptionM2,
     fastenerChargeRub: item.fasteners.chargeRub,
     cutPolicy: item.cutToWidth.policy,
+    configuration: configurationDefaultsForFamily(item.familyId),
     variant: item.variant,
     fasteners: item.fasteners,
   }
@@ -330,6 +335,7 @@ function variantCreate(item: CatalogSeedModule, data: ReturnType<typeof imported
     depthMm: item.dimensionsMm.depth, layoutSpanMm: item.layoutSpanMm,
     bodyM2: item.consumptionM2.body, facadeM2: item.consumptionM2.facade, hdfM2: item.consumptionM2.hdf,
     fastenerChargeRub: item.fasteners.chargeRub, cutPolicy: item.cutToWidth.policy,
+    configurationData: data.configuration as Prisma.InputJsonValue,
     variantData: item.variant as Prisma.InputJsonValue, fastenersData: item.fasteners as Prisma.InputJsonValue,
   }
 }
@@ -344,10 +350,12 @@ function variantUpdate(
   const update: Prisma.CatalogVariantUpdateInput = {
     family: { connect: { id: familyId } },
     importedData: data as Prisma.InputJsonValue,
-    bodyM2: item.consumptionM2.body,
-    facadeM2: item.consumptionM2.facade,
-    hdfM2: item.consumptionM2.hdf,
-    fastenerChargeRub: item.fasteners.chargeRub,
+    ...(!overrides.includes('consumptionM2') ? {
+      bodyM2: item.consumptionM2.body,
+      facadeM2: item.consumptionM2.facade,
+      hdfM2: item.consumptionM2.hdf,
+    } : {}),
+    ...(!overrides.includes('fastenerChargeRub') ? { fastenerChargeRub: item.fasteners.chargeRub } : {}),
     variantData: item.variant as Prisma.InputJsonValue,
     fastenersData: item.fasteners as Prisma.InputJsonValue,
   }
@@ -359,6 +367,7 @@ function variantUpdate(
   if (!overrides.includes('depthMm')) update.depthMm = item.dimensionsMm.depth
   if (!overrides.includes('layoutSpanMm')) update.layoutSpanMm = item.layoutSpanMm ?? null
   if (!overrides.includes('cutPolicy')) update.cutPolicy = item.cutToWidth.policy
+  if (!overrides.includes('configuration')) update.configurationData = data.configuration as Prisma.InputJsonValue
   return update
 }
 
@@ -450,7 +459,50 @@ function launchRates(seed: CatalogSeed) {
     bodyRatesRubM2: seed.materials.body.map((item) => item.rateRubM2),
     facadeRatesRubM2: seed.materials.facade.map((item) => item.rateRubM2),
     hdfRatesRubM2: seed.materials.hdf.map((item) => item.rateRubM2),
+    palette: [
+      ...seed.materials.body.map((item) => ({ ...item, kind: 'body', isActive: true })),
+      ...seed.materials.facade.map((item) => ({ ...item, kind: 'facade', isActive: true })),
+      ...seed.materials.hdf.map((item) => ({ ...item, kind: 'hdf', isActive: true })),
+    ],
   }
+}
+
+function legacyLaunchRates(seed: CatalogSeed) {
+  const { palette: _palette, ...legacy } = launchRates(seed)
+  return legacy
+}
+
+async function ensurePricingBootstrap(tx: Prisma.TransactionClient, seed: CatalogSeed) {
+  const state = await tx.pricingState.findUnique({
+    where: { singletonKey: 'pricing' },
+    include: { currentPriceVersion: true },
+  })
+  let current = state?.currentPriceVersion ?? await tx.priceVersion.findFirst({ orderBy: { version: 'desc' } })
+  if (!current) throw new CatalogImportError('PRICE_VERSION_UNAVAILABLE', 'Could not initialize the launch price version')
+  if (!pricingRatesSchema.safeParse(current.rates).success) {
+    const latest = await tx.priceVersion.findFirst({ orderBy: { version: 'desc' } })
+    if (!latest) throw new CatalogImportError('PRICE_VERSION_UNAVAILABLE', 'Could not initialize the price palette')
+    const rates = launchRates(seed)
+    current = await tx.priceVersion.create({
+      data: {
+        version: latest.version + 1,
+        currency: 'RUB',
+        rates: rates as Prisma.InputJsonValue,
+        checksum: sha256(canonicalJson(rates)),
+      },
+    })
+  }
+  const parsedRates = pricingRatesSchema.parse(current.rates)
+  const pricingState = await tx.pricingState.upsert({
+    where: { singletonKey: 'pricing' },
+    create: { singletonKey: 'pricing', currentPriceVersionId: current.id },
+    update: { currentPriceVersionId: current.id },
+  })
+  await tx.priceDraft.upsert({
+    where: { singletonKey: 'pricing' },
+    create: { singletonKey: 'pricing', basePriceVersionId: pricingState.currentPriceVersionId!, rates: parsedRates as Prisma.InputJsonValue },
+    update: {},
+  })
 }
 
 function familyDescription(name: string) {

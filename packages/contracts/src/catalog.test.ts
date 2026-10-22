@@ -16,10 +16,11 @@ describe('catalog contracts', () => {
 
   test('rejects empty and unknown owner edits', () => {
     expect(() => ownerCatalogVariantEditSchema.parse({ revision: 1, changes: {} })).toThrow()
-    expect(() => ownerCatalogVariantEditSchema.parse({
+    expect(() => ownerCatalogVariantEditSchema.parse({ revision: 1, changes: { unknown: true } })).toThrow()
+    expect(ownerCatalogVariantEditSchema.parse({
       revision: 1,
       changes: { publicName: 'Модуль', fastenerChargeRub: 0 },
-    })).toThrow()
+    }).changes.fastenerChargeRub).toBe(0)
   })
 
   test('rejects zero and reversed public price ranges', () => {

@@ -122,6 +122,7 @@ model CatalogVariant {
   hdfM2              Decimal              @map("hdf_m2") @db.Decimal(12, 4)
   fastenerChargeRub  Decimal              @map("fastener_charge_rub") @db.Decimal(12, 2)
   cutPolicy          String               @map("cut_policy")
+  configurationData  Json                 @default("{}") @map("configuration_data")
   variantData        Json                 @map("variant_data")
   fastenersData      Json                 @map("fasteners_data")
   isActive           Boolean              @default(true) @map("is_active")
@@ -171,8 +172,35 @@ model PriceVersion {
   publishedAt DateTime             @default(now()) @map("published_at")
   createdAt   DateTime             @default(now()) @map("created_at")
   publications CatalogPublication[]
+  currentForPricingState PricingState? @relation("CurrentPriceVersion")
+  draftBases PriceDraft[] @relation("PriceDraftBaseVersion")
 
   @@map("price_versions")
+}
+
+model PricingState {
+  id                    String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey          String        @unique @default("pricing") @map("singleton_key")
+  currentPriceVersionId String?       @unique @map("current_price_version_id") @db.Uuid
+  createdAt             DateTime      @default(now()) @map("created_at")
+  updatedAt             DateTime      @updatedAt @map("updated_at")
+  currentPriceVersion   PriceVersion? @relation("CurrentPriceVersion", fields: [currentPriceVersionId], references: [id], onDelete: Restrict)
+
+  @@map("pricing_state")
+}
+
+model PriceDraft {
+  id                 String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey       String       @unique @default("pricing") @map("singleton_key")
+  basePriceVersionId String       @map("base_price_version_id") @db.Uuid
+  revision           Int          @default(0)
+  rates              Json
+  updatedByUserId    String?      @map("updated_by_user_id") @db.Uuid
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+  basePriceVersion   PriceVersion @relation("PriceDraftBaseVersion", fields: [basePriceVersionId], references: [id], onDelete: Restrict)
+
+  @@map("price_drafts")
 }
 
 model CatalogImportHistory {
@@ -206,6 +234,7 @@ model CatalogPublication {
   priceVersionId  String                   @map("price_version_id") @db.Uuid
   releaseId       String?                  @map("release_id")
   snapshot        Json
+  pricingSnapshot Json?                    @map("pricing_snapshot")
   checksum        String                   @unique
   status          CatalogPublicationStatus @default(CANDIDATE)
   backupReceipt   Json?                    @map("backup_receipt")

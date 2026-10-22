@@ -29,7 +29,13 @@ const catalogRoute = createRoute({
   component: lazyRouteComponent(() => import('./features/catalog'), 'CatalogPage'),
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, appRoute, catalogRoute])
+const pricingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/app/pricing',
+  component: lazyRouteComponent(() => import('./features/pricing'), 'PricingPage'),
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, appRoute, catalogRoute, pricingRoute])
 
 export const router = createRouter({ routeTree })
 

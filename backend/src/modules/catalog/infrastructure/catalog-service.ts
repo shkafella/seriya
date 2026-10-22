@@ -1,8 +1,10 @@
 import {
   catalogRatesSchema,
+  configurationMetadataSchema,
   ownerCatalogResponseSchema,
   ownerCatalogVariantEditSchema,
   publicCatalogSchema,
+  pricingRatesSchema,
   type OwnerCatalogVariantEdit,
   type PublicCatalog,
   type PublicCatalogFamily,
@@ -12,8 +14,9 @@ import type { Prisma } from '../../../generated/prisma/client'
 
 import type { DbClient } from '../../../db'
 import { AppError } from '../../../http/errors'
-import { calculatePublicPriceRange } from '../../pricing'
+import { calculatePublicPriceRange, ensurePricingBootstrap } from '../../pricing'
 import { canonicalJson, sha256 } from '../application/canonical-json'
+import { configurationDefaultsForFamily } from '../application/configuration-defaults'
 
 type ActivationInput = {
   candidateId: string
@@ -34,17 +37,20 @@ export class CatalogService {
   }
 
   async ownerCatalog() {
-    const [state, price, variants, assets, latestCandidate] = await Promise.all([
+    await this.db.$transaction(async (tx) => { await ensurePricingBootstrap(tx) })
+    const [state, pricingState, variants, assets, latestCandidate] = await Promise.all([
       this.db.catalogState.findUnique({ where: { singletonKey: 'catalog' }, include: { activePublication: true } }),
-      this.db.priceVersion.findFirst({ orderBy: { version: 'desc' } }),
-      this.db.catalogVariant.findMany({ orderBy: [{ family: { publicName: 'asc' } }, { widthMm: 'asc' }] }),
+      this.db.pricingState.findUnique({ where: { singletonKey: 'pricing' }, include: { currentPriceVersion: true } }),
+      this.db.catalogVariant.findMany({ include: { family: true }, orderBy: [{ family: { publicName: 'asc' } }, { widthMm: 'asc' }] }),
       this.db.catalogAsset.findMany({ orderBy: { key: 'asc' } }),
       this.db.catalogPublication.findFirst({ where: { status: 'CANDIDATE' }, orderBy: { createdAt: 'desc' } }),
     ])
-    if (!state || !price) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
-    const publicationStatus = latestCandidate?.catalogRevision === state.revision
+    if (!state || !pricingState?.currentPriceVersion) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
+    const activePublicationIsCurrent = state.activePublication?.catalogRevision === state.revision
+      && state.activePublication.priceVersionId === pricingState.currentPriceVersion.id
+    const publicationStatus = latestCandidate?.catalogRevision === state.revision && latestCandidate.priceVersionId === pricingState.currentPriceVersion.id
       ? 'AWAITING_RELEASE'
-      : state.activePublication?.catalogRevision === state.revision
+      : activePublicationIsCurrent
         ? 'PUBLISHED'
         : 'UNPREPARED'
     return ownerCatalogResponseSchema.parse({
@@ -53,7 +59,7 @@ export class CatalogService {
       activationState: state.activationState,
       publicationStatus,
       hasUnpreparedChanges: publicationStatus === 'UNPREPARED',
-      priceVersion: priceDto(price),
+      priceVersion: priceDto(pricingState.currentPriceVersion),
       assets: assets.map((asset) => ({
         id: asset.id,
         key: asset.key,
@@ -69,7 +75,7 @@ export class CatalogService {
     const command = ownerCatalogVariantEditSchema.parse(input)
     try {
       return await this.db.$transaction(async (tx) => {
-        const variant = await tx.catalogVariant.findUnique({ where: { id: variantId } })
+        const variant = await tx.catalogVariant.findUnique({ where: { id: variantId }, include: { family: true } })
         if (!variant) throw new AppError(404, 'CATALOG_VARIANT_NOT_FOUND', 'Catalog variant not found')
         if (variant.revision !== command.revision) throw new AppError(409, 'STALE_CATALOG_EDIT', 'This item changed; reload and try again')
         const state = await tx.catalogState.findUnique({ where: { singletonKey: 'catalog' } })
@@ -98,7 +104,7 @@ export class CatalogService {
           data: { ...data, revision: { increment: 1 } },
         })
         if (claimed.count !== 1) throw new AppError(409, 'STALE_CATALOG_EDIT', 'This item changed; reload and try again')
-        const updated = await tx.catalogVariant.findUniqueOrThrow({ where: { id: variantId } })
+        const updated = await tx.catalogVariant.findUniqueOrThrow({ where: { id: variantId }, include: { family: true } })
         await tx.catalogState.update({ where: { id: state.id }, data: { revision: { increment: 1 } } })
         await tx.catalogEditHistory.create({
           data: {
@@ -120,9 +126,12 @@ export class CatalogService {
 
   async prepareCandidate() {
     return this.db.$transaction(async (tx) => {
-      const state = await tx.catalogState.findUnique({ where: { singletonKey: 'catalog' } })
-      const price = await tx.priceVersion.findFirst({ orderBy: { version: 'desc' } })
-      if (!state || !price) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
+      const state = await lockCatalogState(tx)
+      await ensurePricingBootstrap(tx)
+      const pricingState = await lockPricingState(tx)
+      if (!pricingState.currentPriceVersionId) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
+      const price = await tx.priceVersion.findUnique({ where: { id: pricingState.currentPriceVersionId } })
+      if (!price) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
       const existing = await tx.catalogPublication.findFirst({
         where: { status: 'CANDIDATE', catalogRevision: state.revision, priceVersionId: price.id },
         orderBy: { createdAt: 'desc' },
@@ -134,6 +143,7 @@ export class CatalogService {
 
       const [{ id: publicationId }] = await tx.$queryRaw<Array<{ id: string }>>`SELECT uuidv7()::text AS id`
       const snapshot = await buildPublicSnapshot(tx, publicationId, state.revision, price)
+      const pricingSnapshot = await buildConfigurationPricingSnapshot(tx, publicationId, price)
       const checksum = sha256(canonicalJson(snapshot))
       await tx.catalogPublication.create({
         data: {
@@ -141,6 +151,7 @@ export class CatalogService {
           catalogRevision: state.revision,
           priceVersionId: price.id,
           snapshot: snapshot as unknown as Prisma.InputJsonValue,
+          pricingSnapshot: pricingSnapshot as unknown as Prisma.InputJsonValue,
           checksum,
         },
       })
@@ -191,10 +202,12 @@ export class CatalogService {
     })
     if (!attempt) throw new AppError(409, 'INVALID_ACTIVATION_STATE', 'Application release has not been switched')
     return this.db.$transaction(async (tx) => {
-      const state = await tx.catalogState.findUnique({ where: { singletonKey: 'catalog' } })
+      const state = await lockCatalogState(tx)
+      const pricingState = await lockPricingState(tx)
       const candidate = await tx.catalogPublication.findUnique({ where: { id: input.candidateId } })
-      if (!state || !candidate || candidate.status !== 'CANDIDATE') throw new AppError(409, 'INVALID_CANDIDATE', 'Candidate is missing or no longer pending')
+      if (state.activationState !== 'MAINTENANCE' || !candidate || candidate.status !== 'CANDIDATE') throw new AppError(409, 'INVALID_CANDIDATE', 'Candidate is missing or no longer pending')
       if (candidate.catalogRevision !== state.revision) throw new AppError(409, 'STALE_CANDIDATE', 'Catalog changed after candidate preparation')
+      if (candidate.priceVersionId !== pricingState.currentPriceVersionId) throw new AppError(409, 'STALE_CANDIDATE', 'Prices changed after candidate preparation')
       const snapshot = publicCatalogSchema.parse(candidate.snapshot)
       if (snapshot.releaseId !== input.releaseId) throw new AppError(409, 'RELEASE_MISMATCH', 'Release ID does not match candidate snapshot')
       if (input.requireProductionAssets) await assertProductionAssetCoverage(tx, snapshot)
@@ -292,12 +305,14 @@ export class CatalogService {
         if (inProgress.nextPublicationId === input.candidateId && inProgress.nextReleasePath === input.releasePath) return inProgress
         throw new AppError(409, 'CONFLICT', 'Another catalog activation requires recovery')
       }
-      const state = await tx.catalogState.findUnique({ where: { singletonKey: 'catalog' } })
+      const state = await lockCatalogState(tx)
+      const pricingState = await lockPricingState(tx)
       const candidate = await tx.catalogPublication.findUnique({ where: { id: input.candidateId } })
-      if (!state || state.activationState !== 'IDLE' || !candidate || candidate.status !== 'CANDIDATE') {
+      if (state.activationState !== 'IDLE' || !candidate || candidate.status !== 'CANDIDATE') {
         throw new AppError(409, 'INVALID_CANDIDATE', 'Candidate is missing or catalog activation is not idle')
       }
       if (candidate.catalogRevision !== state.revision) throw new AppError(409, 'STALE_CANDIDATE', 'Catalog changed after candidate preparation')
+      if (candidate.priceVersionId !== pricingState.currentPriceVersionId) throw new AppError(409, 'STALE_CANDIDATE', 'Prices changed after candidate preparation')
       const snapshot = publicCatalogSchema.parse(candidate.snapshot)
       if (snapshot.releaseId !== input.releaseId) throw new AppError(409, 'RELEASE_MISMATCH', 'Release ID does not match candidate snapshot')
       if (input.requireProductionAssets) await assertProductionAssetCoverage(tx, snapshot)
@@ -321,7 +336,8 @@ export class CatalogService {
 
 function ownerFieldValue(variant: {
   sku: string; publicName: string; heightMm: number; widthMm: number; depthMm: number;
-  layoutSpanMm: number | null; isActive: boolean; cutPolicy: string; assetId: string | null;
+  layoutSpanMm: number | null; bodyM2: unknown; facadeM2: unknown; hdfM2: unknown; fastenerChargeRub: unknown;
+  configurationData: unknown; family?: { key: string }; isActive: boolean; cutPolicy: string; assetId: string | null;
 }, key: string) {
   switch (key) {
     case 'sku': return variant.sku
@@ -330,6 +346,9 @@ function ownerFieldValue(variant: {
     case 'widthMm': return variant.widthMm
     case 'depthMm': return variant.depthMm
     case 'layoutSpanMm': return variant.layoutSpanMm
+    case 'consumptionM2': return { body: Number(variant.bodyM2), facade: Number(variant.facadeM2), hdf: Number(variant.hdfM2) }
+    case 'fastenerChargeRub': return Number(variant.fastenerChargeRub)
+    case 'configuration': return configurationForStoredVariant(variant.configurationData, variant.family?.key)
     case 'isActive': return variant.isActive
     case 'cutPolicy': return variant.cutPolicy
     case 'assetId': return variant.assetId
@@ -415,11 +434,53 @@ async function buildPublicSnapshot(
   })
 }
 
+async function buildConfigurationPricingSnapshot(
+  tx: Prisma.TransactionClient,
+  publicationId: string,
+  price: { id: string; rates: unknown },
+) {
+  const rates = pricingRatesSchema.parse(price.rates)
+  const variants = await tx.catalogVariant.findMany({
+    where: { isActive: true, isComplete: true, family: { is: { isActive: true } } },
+    include: { family: true },
+    orderBy: [{ family: { key: 'asc' } }, { widthMm: 'asc' }],
+  })
+  if (variants.length === 0) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'No active catalog variants are available for configuration')
+  return {
+    publicationId,
+    priceVersionId: price.id,
+    rates: {
+      packagingRubM2: rates.packagingRubM2,
+      customerPriceMultiplier: rates.customerPriceMultiplier,
+      includedVatFraction: rates.includedVatFraction,
+      cutToWidthServiceRub: rates.cutToWidthServiceRub,
+      finalCustomerTotalRoundingRub: rates.finalCustomerTotalRoundingRub,
+    },
+    materials: rates.palette,
+    variants: variants.map((variant) => ({
+      id: variant.id,
+      familyKey: variant.family.key,
+      row: variant.family.row,
+      sku: variant.sku,
+      publicName: variant.publicName,
+      heightMm: variant.heightMm,
+      widthMm: variant.widthMm,
+      depthMm: variant.depthMm,
+      layoutSpanMm: variant.layoutSpanMm,
+      consumption: { body: Number(variant.bodyM2), facade: Number(variant.facadeM2), hdf: Number(variant.hdfM2) },
+      fastenerChargeRub: Number(variant.fastenerChargeRub),
+      cutPolicy: variant.cutPolicy,
+      configuration: configurationForStoredVariant(variant.configurationData, variant.family.key),
+      customerSupplied: customerSuppliedComments(variant.fastenersData),
+    })),
+  }
+}
+
 function ownerVariantDto(variant: {
-  id: string; sourceRecordId: string | null; familyId: string; sku: string; publicName: string;
+  id: string; sourceRecordId: string | null; familyId: string; family: { key: string }; sku: string; publicName: string;
   heightMm: number; widthMm: number; depthMm: number; layoutSpanMm: number | null;
   bodyM2: unknown; facadeM2: unknown; hdfM2: unknown; fastenerChargeRub: unknown;
-  cutPolicy: string; isActive: boolean; isComplete: boolean; sourceManaged: boolean;
+  cutPolicy: string; configurationData: unknown; isActive: boolean; isComplete: boolean; sourceManaged: boolean;
   ownerEditedFields: unknown; assetId: string | null; revision: number; updatedAt: Date;
 }) {
   return {
@@ -429,6 +490,7 @@ function ownerVariantDto(variant: {
     consumptionM2: { body: Number(variant.bodyM2), facade: Number(variant.facadeM2), hdf: Number(variant.hdfM2) },
     fastenerChargeRub: Number(variant.fastenerChargeRub),
     cutPolicy: variant.cutPolicy as 'allowed' | 'forbidden', isActive: variant.isActive, isComplete: variant.isComplete,
+    configuration: configurationForStoredVariant(variant.configurationData, variant.family.key),
     sourceManaged: variant.sourceManaged, ownerEditedFields: stringArray(variant.ownerEditedFields),
     assetId: variant.assetId, revision: variant.revision, updatedAt: variant.updatedAt.toISOString(),
   }
@@ -443,6 +505,13 @@ function editData(command: OwnerCatalogVariantEdit, ownerEditedFields: string[])
     ...(changes.widthMm !== undefined ? { widthMm: changes.widthMm } : {}),
     ...(changes.depthMm !== undefined ? { depthMm: changes.depthMm } : {}),
     ...(changes.layoutSpanMm !== undefined ? { layoutSpanMm: changes.layoutSpanMm } : {}),
+    ...(changes.consumptionM2 !== undefined ? {
+      bodyM2: changes.consumptionM2.body,
+      facadeM2: changes.consumptionM2.facade,
+      hdfM2: changes.consumptionM2.hdf,
+    } : {}),
+    ...(changes.fastenerChargeRub !== undefined ? { fastenerChargeRub: changes.fastenerChargeRub } : {}),
+    ...(changes.configuration !== undefined ? { configurationData: changes.configuration as Prisma.InputJsonValue } : {}),
     ...(changes.isActive !== undefined ? { isActive: changes.isActive } : {}),
     ...(changes.cutPolicy !== undefined ? { cutPolicy: changes.cutPolicy } : {}),
     ...(changes.assetId !== undefined ? { assetId: changes.assetId } : {}),
@@ -479,8 +548,57 @@ function stringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : []
 }
 
+function configurationForStoredVariant(value: unknown, familyKey: string | undefined) {
+  if (
+    familyKey
+    && typeof value === 'object'
+    && value !== null
+    && !Array.isArray(value)
+    && Object.keys(value).length === 0
+  ) {
+    return configurationDefaultsForFamily(familyKey)
+  }
+  return configurationMetadataSchema.parse(value)
+}
+
+function customerSuppliedComments(value: unknown) {
+  if (!value || typeof value !== 'object') return []
+  const supplied = (value as { customerSupplied?: unknown }).customerSupplied
+  if (!Array.isArray(supplied)) return []
+  return supplied.flatMap((line) => {
+    if (!line || typeof line !== 'object' || typeof (line as { item?: unknown }).item !== 'string') return []
+    const item = (line as { item: string }).item
+    return item ? [`${item}: покупают сами` ] : []
+  })
+}
+
 function numberArray(value: unknown, fallback: number[]) {
   return Array.isArray(value) && value.every((item) => typeof item === 'number') ? value : fallback
+}
+
+async function lockCatalogState(tx: Prisma.TransactionClient) {
+  const states = await tx.$queryRaw<Array<{
+    id: string
+    revision: number
+    activePublicationId: string | null
+    activationState: 'IDLE' | 'MAINTENANCE'
+  }>>`
+    SELECT id, revision, active_publication_id AS "activePublicationId", activation_state AS "activationState"
+    FROM catalog_state WHERE singleton_key = 'catalog' FOR UPDATE
+  `
+  const state = states[0]
+  if (!state) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
+  return state
+}
+
+async function lockPricingState(tx: Prisma.TransactionClient) {
+  const states = await tx.$queryRaw<Array<{ currentPriceVersionId: string | null }>>`
+    SELECT current_price_version_id AS "currentPriceVersionId"
+    FROM pricing_state WHERE singleton_key = 'pricing' FOR UPDATE
+  `
+  const state = states[0]
+  if (!state?.currentPriceVersionId) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'Import the approved catalog first')
+  return state
 }
 
 function validateBackupReceipt(

@@ -114,9 +114,9 @@ export function CatalogPage() {
             <Badge variant="outline">Редакция {catalog.catalogRevision}</Badge>
           </div>
           <Typography variant="h1">Каталог модулей</Typography>
-          <Typography tone="muted">225 вариантов. Цены материалов на этом этапе доступны только для просмотра.</Typography>
+          <Typography tone="muted">Здесь меняются свойства модулей. Ставки материалов управляются отдельно.</Typography>
         </div>
-        <Button disabled={state === 'saving' || !catalog.hasUnpreparedChanges} onClick={() => void prepare()}>Подготовить выпуск</Button>
+        <div className="flex flex-wrap gap-2"><Button asChild variant="secondary"><a href="/app/pricing">Ставки материалов</a></Button><Button disabled={state === 'saving' || !catalog.hasUnpreparedChanges} onClick={() => void prepare()}>Подготовить выпуск</Button></div>
       </div>
 
       {message && <Typography as="div" variant="bodySm" role="status" className="rounded-lg border bg-muted/40 p-3">{message}</Typography>}
@@ -148,6 +148,16 @@ function VariantEditor({ variant, assets, disabled, save }: { variant: Variant; 
   const [assetId, setAssetId] = useState(variant.assetId ?? '__family__')
   const [active, setActive] = useState(variant.isActive)
   const [cutPolicy, setCutPolicy] = useState<'allowed' | 'forbidden'>(variant.cutPolicy)
+  const [bodyM2, setBodyM2] = useState(String(variant.consumptionM2.body))
+  const [facadeM2, setFacadeM2] = useState(String(variant.consumptionM2.facade))
+  const [hdfM2, setHdfM2] = useState(String(variant.consumptionM2.hdf))
+  const [fastenerChargeRub, setFastenerChargeRub] = useState(String(variant.fastenerChargeRub))
+  const [role, setRole] = useState(variant.configuration.role)
+  const [straightEligible, setStraightEligible] = useState(variant.configuration.straightEligible)
+  const [reservedUpperRows, setReservedUpperRows] = useState(variant.configuration.reservedUpperRows.join(','))
+  const [falsePanelPositions, setFalsePanelPositions] = useState(variant.configuration.falsePanelPositions.join(','))
+  const [trimLine, setTrimLine] = useState(variant.configuration.trimLine ?? 'none')
+  const [trimLines, setTrimLines] = useState(variant.configuration.trimLines.join(','))
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -161,6 +171,16 @@ function VariantEditor({ variant, assets, disabled, save }: { variant: Variant; 
       assetId: assetId === '__family__' ? null : assetId,
       isActive: active,
       cutPolicy,
+      consumptionM2: { body: Number(bodyM2), facade: Number(facadeM2), hdf: Number(hdfM2) },
+      fastenerChargeRub: Number(fastenerChargeRub),
+      configuration: {
+        role,
+        straightEligible,
+        reservedUpperRows: splitValues(reservedUpperRows),
+        falsePanelPositions: splitValues(falsePanelPositions),
+        trimLine: trimLine === 'none' ? null : trimLine,
+        trimLines: splitValues(trimLines),
+      },
     }
     const original = {
       publicName: variant.publicName,
@@ -172,8 +192,11 @@ function VariantEditor({ variant, assets, disabled, save }: { variant: Variant; 
       assetId: variant.assetId,
       isActive: variant.isActive,
       cutPolicy: variant.cutPolicy,
+      consumptionM2: variant.consumptionM2,
+      fastenerChargeRub: variant.fastenerChargeRub,
+      configuration: variant.configuration,
     }
-    const changes = Object.fromEntries(Object.entries(next).filter(([key, value]) => value !== original[key as keyof typeof original]))
+    const changes = Object.fromEntries(Object.entries(next).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(original[key as keyof typeof original])))
     if (Object.keys(changes).length > 0) void save(variant, changes)
   }
 
@@ -185,12 +208,14 @@ function VariantEditor({ variant, assets, disabled, save }: { variant: Variant; 
     <Field label="Изображение"><Select value={assetId} onValueChange={setAssetId}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="__family__">Изображение семейства</SelectItem>{assets.map((asset) => <SelectItem key={asset.id} value={asset.id}>{asset.key} · {asset.status === 'APPROVED' ? 'одобрено' : asset.status === 'REJECTED' ? 'отклонено' : 'черновое'}</SelectItem>)}</SelectContent></Select></Field>
     <Field label="Подрезка"><Select value={cutPolicy} onValueChange={(value) => setCutPolicy(value as 'allowed' | 'forbidden')}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="allowed">Разрешена</SelectItem><SelectItem value="forbidden">Запрещена</SelectItem></SelectContent></Select></Field>
     <div className="flex items-center justify-between rounded-lg border p-3"><Label htmlFor="variant-active">Показывать в каталоге</Label><Switch id="variant-active" checked={active} onCheckedChange={setActive} /></div>
-    <Typography as="div" variant="bodySm" tone="muted" className="rounded-lg bg-muted p-3">Расход: корпус {variant.consumptionM2.body} м² · фасад {variant.consumptionM2.facade} м² · ХДФ {variant.consumptionM2.hdf} м² · крепёж {variant.fastenerChargeRub} ₽</Typography>
+    <div className="grid gap-2 rounded-lg bg-muted p-3"><Typography variant="bodySmMedium">Расчётные данные варианта</Typography><div className="grid grid-cols-3 gap-2"><Field label="Корпус, м²"><Input inputMode="decimal" value={bodyM2} onChange={(event) => setBodyM2(event.target.value)} /></Field><Field label="Фасад, м²"><Input inputMode="decimal" value={facadeM2} onChange={(event) => setFacadeM2(event.target.value)} /></Field><Field label="ХДФ, м²"><Input inputMode="decimal" value={hdfM2} onChange={(event) => setHdfM2(event.target.value)} /></Field></div><Field label="Фиксированный крепёж, ₽"><Input inputMode="decimal" value={fastenerChargeRub} onChange={(event) => setFastenerChargeRub(event.target.value)} /></Field></div>
+    <div className="grid gap-3 rounded-lg border p-3"><Typography variant="bodySmMedium">Правила конфигуратора</Typography><Field label="Роль"><Select value={role} onValueChange={(value) => { setRole(value as Variant['configuration']['role']); if (value === 'tall' && !reservedUpperRows) setReservedUpperRows('wall,mezzanine'); if (value !== 'tall') setReservedUpperRows(''); if (value !== 'false_panel') { setFalsePanelPositions(''); setTrimLines('') } if (value === 'plinth') setTrimLine('plinth'); if (value === 'crown') setTrimLine('crown'); if (!['plinth', 'crown'].includes(value)) setTrimLine('none') }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="ordinary">Обычный модуль</SelectItem><SelectItem value="tall">Пенал</SelectItem><SelectItem value="false_panel">Фальш‑панель</SelectItem><SelectItem value="plinth">Цоколь</SelectItem><SelectItem value="crown">Корона</SelectItem></SelectContent></Select></Field><div className="flex items-center justify-between"><Label htmlFor="straight-eligible">Доступен для прямой кухни</Label><Switch id="straight-eligible" checked={straightEligible} onCheckedChange={setStraightEligible} /></div><Field label="Резервируемые верхние ряды"><Select value={reservedUpperRows || 'none'} onValueChange={(value) => setReservedUpperRows(value === 'none' ? '' : value)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="none">Нет</SelectItem><SelectItem value="wall">Средний ряд</SelectItem><SelectItem value="wall,mezzanine">Средний и антресоль</SelectItem></SelectContent></Select></Field>{role === 'false_panel' && <><Field label="Допустимая позиция"><Select value={falsePanelPositions || 'end'} onValueChange={setFalsePanelPositions}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="start">В начале</SelectItem><SelectItem value="between">Между модулями</SelectItem><SelectItem value="end">В конце</SelectItem><SelectItem value="start,between,end">Любая</SelectItem></SelectContent></Select></Field><Field label="Продолжает линию"><Select value={trimLines || 'none'} onValueChange={(value) => setTrimLines(value === 'none' ? '' : value)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="none">Не продолжает</SelectItem><SelectItem value="plinth">Цоколь</SelectItem><SelectItem value="crown">Корона</SelectItem><SelectItem value="plinth,crown">Обе линии</SelectItem></SelectContent></Select></Field></>}{['plinth', 'crown'].includes(role) && <Field label="Линия доборного элемента"><Select value={trimLine} onValueChange={(value) => setTrimLine(value as 'plinth' | 'crown')}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="plinth">Цоколь</SelectItem><SelectItem value="crown">Корона</SelectItem></SelectContent></Select></Field>}</div>
     <Button type="submit" disabled={disabled}>Сохранить изменения</Button>
   </form></CardContent></Card>
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) { return <Label className="grid gap-1.5"><Typography as="span" variant="label">{label}</Typography>{children}</Label> }
+function splitValues(value: string) { return value.split(',').map((item) => item.trim()).filter(Boolean) }
 function CatalogShell({ children }: { children: React.ReactNode }) { return <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 sm:px-5 sm:py-12">{children}</section> }
 function publicationStatusLabel(status: OwnerCatalogResponse['publicationStatus']) {
   if (status === 'PUBLISHED') return 'Опубликовано'
