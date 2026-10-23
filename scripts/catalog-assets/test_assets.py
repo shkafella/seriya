@@ -101,7 +101,8 @@ class AssetPipelineTests(unittest.TestCase):
             model = parse_obj(obj)
             validate_dimensions(model["bounds"]["size"], [10, 20, 30], 0.01, "sample")
             svg = projected_svg(model, {"id": "sample"}, {"body": "ЛДСП Технический", "facade": "AGT Технический"})
-            self.assertIn(b'data-semantic="body"', svg)
+            self.assertIn(b'id="mask-body"', svg)
+            self.assertNotIn(b'data-', svg)
             self.assertIn(b"M", svg)
 
     def test_projection_discards_internal_geometry_and_stays_phone_sized(self):
@@ -123,8 +124,9 @@ class AssetPipelineTests(unittest.TestCase):
         svg = projected_svg(model, {"id": "complex"}, {"body": "body-mat", "facade": "facade-mat"})
 
         self.assertEqual(svg.count(b"<path "), 2)
-        self.assertIn(b'data-semantic="body"', svg)
-        self.assertIn(b'data-semantic="facade"', svg)
+        self.assertIn(b'id="mask-body"', svg)
+        self.assertIn(b'id="mask-facade"', svg)
+        self.assertNotIn(b'data-', svg)
         self.assertNotIn(b"fastener", svg)
         self.assertLess(len(svg), MAX_DERIVED_ASSET_BYTES)
 
