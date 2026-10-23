@@ -24,6 +24,11 @@ set -a
 # shellcheck disable=SC1090
 . "$SHARED_DIR/backend.env"
 set +a
+BACKEND_PORT="${PORT:-3000}"
+if ! [[ "$BACKEND_PORT" =~ ^[0-9]+$ ]] || (( 10#$BACKEND_PORT < 1 || 10#$BACKEND_PORT > 65535 )); then
+  echo "ERROR: PORT must be an integer from 1 to 65535" >&2
+  exit 1
+fi
 
 # Recovery must run from an immutable release: source/ never receives the locked
 # dependencies or generated Prisma client. The newest assembled release always
@@ -79,7 +84,7 @@ if [ -n "$PREVIOUS_RELEASE" ] && [ -d "$PREVIOUS_RELEASE" ]; then
   RESPONSE=""
   READY="false"
   for _ in $(seq 1 30); do
-    if RESPONSE="$(curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:3000/health/ready 2>/dev/null)" \
+    if RESPONSE="$(curl -fsS --connect-timeout 2 --max-time 3 "http://127.0.0.1:$BACKEND_PORT/health/ready" 2>/dev/null)" \
       && grep -F "$PREVIOUS_RELEASE_ID" <<<"$RESPONSE" >/dev/null; then
       READY="true"
       break

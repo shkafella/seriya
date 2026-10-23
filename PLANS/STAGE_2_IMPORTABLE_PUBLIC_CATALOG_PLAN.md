@@ -147,7 +147,7 @@ Stage 2 is complete when all of the following are observable:
 - [x] Stage 2.2 complete
 - [x] Stage 2.3 complete
 - [x] Stage 2.4 complete — the conversion pipeline and six fixtures are ready; the owner approved the six-model test-release boundary on 2026-10-22, with later Basis models deferred to incremental catalog expansion
-- [ ] Stage 2.5 complete — the release implementation and automated contract checks are ready; a live Linux/systemd failure-injection rehearsal remains
+- [x] Stage 2.5 complete — a live isolated Linux/systemd failure-injection rehearsal passed on 2026-10-24: recovery restored the previous release on port 3100, removed the temporary service, and left the existing backend on port 3000 healthy
 - [x] Stage 2.6 complete — validation matrix is green; the final post-fix review at levels 1–4 found no defects, scored the scoped implementation 10.0/10, and assessed changed-scenario coverage at 9.7/10
 - [x] Code accepted by `/loop-code-review-3` at levels 1–4 — final fresh review after all remediations found no blocker, critical, serious, or medium finding
 - [x] Implementation committed and pushed in `eb2f651` (`feat: build importable public catalog`)

@@ -42,6 +42,11 @@ set -a
 # shellcheck disable=SC1090
 . "$SHARED_DIR/webapp.env"
 set +a
+BACKEND_PORT="${PORT:-3000}"
+if ! [[ "$BACKEND_PORT" =~ ^[0-9]+$ ]] || (( 10#$BACKEND_PORT < 1 || 10#$BACKEND_PORT > 65535 )); then
+  echo "ERROR: PORT must be an integer from 1 to 65535" >&2
+  exit 1
+fi
 TARGET_DATABASE="$(bun -e 'console.log(decodeURIComponent(new URL(process.env.DATABASE_URL).pathname.slice(1)))')"
 if [ -z "$TARGET_DATABASE" ] || [ "${BACKUP_DATABASE_NAME:-seriya}" != "$TARGET_DATABASE" ]; then
   echo "ERROR: BACKUP_DATABASE_NAME must exactly match the database in DATABASE_URL" >&2
@@ -94,7 +99,7 @@ wait_for_release_ready() {
   local expected_release="$1"
   local response=""
   for _ in $(seq 1 30); do
-    if response="$(curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:3000/health/ready 2>/dev/null)" \
+    if response="$(curl -fsS --connect-timeout 2 --max-time 3 "http://127.0.0.1:$BACKEND_PORT/health/ready" 2>/dev/null)" \
       && grep -F "$expected_release" <<<"$response" >/dev/null; then
       return 0
     fi
