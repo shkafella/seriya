@@ -108,10 +108,23 @@ wait_for_release_ready() {
   echo "ERROR: backend did not become ready for release $expected_release" >&2
   return 1
 }
+
+wait_for_postgres() {
+  for _ in $(seq 1 30); do
+    if (cd "$SOURCE_DIR" && docker compose exec -T postgres pg_isready \
+      -U "${BACKUP_DATABASE_USER:-superuser}" -d "$TARGET_DATABASE" >/dev/null 2>&1); then
+      return 0
+    fi
+    sleep 1
+  done
+  echo "ERROR: PostgreSQL did not become ready" >&2
+  return 1
+}
 trap 'echo "ERROR: deployment failed; restoring previous complete release" >&2; rollback_application' ERR
 
 echo "==> Verified backup before migration"
 (cd "$SOURCE_DIR" && docker compose up -d postgres)
+wait_for_postgres
 BACKUP_PROJECT_NAME="$PROJECT_NAME" PROJECT_ROOT="$SOURCE_DIR" BACKUP_RECEIPT_PATH="$RECEIPT" "$SOURCE_DIR/scripts/vps/db-backup.sh"
 bun "$SOURCE_DIR/scripts/vps/verify-backup-receipt.ts" "$RECEIPT" "/var/backups/$PROJECT_NAME" "$TARGET_DATABASE"
 
