@@ -69,4 +69,9 @@ if (process.env.TEST_SKIP_DOCKER !== '1') {
 
 run('bun', ['run', 'prisma:generate'], { env })
 run('bun', ['run', 'prisma:deploy'], { env })
-run('bun', ['test', 'src/modules/auth/auth.integration.test.ts', 'src/modules/catalog/catalog-import.integration.test.ts'], { env })
+run('bun', [
+  'test',
+  'src/modules/auth/auth.integration.test.ts',
+  'src/modules/catalog/catalog-import.integration.test.ts',
+  'src/modules/leads/leads.foundation.integration.test.ts',
+], { env })

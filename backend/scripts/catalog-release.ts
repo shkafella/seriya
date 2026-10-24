@@ -52,6 +52,8 @@ try {
     console.log(JSON.stringify({ candidateId, releasePath, applicationSwitched: true }))
   } else if (command === 'verify') {
     console.log(JSON.stringify(await service.verifyActivation(requiredArg(3, 'candidate ID'), requiredArg(4, 'release path'))))
+  } else if (command === 'bootstrap-public-verification') {
+    console.log(JSON.stringify(await service.bootstrapPublicVerification()))
   } else if (command === 'recovery-plan') {
     const requestedCandidateId = process.argv[3]
     const attempt = await db.catalogActivationAttempt.findFirst({
@@ -77,7 +79,7 @@ try {
     const attempt = await service.recoverActivation(process.argv[3])
     console.log(attempt ? `Restored previous publication for attempt ${attempt.id}` : 'No matching catalog activation attempt')
   } else {
-    throw new Error('Usage: catalog-release.ts prepare|export|begin|mark-application|activate|verify|recovery-plan|start-recovery|recover')
+    throw new Error('Usage: catalog-release.ts prepare|export|begin|mark-application|activate|verify|bootstrap-public-verification|recovery-plan|start-recovery|recover')
   }
 } finally {
   await db.$disconnect()

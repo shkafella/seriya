@@ -12,8 +12,19 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
 
     <div id="config-error" class="config-message" role="alert" hidden></div>
     <div id="config-loading" class="config-message">Загружаем опубликованный каталог…</div>
+    <section id="draft-notice" class="config-message draft-notice" aria-live="polite" hidden>
+      <span id="draft-notice-text"></span>
+      <div class="draft-actions">
+        <button id="restore-draft" type="button">Восстановить</button>
+        <button id="discard-draft" type="button">Удалить черновик</button>
+      </div>
+    </section>
 
     <section id="config-app" hidden>
+      <div class="history-toolbar" aria-label="История изменений">
+        <button id="undo-change" type="button" disabled aria-label="Отменить последнее изменение">↶ Отменить</button>
+        <button id="redo-change" type="button" disabled aria-label="Вернуть отменённое изменение">↷ Вернуть</button>
+      </div>
       <div class="config-toolbar" aria-label="Параметры кухни">
         <label>Длина стены, мм <input id="wall-length" inputmode="numeric" min="1" placeholder="Необязательно" /></label>
         <label>Начинать от <select id="start-side"><option value="left">левой стены</option><option value="right">правой стены</option></select></label>
@@ -58,11 +69,42 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
 </CatalogLayout>
 
 <script>
-  type Row = 'lower' | 'wall' | 'mezzanine'
-  type Module = { variantId: string; startMm: number; cutWidthMm: number | null; withoutFacade: boolean }
-  type FalsePanel = { variantId: string; row: Row; startMm: number; widthMm: number; position: 'start' | 'between' | 'end'; anchorIndex?: number }
-  type Variant = { id: string; familyKey: string; row: Row | 'accessory'; sku: string; publicName: string; dimensionsMm: { height: number; width: number; depth: number; layoutSpan?: number }; cutToWidth: { allowed: boolean }; configuration: { role: string; straightEligible: boolean; reservedUpperRows: Row[]; falsePanelPositions: string[] } }
-  type Bootstrap = { publicationId: string; priceVersionId: string; materials: Array<{ id: string; name: string; kind: 'body' | 'facade' | 'hdf'; isActive: boolean }>; variants: Variant[] }
+  import type {
+    AcceptedConfigurationQuote,
+    ConfigurationBootstrap,
+    ConfiguratorDraft,
+  } from '@seriya/contracts'
+  import { validateDraftCompatibility } from '../features/configurator/draft-compatibility'
+  import {
+    CONFIGURATOR_DRAFT_STORAGE_KEY,
+    readConfiguratorDraft,
+    serializeConfiguratorDraft,
+  } from '../features/configurator/draft-storage'
+  import {
+    currentRowEnd,
+    falsePanelFitsWall,
+    freeIntervalsForRow,
+    moduleFitsWall,
+    normalizeFalsePanels,
+    occupiedRowEnd,
+    reflowConfiguratorRow,
+    variantSpan,
+  } from '../features/configurator/layout'
+  import {
+    buildConfigurationCommand,
+    configuratorRows,
+    ConfiguratorStateModel,
+    configuratorStateFromDraft,
+    createInitialConfiguratorState,
+    type ConfiguratorFalsePanel,
+    type ConfiguratorRow,
+    type ConfiguratorState,
+  } from '../features/configurator/state'
+
+  type Row = ConfiguratorRow
+  type FalsePanel = ConfiguratorFalsePanel
+  type Variant = ConfigurationBootstrap['variants'][number]
+  type Bootstrap = ConfigurationBootstrap
 
   const root = document.querySelector<HTMLElement>('.configurator')
   const apiBase = root?.dataset.apiBase ?? '/api'
@@ -92,7 +134,13 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
   const suggestUpperButton = document.querySelector<HTMLButtonElement>('#suggest-upper')
   const falsePanelPosition = document.querySelector<HTMLSelectElement>('#false-panel-position')
   const freeIntervalsHost = document.querySelector<HTMLElement>('#free-intervals')
-  const rows: Row[] = ['lower', 'wall', 'mezzanine']
+  const draftNotice = document.querySelector<HTMLElement>('#draft-notice')
+  const draftNoticeText = document.querySelector<HTMLElement>('#draft-notice-text')
+  const restoreDraftButton = document.querySelector<HTMLButtonElement>('#restore-draft')
+  const discardDraftButton = document.querySelector<HTMLButtonElement>('#discard-draft')
+  const undoButton = document.querySelector<HTMLButtonElement>('#undo-change')
+  const redoButton = document.querySelector<HTMLButtonElement>('#redo-change')
+  const rows = configuratorRows
   const rowNames: Record<Row, string> = { lower: 'Нижний ряд', wall: 'Средний ряд', mezzanine: 'Антресоль' }
   const rubles = new Intl.NumberFormat('ru-RU')
 
@@ -103,81 +151,27 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
   let quotedFreeIntervals: Array<{ row: Row; startMm: number; endMm: number }> | null = null
   let quoteAbort: AbortController | null = null
   let intent = 0
-  const state: { rows: Record<Row, Module[]>; falsePanels: FalsePanel[] } = {
-    rows: { lower: [], wall: [], mezzanine: [] }, falsePanels: [],
-  }
+  let saveTimer: ReturnType<typeof setTimeout> | null = null
+  let pendingDraft: ConfiguratorDraft | null = null
+  let draftWriteBlocked = false
+  const stateModel = new ConfiguratorStateModel()
+  let state = stateModel.state
 
   function escape(value: string) { return value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char] ?? char) }
-  function span(variant: Variant) { return variant.dimensionsMm.layoutSpan ?? variant.dimensionsMm.width }
-  function currentEnd(row: Row) { return state.rows[row].reduce((end, item) => Math.max(end, item.startMm + (item.cutWidthMm ?? span(findVariant(item.variantId)))), 0) }
-  function rowEnd(row: Row) {
-    return Math.max(0, currentEnd(row), ...state.falsePanels.filter((item) => item.row === row).map((item) => item.startMm + item.widthMm))
-  }
+  function span(variant: Variant) { return variantSpan(variant) }
+  function currentEnd(row: Row) { return currentRowEnd(state, requiredBootstrap(), row) }
+  function rowEnd(row: Row) { return occupiedRowEnd(state, requiredBootstrap(), row) }
   function wallMm() {
-    const value = Number(wallLength?.value)
-    return Number.isInteger(value) && value > 0 ? value : null
-  }
-  function reservedIntervals(row: Row) {
-    if (row === 'lower') return []
-    return state.rows.lower.flatMap((item) => {
-      const variant = findVariant(item.variantId)
-      if (variant.configuration.role !== 'tall' || !variant.configuration.reservedUpperRows.includes(row)) return []
-      const itemSpan = item.cutWidthMm ?? span(variant)
-      return [{ startMm: item.startMm, endMm: item.startMm + itemSpan }]
-    }).sort((left, right) => left.startMm - right.startMm)
-  }
-  function nextFreeStart(row: Row, startMm: number, itemSpan: number) {
-    let candidate = startMm
-    while (true) {
-      const reserved = reservedIntervals(row).find((interval) => candidate < interval.endMm && candidate + itemSpan > interval.startMm)
-      if (!reserved) return candidate
-      candidate = reserved.endMm
-    }
-  }
-  function flowRowEnd(row: Row, moduleSpans: number[], panels = state.falsePanels.filter((item) => item.row === row)) {
-    let startMm = 0
-    const place = (itemSpan: number) => { startMm = nextFreeStart(row, startMm, itemSpan) + itemSpan }
-    const rowPanels = panels.filter((item) => item.row === row)
-    for (const panel of rowPanels.filter((item) => item.position === 'start')) place(panel.widthMm)
-    for (const [index, itemSpan] of moduleSpans.entries()) {
-      place(itemSpan)
-      for (const panel of rowPanels.filter((item) => item.position === 'between' && item.anchorIndex === index)) place(panel.widthMm)
-    }
-    for (const panel of rowPanels.filter((item) => item.position === 'end')) place(panel.widthMm)
-    return startMm
+    return state.wallLengthMm
   }
   function fitsWall(row: Row, nextModuleSpan = 0, replacedIndex: number | null = null) {
-    const wall = wallMm()
-    const spans = state.rows[row].map((item) => item.cutWidthMm ?? span(findVariant(item.variantId)))
-    if (replacedIndex === null) spans.push(nextModuleSpan)
-    else spans[replacedIndex] = nextModuleSpan
-    return wall === null || flowRowEnd(row, spans) <= wall
+    return moduleFitsWall(state, requiredBootstrap(), row, nextModuleSpan, replacedIndex)
   }
   function fitsFalsePanel(row: Row, nextPanelSpan: number, position: FalsePanel['position'], anchorIndex?: number) {
-    const wall = wallMm()
-    const panels = [
-      ...state.falsePanels.filter((item) => item.row !== row),
-      { variantId: '', row, startMm: 0, widthMm: nextPanelSpan, position, ...(anchorIndex === undefined ? {} : { anchorIndex }) },
-    ]
-    const spans = state.rows[row].map((item) => item.cutWidthMm ?? span(findVariant(item.variantId)))
-    return wall === null || flowRowEnd(row, spans, panels) <= wall
+    return falsePanelFitsWall(state, requiredBootstrap(), row, nextPanelSpan, position, anchorIndex)
   }
   function intervalsForRow(row: Row) {
-    const wall = wallMm()
-    if (wall === null) return []
-    const occupied = [
-      ...state.rows[row].map((item) => ({ startMm: item.startMm, endMm: item.startMm + (item.cutWidthMm ?? span(findVariant(item.variantId))) })),
-      ...state.falsePanels.filter((item) => item.row === row).map((item) => ({ startMm: item.startMm, endMm: item.startMm + item.widthMm })),
-      ...reservedIntervals(row),
-    ].sort((left, right) => left.startMm - right.startMm)
-    const intervals: Array<{ row: Row; startMm: number; endMm: number }> = []
-    let cursor = 0
-    for (const item of occupied) {
-      if (item.startMm > cursor) intervals.push({ row, startMm: cursor, endMm: Math.min(item.startMm, wall) })
-      cursor = Math.max(cursor, item.endMm)
-    }
-    if (cursor < wall) intervals.push({ row, startMm: cursor, endMm: wall })
-    return intervals.filter((item) => item.endMm > item.startMm)
+    return freeIntervalsForRow(state, requiredBootstrap(), row)
   }
   function isFreeInterval(interval: { row: Row; startMm: number; endMm: number }) {
     return intervalsForRow(interval.row).some((item) => item.startMm === interval.startMm && item.endMm === interval.endMm)
@@ -198,18 +192,178 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
     if (!length) return
     const occupied = Math.max(...(spans ? rows.map((row) => spans[row]) : rows.map(rowEnd)))
     const wall = wallMm()
-    const side = startSide?.value === 'right' ? 'от правой стены' : 'от левой стены'
+    const side = state.startSide === 'right' ? 'от правой стены' : 'от левой стены'
     if (wall === null) { length.textContent = `Занято: ${occupied} мм · ${side}`; return }
     const difference = wall - occupied
     length.textContent = difference >= 0
       ? `Занято: ${occupied} из ${wall} мм · свободно ${difference} мм · ${side}`
       : `Занято: ${occupied} из ${wall} мм · выходит на ${Math.abs(difference)} мм · ${side}`
   }
+  function requiredBootstrap() { if (!bootstrap) throw new Error('Конфигуратор ещё не готов'); return bootstrap }
   function findVariant(id: string) { const variant = bootstrap?.variants.find((item) => item.id === id); if (!variant) throw new Error('Модуль больше недоступен'); return variant }
   function options(items: Bootstrap['materials']) { return items.map((item) => `<option value="${escape(item.id)}">${escape(item.name)}</option>`).join('') }
 
+  function updateHistoryButtons() {
+    if (undoButton) undoButton.disabled = !stateModel.canUndo
+    if (redoButton) redoButton.disabled = !stateModel.canRedo
+  }
+
+  function syncControlsFromState() {
+    if (wallLength) wallLength.value = state.wallLengthMm === null ? '' : String(state.wallLengthMm)
+    if (startSide) startSide.value = state.startSide
+    if (bodySelect) bodySelect.value = state.bodyMaterialId
+    if (facadeSelect) facadeSelect.value = state.facadeMaterialId ?? ''
+    if (facadesEnabled) facadesEnabled.checked = state.facadesIncluded
+    if (packagingEnabled) packagingEnabled.checked = state.packagingIncluded
+    if (countertop) countertop.value = String(state.countertopThicknessMm)
+    if (plinthSelect) plinthSelect.value = state.plinthVariantId ?? ''
+    if (crownSelect) crownSelect.value = state.crownVariantId ?? ''
+    updateHistoryButtons()
+  }
+
+  function syncWallLengthFromControl() {
+    if (!wallLength) return false
+    const value = Number(wallLength.value)
+    const nextWallLength = Number.isInteger(value) && value > 0 ? value : null
+    const changed = stateModel.mutate((nextState) => { nextState.wallLengthMm = nextWallLength })
+    state = stateModel.state
+    if (!changed) return false
+    updateHistoryButtons()
+    return true
+  }
+
+  function scheduleDraftSave() {
+    if (saveTimer) clearTimeout(saveTimer)
+    saveTimer = setTimeout(flushDraft, 350)
+  }
+
+  function flushDraft() {
+    if (saveTimer) clearTimeout(saveTimer)
+    saveTimer = null
+    if (draftWriteBlocked) return
+    syncWallLengthFromControl()
+    const command = buildConfigurationCommand(state, 'local-draft')
+    try {
+      if (!command) localStorage.removeItem(CONFIGURATOR_DRAFT_STORAGE_KEY)
+      else localStorage.setItem(
+        CONFIGURATOR_DRAFT_STORAGE_KEY,
+        serializeConfiguratorDraft(command, stateModel.acceptedQuote, { startSide: state.startSide }),
+      )
+    } catch {
+      showLocalMessage('Браузер не смог сохранить черновик. Не закрывайте страницу.')
+    }
+  }
+
+  function commitStateMutation(mutator: () => void) {
+    const previousState = state
+    try {
+      const changed = stateModel.mutate((nextState) => {
+        state = nextState
+        mutator()
+      })
+      state = stateModel.state
+      if (changed) scheduleDraftSave()
+      updateHistoryButtons()
+    } catch (caught) {
+      state = previousState
+      throw caught
+    }
+  }
+
+  function restoreHistory(nextState: ConfiguratorState, restoredAcceptedQuote: AcceptedConfigurationQuote | null = null) {
+    stateModel.restore(nextState, restoredAcceptedQuote)
+    state = stateModel.state
+    selected = null
+    selectedInterval = null
+    scheduleDraftSave()
+    render()
+  }
+
+  function undo() {
+    if (!stateModel.undo()) return
+    state = stateModel.state
+    selected = null
+    selectedInterval = null
+    scheduleDraftSave()
+    render()
+  }
+
+  function redo() {
+    if (!stateModel.redo()) return
+    state = stateModel.state
+    selected = null
+    selectedInterval = null
+    scheduleDraftSave()
+    render()
+  }
+
+  function hideDraftNotice() {
+    pendingDraft = null
+    draftWriteBlocked = false
+    app?.removeAttribute('inert')
+    app?.removeAttribute('aria-disabled')
+    draftNotice?.setAttribute('hidden', '')
+  }
+
+  function showDraftNotice(message: string, draft: ConfiguratorDraft | null, canRestore: boolean, blockEditing = true) {
+    pendingDraft = draft
+    draftWriteBlocked = blockEditing
+    if (blockEditing) {
+      app?.setAttribute('inert', '')
+      app?.setAttribute('aria-disabled', 'true')
+    } else {
+      app?.removeAttribute('inert')
+      app?.removeAttribute('aria-disabled')
+    }
+    if (draftNoticeText) {
+      draftNoticeText.textContent = blockEditing
+        ? `${message} Чтобы продолжить редактирование, восстановите или удалите этот черновик.`
+        : message
+    }
+    if (restoreDraftButton) restoreDraftButton.hidden = !canRestore
+    draftNotice?.removeAttribute('hidden')
+  }
+
+  function inspectStoredDraft(raw = localStorage.getItem(CONFIGURATOR_DRAFT_STORAGE_KEY), fromAnotherTab = false) {
+    const result = readConfiguratorDraft(raw)
+    if (result.status === 'absent') {
+      if (fromAnotherTab) showDraftNotice('Черновик удалён в другой вкладке. Текущая кухня не изменена.', null, false, false)
+      return
+    }
+    if (result.status === 'unsupported') {
+      showDraftNotice('Этот черновик создан более новой версией сайта. Он не был применён.', null, false)
+      return
+    }
+    if (result.status === 'corrupt') {
+      showDraftNotice('Черновик повреждён и не был применён. Можно безопасно удалить его.', null, false)
+      return
+    }
+    const compatibility = bootstrap ? validateDraftCompatibility(result.draft, bootstrap) : { status: 'corrupt' as const }
+    const restored = bootstrap ? configuratorStateFromDraft(result.draft, bootstrap) : null
+    if (!restored || compatibility.status !== 'ready') {
+      showDraftNotice(
+        compatibility.status === 'stale'
+          ? 'Черновик относится к прошлой публикации. Он будет доступен после безопасной сверки каталога.'
+          : 'Черновик содержит несовместимые данные и не был применён. Можно безопасно удалить его.',
+        null,
+        false,
+      )
+      return
+    }
+    showDraftNotice(
+      fromAnotherTab
+        ? 'Черновик изменён в другой вкладке. Загрузить ту версию вместо текущей?'
+        : result.migrated
+          ? 'Найден черновик старой версии. Восстановить его в безопасном новом формате?'
+          : 'Найден сохранённый черновик. Восстановить?',
+      result.draft,
+      true,
+    )
+  }
+
   function render() {
     if (!bootstrap || !catalog || !scene || !activeTitle) return
+    syncControlsFromState()
     quotedFreeIntervals = null
     activeTitle.textContent = rowNames[activeRow]
     document.querySelectorAll<HTMLButtonElement>('.row-picker button').forEach((button) => button.classList.toggle('is-active', button.dataset.row === activeRow))
@@ -237,12 +391,15 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
         const variant = findVariant(entry.item.variantId)
         return `${gapMarkup}<button type="button" class="scene-module ${entry.item.withoutFacade ? 'without-facade' : ''} ${selected?.row === row && selected.index === entry.index ? 'is-selected' : ''}" style="--span:${itemSpan}" data-select-row="${row}" data-select-index="${entry.index}" aria-label="Настроить ${escape(variant.publicName)}"><span>${escape(variant.publicName)}</span><small>${itemSpan} мм</small></button>`
       }).join('')
-      return `<div class="scene-row scene-${row}"><strong>${rowNames[row]}</strong><div class="scene-modules ${startSide?.value === 'right' ? 'from-right' : ''}">${items || '<span class="scene-empty">Пусто</span>'}</div></div>`
+      return `<div class="scene-row scene-${row}"><strong>${rowNames[row]}</strong><div class="scene-modules ${state.startSide === 'right' ? 'from-right' : ''}">${items || '<span class="scene-empty">Пусто</span>'}</div></div>`
     }).join('')
     scene.querySelectorAll<HTMLButtonElement>('[data-select-row]').forEach((button) => button.addEventListener('click', () => { selected = { row: button.dataset.selectRow as Row, index: Number(button.dataset.selectIndex) }; render() }))
     scene.querySelectorAll<HTMLButtonElement>('[data-remove-panel]').forEach((button) => button.addEventListener('click', () => {
       const panel = state.falsePanels[Number(button.dataset.removePanel)]
-      if (panel) { state.falsePanels.splice(Number(button.dataset.removePanel), 1); reflow(panel.row) }
+      if (panel) commitStateMutation(() => {
+        state.falsePanels.splice(Number(button.dataset.removePanel), 1)
+        reflow(panel.row)
+      })
       render()
     }))
     if (suggestUpperButton) suggestUpperButton.hidden = !(['wall', 'mezzanine'].includes(activeRow) && state.rows.lower.length > 0)
@@ -281,57 +438,57 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
           const proposal = await replacementProposal(id, selectedIndex)
           if (!proposal) return
           if (proposal.requiresConfirmation && !window.confirm('Изменится соседний верхний модуль. Применить предложенную пару модулей?')) return
-          for (const change of proposal.changes) {
-            const item = state.rows[change.row][change.index]
-            if (item) { item.variantId = change.variantId; item.startMm = change.startMm; item.cutWidthMm = null }
-          }
+          commitStateMutation(() => {
+            for (const change of proposal.changes) {
+              const item = state.rows[change.row][change.index]
+              if (item) { item.variantId = change.variantId; item.startMm = change.startMm; item.cutWidthMm = null }
+            }
+          })
           render(); return
         }
-        current.variantId = id; current.cutWidthMm = null; reflow(activeRow); render(); return
+        commitStateMutation(() => {
+          const nextCurrent = state.rows[activeRow][selectedIndex]
+          if (nextCurrent) { nextCurrent.variantId = id; nextCurrent.cutWidthMm = null; reflow(activeRow) }
+        })
+        render(); return
       }
     }
     if (selectedInterval?.row === activeRow) {
       const nextVariant = findVariant(id)
       if (span(nextVariant) > selectedInterval.endMm - selectedInterval.startMm || !isFreeInterval(selectedInterval)) { showLocalMessage('Выбранный модуль не помещается в свободный интервал.'); return }
-      state.rows[activeRow].push({ variantId: id, startMm: selectedInterval.startMm, cutWidthMm: null, withoutFacade: !facadesEnabled?.checked })
-      state.rows[activeRow].sort((left, right) => left.startMm - right.startMm)
+      const intervalStart = selectedInterval.startMm
+      commitStateMutation(() => {
+        state.rows[activeRow].push({ variantId: id, startMm: intervalStart, cutWidthMm: null, withoutFacade: !state.facadesIncluded })
+        state.rows[activeRow].sort((left, right) => left.startMm - right.startMm)
+      })
       selectedInterval = null
       render(); return
     }
     if (!fitsWall(activeRow, span(findVariant(id)))) { showLocalMessage('Этот модуль не помещается в заданную длину стены.'); return }
-    state.rows[activeRow].push({ variantId: id, startMm: currentEnd(activeRow), cutWidthMm: null, withoutFacade: !facadesEnabled?.checked })
-    reflow(activeRow)
+    commitStateMutation(() => {
+      state.rows[activeRow].push({ variantId: id, startMm: currentEnd(activeRow), cutWidthMm: null, withoutFacade: !state.facadesIncluded })
+      reflow(activeRow)
+    })
     render()
   }
   function removeModule(row: Row, index: number) {
-    state.rows[row].splice(index, 1)
-    for (const panel of state.falsePanels) {
-      if (panel.row === row && panel.position === 'between' && panel.anchorIndex !== undefined && panel.anchorIndex >= index) panel.anchorIndex -= 1
-    }
-    normalizePanels(row)
+    commitStateMutation(() => {
+      state.rows[row].splice(index, 1)
+      for (const panel of state.falsePanels) {
+        if (panel.row === row && panel.position === 'between' && panel.anchorIndex !== undefined && panel.anchorIndex >= index) panel.anchorIndex -= 1
+      }
+      normalizePanels(row)
+      reflow(row)
+    })
     selected = null
-    reflow(row)
     render()
   }
 
   function reflow(row: Row) {
-    let startMm = 0
-    const panels = state.falsePanels.filter((item) => item.row === row)
-    const place = (item: { startMm: number }, itemSpan: number) => { item.startMm = nextFreeStart(row, startMm, itemSpan); startMm = item.startMm + itemSpan }
-    for (const panel of panels.filter((item) => item.position === 'start')) place(panel, panel.widthMm)
-    for (const [index, item] of state.rows[row].entries()) {
-      place(item, item.cutWidthMm ?? span(findVariant(item.variantId)))
-      for (const panel of panels.filter((candidate) => candidate.position === 'between' && candidate.anchorIndex === index)) place(panel, panel.widthMm)
-    }
-    for (const panel of panels.filter((item) => item.position === 'end')) place(panel, panel.widthMm)
-    if (row === 'lower') { reflow('wall'); reflow('mezzanine') }
+    reflowConfiguratorRow(state, requiredBootstrap(), row)
   }
   function normalizePanels(row: Row) {
-    const count = state.rows[row].length
-    state.falsePanels = state.falsePanels.filter((item) => item.row !== row || item.position !== 'between' || count >= 2)
-    for (const panel of state.falsePanels) {
-      if (panel.row === row && panel.position === 'between') panel.anchorIndex = Math.min(Math.max(panel.anchorIndex ?? 0, 0), count - 2)
-    }
+    normalizeFalsePanels(state, row)
   }
   function renderProperties() {
     if (!properties || !selected) { properties?.setAttribute('hidden', ''); return }
@@ -345,47 +502,65 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
   }
   function updateSelected(action: string) {
     if (!selected) return
-    const items = state.rows[selected.row]; const item = items[selected.index]
-    if (!item) return
+    const selectedRow = selected.row
+    const selectedIndex = selected.index
+    const existing = state.rows[selectedRow][selectedIndex]
+    if (!existing) return
     if (action === 'remove') { removeModule(selected.row, selected.index); return }
-    if (action === 'left' && selected.index > 0) { [items[selected.index - 1], items[selected.index]] = [items[selected.index]!, items[selected.index - 1]!]; selected.index -= 1 }
-    if (action === 'right' && selected.index < items.length - 1) { [items[selected.index + 1], items[selected.index]] = [items[selected.index]!, items[selected.index + 1]!]; selected.index += 1 }
-    if (action === 'duplicate') { items.splice(selected.index + 1, 0, { ...item }); selected.index += 1 }
-    if (action === 'facade') item.withoutFacade = !item.withoutFacade
-    if (action === 'cut') { const width = Number(properties?.querySelector<HTMLInputElement>('#cut-width')?.value); item.cutWidthMm = Number.isInteger(width) ? width : null }
-    if (action === 'reset-cut') item.cutWidthMm = null
-    reflow(selected.row); render()
+    const cutWidth = action === 'cut' ? Number(properties?.querySelector<HTMLInputElement>('#cut-width')?.value) : null
+    commitStateMutation(() => {
+      const items = state.rows[selectedRow]
+      const item = items[selectedIndex]
+      if (!item) return
+      if (action === 'left' && selectedIndex > 0) { [items[selectedIndex - 1], items[selectedIndex]] = [items[selectedIndex]!, items[selectedIndex - 1]!]; selected!.index -= 1 }
+      if (action === 'right' && selectedIndex < items.length - 1) { [items[selectedIndex + 1], items[selectedIndex]] = [items[selectedIndex]!, items[selectedIndex + 1]!]; selected!.index += 1 }
+      if (action === 'duplicate') { items.splice(selectedIndex + 1, 0, { ...item }); selected!.index += 1 }
+      if (action === 'facade') item.withoutFacade = !item.withoutFacade
+      if (action === 'cut') item.cutWidthMm = Number.isInteger(cutWidth) ? cutWidth : null
+      if (action === 'reset-cut') item.cutWidthMm = null
+      reflow(selectedRow)
+    })
+    render()
   }
   function suggestUpper() {
     if (!bootstrap || !['wall', 'mezzanine'].includes(activeRow)) return
     if (state.rows[activeRow].length > 0 && !window.confirm(`Заменить текущий ${rowNames[activeRow].toLowerCase()} предложением?`)) return
     const familyKey = activeRow === 'wall' ? 'wall-shelf' : 'mezzanine'
-    state.falsePanels = state.falsePanels.filter((item) => item.row !== activeRow)
-    state.rows[activeRow] = state.rows.lower.flatMap((lower) => {
-      const lowerVariant = findVariant(lower.variantId)
-      if (lowerVariant.configuration.role === 'tall') return []
-      const candidate = bootstrap!.variants.find((item) => item.familyKey === familyKey && span(item) === (lower.cutWidthMm ?? span(lowerVariant)))
-      return candidate ? [{ variantId: candidate.id, startMm: lower.startMm, cutWidthMm: null, withoutFacade: !facadesEnabled?.checked }] : []
+    commitStateMutation(() => {
+      state.falsePanels = state.falsePanels.filter((item) => item.row !== activeRow)
+      state.rows[activeRow] = state.rows.lower.flatMap((lower) => {
+        const lowerVariant = findVariant(lower.variantId)
+        if (lowerVariant.configuration.role === 'tall') return []
+        const candidate = bootstrap!.variants.find((item) => item.familyKey === familyKey && span(item) === (lower.cutWidthMm ?? span(lowerVariant)))
+        return candidate ? [{ variantId: candidate.id, startMm: lower.startMm, cutWidthMm: null, withoutFacade: !state.facadesIncluded }] : []
+      })
+      normalizePanels(activeRow)
+      reflow(activeRow)
     })
-    selected = null; normalizePanels(activeRow); reflow(activeRow); render()
+    selected = null; render()
   }
 
   async function requestQuote() {
     if (!bootstrap || !quoteTotal || !quoteStatus || !specification || !height || !length) return
-    const selectedRows = rows.filter((row) => state.rows[row].length > 0).map((row) => ({ row, modules: state.rows[row] }))
     const currentIntent = ++intent
-    const fingerprint = JSON.stringify({ rows: state.rows, falsePanels: state.falsePanels, wallLengthMm: wallMm() })
+    const command = buildConfigurationCommand(state, `phone-${currentIntent}`)
+    const fingerprint = JSON.stringify(state)
     quoteAbort?.abort()
-    if (selectedRows.length === 0) { quoteTotal.textContent = 'Добавьте модуль'; quoteStatus.textContent = 'Цена появится после выбора модуля.'; specification.textContent = 'Пока нет позиций.'; return }
+    if (!command) {
+      quoteTotal.textContent = 'Добавьте модуль'
+      if (quoteVat) quoteVat.textContent = ''
+      quoteStatus.textContent = 'Цена появится после выбора модуля.'
+      specification.textContent = 'Пока нет позиций.'
+      height.textContent = 'Высота кухни: —'
+      renderWallStatus()
+      return
+    }
     quoteStatus.textContent = 'Пересчитываем цену…'
     quoteAbort = new AbortController()
-    const response = await fetch(`${apiBase}/configurator/quote`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-      publicationId: bootstrap.publicationId, intentId: `phone-${currentIntent}`, wallLengthMm: wallLength?.value ? Number(wallLength.value) : null,
-      bodyMaterialId: bodySelect?.value, facadeMaterialId: facadeSelect?.value || null, facadesIncluded: Boolean(facadesEnabled?.checked),
-      packagingIncluded: Boolean(packagingEnabled?.checked), countertopThicknessMm: Number(countertop?.value ?? '38'), rows: selectedRows,
-      falsePanels: state.falsePanels.map(({ anchorIndex: _anchorIndex, ...panel }) => panel), plinthVariantId: plinthSelect?.value || null, crownVariantId: crownSelect?.value || null,
-    }), signal: quoteAbort.signal }).catch(() => null)
-    if (currentIntent !== intent || fingerprint !== JSON.stringify({ rows: state.rows, falsePanels: state.falsePanels, wallLengthMm: wallMm() })) return
+    const response = await fetch(`${apiBase}/configurator/quote`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(command), signal: quoteAbort.signal,
+    }).catch(() => null)
+    if (currentIntent !== intent || fingerprint !== JSON.stringify(state)) return
     if (!response || !response.ok) {
       const payload = await response?.json().catch(() => null)
       quoteStatus.textContent = payload?.error?.message ?? 'Не удалось посчитать. Проверьте подключение и повторите.'
@@ -421,9 +596,12 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
       bodySelect.innerHTML = options(nextBootstrap.materials.filter((item) => item.kind === 'body'))
       facadeSelect.innerHTML = options(nextBootstrap.materials.filter((item) => item.kind === 'facade'))
       fillTrimOptions()
+      stateModel.restore(createInitialConfiguratorState(nextBootstrap))
+      state = stateModel.state
       loading?.setAttribute('hidden', '')
       app?.removeAttribute('hidden')
       render()
+      inspectStoredDraft()
     } catch (caught) {
       loading?.setAttribute('hidden', '')
       if (error) { error.hidden = false; error.textContent = caught instanceof Error ? caught.message : 'Не удалось открыть конфигуратор' }
@@ -431,18 +609,33 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
   }
 
   document.querySelectorAll<HTMLButtonElement>('.row-picker button').forEach((button) => button.addEventListener('click', () => { activeRow = button.dataset.row as Row; render() }))
-  ;[bodySelect, facadeSelect, packagingEnabled, countertop, plinthSelect, crownSelect].forEach((element) => element?.addEventListener('change', () => void requestQuote()))
+  bodySelect?.addEventListener('change', () => { commitStateMutation(() => { state.bodyMaterialId = bodySelect.value }); render() })
+  facadeSelect?.addEventListener('change', () => { commitStateMutation(() => { state.facadeMaterialId = facadeSelect.value || null }); render() })
+  packagingEnabled?.addEventListener('change', () => { commitStateMutation(() => { state.packagingIncluded = packagingEnabled.checked }); render() })
+  countertop?.addEventListener('change', () => {
+    commitStateMutation(() => { state.countertopThicknessMm = Number(countertop.value) as 12 | 20 | 38 })
+    render()
+  })
+  plinthSelect?.addEventListener('change', () => { commitStateMutation(() => { state.plinthVariantId = plinthSelect.value || null }); render() })
+  crownSelect?.addEventListener('change', () => { commitStateMutation(() => { state.crownVariantId = crownSelect.value || null }); render() })
   wallLength?.addEventListener('change', () => {
     // Blurring this input happens immediately before tapping a catalogue card.
     // Do not replace the card synchronously, or that tap is lost on mobile.
+    if (syncWallLengthFromControl()) scheduleDraftSave()
     renderWallStatus()
     renderFreeIntervals()
     void requestQuote()
   })
-  startSide?.addEventListener('change', () => render())
+  startSide?.addEventListener('change', () => {
+    commitStateMutation(() => { state.startSide = startSide.value === 'right' ? 'right' : 'left' })
+    render()
+  })
   replaceMode?.addEventListener('change', () => render())
   facadesEnabled?.addEventListener('change', () => {
-    for (const row of rows) for (const module of state.rows[row]) module.withoutFacade = !facadesEnabled.checked
+    commitStateMutation(() => {
+      state.facadesIncluded = facadesEnabled.checked
+      for (const row of rows) for (const module of state.rows[row]) module.withoutFacade = !state.facadesIncluded
+    })
     render()
   })
   document.querySelector<HTMLButtonElement>('#add-false-panel')?.addEventListener('click', () => {
@@ -455,18 +648,60 @@ const apiBase = import.meta.env.PUBLIC_API_BASE_URL ?? '/api'
     const selectedIndex = selected?.row === activeRow ? selected.index : 0
     const anchorIndex = position === 'between' ? Math.min(selectedIndex, state.rows[activeRow].length - 2) : undefined
     if (!fitsFalsePanel(activeRow, span(panel), position, anchorIndex)) { showLocalMessage('Фальш‑панель не помещается в заданную длину стены.'); return }
-    state.falsePanels = state.falsePanels.filter((item) => item.row !== activeRow)
-    state.falsePanels.push({ variantId: panel.id, row: activeRow, startMm: 0, widthMm: span(panel), position, ...(anchorIndex === undefined ? {} : { anchorIndex }) })
-    reflow(activeRow)
+    commitStateMutation(() => {
+      state.falsePanels = state.falsePanels.filter((item) => item.row !== activeRow)
+      state.falsePanels.push({ variantId: panel.id, row: activeRow, startMm: 0, widthMm: span(panel), position, ...(anchorIndex === undefined ? {} : { anchorIndex }) })
+      reflow(activeRow)
+    })
     render()
   })
   suggestUpperButton?.addEventListener('click', suggestUpper)
+  undoButton?.addEventListener('click', undo)
+  redoButton?.addEventListener('click', redo)
+  restoreDraftButton?.addEventListener('click', () => {
+    if (!pendingDraft || !bootstrap) return
+    const compatibility = validateDraftCompatibility(pendingDraft, bootstrap)
+    const restored = configuratorStateFromDraft(pendingDraft, bootstrap)
+    if (!restored || compatibility.status !== 'ready') {
+      showDraftNotice('Черновик больше нельзя безопасно восстановить.', null, false)
+      return
+    }
+    hideDraftNotice()
+    restoreHistory(restored, compatibility.acceptedQuote)
+  })
+  discardDraftButton?.addEventListener('click', () => {
+    localStorage.removeItem(CONFIGURATOR_DRAFT_STORAGE_KEY)
+    hideDraftNotice()
+  })
+  window.addEventListener('storage', (event) => {
+    if (event.key === CONFIGURATOR_DRAFT_STORAGE_KEY) inspectStoredDraft(event.newValue, true)
+  })
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushDraft() })
+  window.addEventListener('pagehide', flushDraft)
+  document.addEventListener('click', (event) => {
+    const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null
+    if (link && link.origin === window.location.origin) flushDraft()
+  }, { capture: true })
+  document.addEventListener('keydown', (event) => {
+    if (!(event.ctrlKey || event.metaKey) || event.altKey) return
+    const target = event.target
+    if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return
+    if (event.key.toLowerCase() !== 'z') return
+    event.preventDefault()
+    if (event.shiftKey) redo()
+    else undo()
+  })
   void start()
 </script>
 
 <style>
   .configurator { max-width: 980px; }
   .config-message { margin: 18px 0; padding: 14px; border: 1px solid #d9c7a2; border-radius: 14px; background: #fff9ed; }
+  .draft-notice { display: grid; gap: 10px; }
+  .draft-notice[hidden] { display: none; }
+  .draft-actions, .history-toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+  .history-toolbar { justify-content: flex-end; margin: 14px 0 -6px; }
+  .history-toolbar button:disabled { opacity: .45; cursor: not-allowed; }
   .config-toolbar, .trim-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 20px 0; padding: 12px; border: 1px solid #ddd6c8; border-radius: 16px; background: #fff; }
   .config-toolbar label, .trim-options label { display: grid; gap: 5px; color: #4d5b51; font-size: .75rem; font-weight: 750; }
   .config-toolbar .toggle { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: .86rem; }

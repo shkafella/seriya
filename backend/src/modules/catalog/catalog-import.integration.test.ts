@@ -554,6 +554,18 @@ maybeDescribe('catalog import integration', () => {
     expect((await releaseSmoke.json()).releaseId).toBe(activationInput.releaseId)
     expect((await app.request('/api/catalog/_release-smoke/019a0000-0000-7000-8000-000000000001')).status).toBe(404)
     await new CatalogService(appDb).verifyActivation(activationInput.candidateId, activationInput.releasePath)
+    expect((await appDb.catalogPublication.findUniqueOrThrow({
+      where: { id: candidate.candidateId }, select: { publicVerifiedAt: true },
+    })).publicVerifiedAt).toBeInstanceOf(Date)
+    await appDb.catalogPublication.update({
+      where: { id: candidate.candidateId }, data: { publicVerifiedAt: null },
+    })
+    expect(await new CatalogService(appDb).bootstrapPublicVerification()).toEqual({
+      markedPublicationIds: [candidate.candidateId], markedCount: 1,
+    })
+    expect(await new CatalogService(appDb).bootstrapPublicVerification()).toEqual({
+      markedPublicationIds: [], markedCount: 0,
+    })
     expect((await app.request(`/api/catalog/_release-smoke/${candidate.candidateId}`)).status).toBe(404)
     const publishedOwnerCatalog = await app.request('/api/owner/catalog', { headers: { Authorization: `Bearer ${owner.accessToken}` } })
     const publishedOwnerBody = await publishedOwnerCatalog.json()

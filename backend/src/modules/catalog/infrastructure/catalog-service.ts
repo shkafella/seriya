@@ -241,9 +241,54 @@ export class CatalogService {
       if (!attempt || !state || state.activePublicationId !== candidateId || state.activationState !== 'MAINTENANCE') {
         throw new AppError(409, 'INVALID_ACTIVATION_STATE', 'Publication switch is not ready for verification')
       }
+      const verifiedAt = new Date()
+      await tx.catalogPublication.updateMany({
+        where: { id: candidateId, status: 'ACTIVE', publicVerifiedAt: null },
+        data: { publicVerifiedAt: verifiedAt },
+      })
       await tx.catalogState.update({ where: { id: state.id }, data: { activationState: 'IDLE' } })
       await tx.catalogActivationAttempt.update({ where: { id: attempt.id }, data: { status: 'VERIFIED' } })
       return { publicationId: candidateId, verified: true as const }
+    })
+  }
+
+  async bootstrapPublicVerification() {
+    return this.db.$transaction(async (tx) => {
+      const markedPublicationIds: string[] = []
+      const verifiedAttempts = await tx.catalogActivationAttempt.findMany({
+        where: { status: 'VERIFIED' },
+        include: { nextPublication: true },
+        orderBy: { updatedAt: 'asc' },
+      })
+
+      for (const attempt of verifiedAttempts) {
+        const publication = attempt.nextPublication
+        if (publication.publicVerifiedAt || !hasConsistentPublicEvidence(publication)) continue
+        const marked = await tx.catalogPublication.updateMany({
+          where: { id: publication.id, publicVerifiedAt: null },
+          data: { publicVerifiedAt: attempt.updatedAt },
+        })
+        if (marked.count === 1) markedPublicationIds.push(publication.id)
+      }
+
+      const state = await tx.catalogState.findUnique({
+        where: { singletonKey: 'catalog' },
+        include: { activePublication: true },
+      })
+      const active = state?.activePublication
+      if (state?.activationState === 'IDLE' && active?.status === 'ACTIVE'
+        && !active.publicVerifiedAt && hasConsistentPublicEvidence(active)) {
+        const marked = await tx.catalogPublication.updateMany({
+          where: { id: active.id, status: 'ACTIVE', publicVerifiedAt: null },
+          data: { publicVerifiedAt: new Date() },
+        })
+        if (marked.count === 1) markedPublicationIds.push(active.id)
+      }
+
+      return {
+        markedPublicationIds: [...new Set(markedPublicationIds)],
+        markedCount: new Set(markedPublicationIds).size,
+      }
     })
   }
 
@@ -353,6 +398,22 @@ function ownerFieldValue(variant: {
     case 'cutPolicy': return variant.cutPolicy
     case 'assetId': return variant.assetId
     default: return undefined
+  }
+}
+
+function hasConsistentPublicEvidence(publication: {
+  activatedAt: Date | null
+  checksum: string
+  releaseId: string | null
+  snapshot: unknown
+  status: 'CANDIDATE' | 'ACTIVE' | 'SUPERSEDED'
+}) {
+  if (!publication.activatedAt || !publication.releaseId || publication.status === 'CANDIDATE') return false
+  try {
+    const snapshot = publicCatalogSchema.parse(publication.snapshot)
+    return snapshot.releaseId === publication.releaseId && sha256(canonicalJson(snapshot)) === publication.checksum
+  } catch {
+    return false
   }
 }
 

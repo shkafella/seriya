@@ -5,6 +5,7 @@ The goal of this template's tests is to show future agents where behavior should
 ## Pyramid
 
 - Contracts/unit: shared Zod schema matrices, env parsing, JWTs, password hashing, client API refresh/retry behavior, and token cleanup.
+- Website unit: feature-owned configurator state/command/layout, bounded history, semantic compatibility, and versioned no-contact local-draft parsing and migration.
 - Backend integration: refresh-token rotation and replay detection, auth guards, catalog import identity/idempotency/conflicts, owner authorization, immutable publication, concurrency, and stable error shapes through real routes and PostgreSQL.
 - Webapp Playwright: valuable browser flows through a real backend and Vite UI.
 
@@ -33,7 +34,9 @@ bun run test
 bun run test:contracts
 bun run test:backend
 bun run test:backend:integration
+bun run test:website
 bun run test:webapp
+bun run e2e:configurator
 bun run test:assets
 bun run catalog:assets:fixtures
 bun run --cwd backend prisma:validate
@@ -43,6 +46,10 @@ bun run smoke:backend:docker
 Contract tests live in `packages/contracts/src/*.test.ts` and protect shared request/response/error schemas used by backend and webapp. Webapp unit tests live in `webapp/tests` and cover API refresh/retry behavior that would be too expensive and brittle to fully exercise in E2E.
 
 Backend tests live next to backend code and verify auth and catalog behavior through services and routes. The integration runner starts `postgres_test`, applies migrations, and proves the 225-row import, stable IDs, stale/conflicting no-op behavior, owner-only edits, candidate isolation, and active public snapshot. By default, the test database port is derived from the absolute repository path so parallel checkouts do not collide, and `TEST_DATABASE_URL` is derived from that port. Set `POSTGRES_TEST_PORT` and `TEST_DATABASE_URL` only when a fixed test database is required. Local database startup, credentials, and reset behavior are documented in [LOCAL_DATABASE.md](LOCAL_DATABASE.md).
+
+The standalone configurator Playwright flow runs the Astro phone page against a mocked HTTP boundary. It covers quote race handling, safe replacements/cuts, lifecycle draft flush, refresh/restore, undo/redo for UI-safe options, cross-tab warnings, and storage inspection for contact data.
+
+Stage 4.1 also checks in executable `test.failing` PostgreSQL contracts for the persistence behavior intentionally deferred to Stages 4.4–4.5. They are expected-red specifications, not skipped TODOs: the runner executes them against the migrated schema, and each must be converted to an ordinary passing integration test when its named adapter/coordinator is implemented. Separate ordinary integration tests already enforce the Stage 4A recovery-budget and artifact-lifecycle database constraints.
 
 The integration and Docker smoke runners refuse database names that do not end with `_test` unless an override is set intentionally. This protects `seriya` development data from test writes.
 

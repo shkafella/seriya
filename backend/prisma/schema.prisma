@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  email        String        @unique
-  passwordHash String        @map("password_hash")
-  displayName  String?       @map("display_name")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  sessions     AuthSession[]
-  ownerIdentity OwnerIdentity?
+  id                String                          @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  email             String                          @unique
+  passwordHash      String                          @map("password_hash")
+  displayName       String?                         @map("display_name")
+  createdAt         DateTime                        @default(now()) @map("created_at")
+  updatedAt         DateTime                        @updatedAt @map("updated_at")
+  sessions          AuthSession[]
+  ownerIdentity     OwnerIdentity?
+  leadStatusChanges LeadStatusHistory[]
+  policyWithdrawals LeadPolicyCandidateWithdrawal[]
 
   @@map("users")
 }
@@ -44,6 +46,211 @@ enum ActivationAttemptStatus {
   VERIFIED
   ROLLED_BACK
   FAILED
+}
+
+enum LeadPolicyDeliveryMode {
+  TELEGRAM_ENABLED
+  TELEGRAM_DISABLED
+}
+
+enum LeadPolicyTransitionPhase {
+  IDLE
+  PREPARED
+  RETENTION_WORK
+  NOTIFICATION_WORK
+  READY
+  ACTIVATION_PENDING
+  ABORT_PENDING
+  TERMINAL
+}
+
+enum LeadPolicyTerminalDirection {
+  ACTIVATION_PENDING
+  ABORT_PENDING
+}
+
+enum LeadPolicyCommandKind {
+  START
+  ACTIVATE
+  ABORT
+}
+
+enum ProtectionStatus {
+  READY
+  BLOCKED
+}
+
+enum BackupScope {
+  CORE
+  LEAD
+}
+
+enum BackupArtifactState {
+  PREPARED
+  OBJECTS_VERIFIED
+  ADMISSION_PUBLISHED
+  ADMISSION_ACKNOWLEDGED
+  READY
+  RETIREMENT_PREPARED
+  DENIAL_HEAD_PUBLISHED
+  DENIAL_DB_ACKNOWLEDGED
+  ABANDON_PREPARED
+  ABANDONMENT_RECORD_PUBLISHED
+  ABANDONMENT_DB_ACKNOWLEDGED
+  OBJECTS_PURGED
+  PURGE_RECEIPT_PUBLISHED
+  PURGE_RECEIPT_DB_ACKNOWLEDGED
+  RETIRED
+  ABANDONED
+}
+
+enum RecoveryChainKind {
+  CORE_BACKUP_HEAD
+  LEAD_BACKUP_HEAD
+  LEAD_ERASURE_COVERAGE
+  LEAD_POLICY_CONFIG_EPOCH
+  ACTIVE_HOST_EPOCH
+}
+
+enum RecoveryControlStatus {
+  IDLE
+  PREPARED
+  ACKNOWLEDGED
+  BLOCKED
+}
+
+enum CryptoVersionLifecycle {
+  READABLE_INACTIVE
+  ACTIVE_WRITER
+  RETIRING
+  RETIRED
+}
+
+enum RecoveryProviderScope {
+  GLOBAL
+  CORE
+  LEAD
+}
+
+enum RecoveryProviderOperationLifecycle {
+  PREPARED
+  ISSUED
+  RESULT_RECORDED
+  COMPLETED
+  FENCE_REQUESTED
+  FENCE_ACKNOWLEDGED
+  SWEEP_ONE_RECORDED
+  SWEEP_TWO_RECORDED
+  DRAINED
+}
+
+enum LeadSubmissionKeyState {
+  OPEN
+  SUBMITTING
+  ABANDONMENT_PENDING
+  COMMITTED
+  TOMBSTONED
+  ABANDONED_TOMBSTONE
+}
+
+enum LeadAdmissionReservationLifecycle {
+  OPEN_ACTIVE
+  LEAD_ACTIVE
+  PENDING
+  TERMINAL_RECOVERY_PINNED
+  RELEASED
+}
+
+enum LeadTombstoneUnitState {
+  ACTIVE_RESERVED
+  ACTIVE_LEAD_RESERVED
+  PENDING_TOMBSTONE
+  LIVE_TOMBSTONE
+  ARTIFACT_PINNED
+  FREE
+}
+
+enum LeadAttemptUnitState {
+  ACTIVE_RESERVED
+  ACTIVE_LEAD_RESERVED
+  PENDING_ATTEMPT
+  ARTIFACT_PINNED
+  FREE
+}
+
+enum LeadCleanupUnitState {
+  ACTIVE_RESERVED
+  ACTIVE_LEAD_RESERVED
+  PENDING_UNBATCHED
+  PENDING_ERASURE
+  UNCHECKPOINTED_BATCH
+  UNCHECKPOINTED_ERASURE
+  ARTIFACT_PINNED
+  FREE
+}
+
+enum LeadLifecycle {
+  ACTIVE
+  ERASURE_PENDING
+}
+
+enum LeadWorkflowStatus {
+  NEW
+  IN_PROGRESS
+  CLOSED
+}
+
+enum LeadNotificationStatus {
+  PENDING
+  LEASED
+  DISPATCH_STARTED
+  SENT
+  FAILED
+  DELIVERY_UNCERTAIN
+  SUPPRESSED
+  CANCELLED_POLICY
+}
+
+enum LeadErasureKind {
+  MANUAL
+  EXPIRY
+}
+
+enum LeadErasurePhase {
+  PREPARED
+  QUIESCING
+  MARKER_PENDING
+  COVERAGE_PENDING
+  FINALIZING
+}
+
+enum LeadErasureMarkerState {
+  PREPARED
+  UPLOADED
+  BYTE_VERIFIED
+  HEAD_PUBLISHED
+  PURGE_PENDING
+  PURGED
+}
+
+enum SubmissionKeyAbandonmentState {
+  PREPARED
+  BATCHED
+  MARKER_PENDING
+  COVERAGE_PENDING
+  TERMINAL
+  RECONCILIATION_REQUIRED
+}
+
+enum SubmissionKeyAbandonmentBatchState {
+  PREPARED
+  UPLOADED
+  BYTE_VERIFIED
+  HEAD_PUBLISHED
+  CHECKPOINTED
+  TERMINAL
+  PURGE_PENDING
+  PURGED
 }
 
 model OwnerIdentity {
@@ -84,59 +291,59 @@ model CatalogSourceRecord {
 }
 
 model CatalogFamily {
-  id                String           @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  key               String           @unique
-  slug              String           @unique
-  importedPublicName String          @map("imported_public_name")
-  publicName        String           @map("public_name")
-  description       String           @default("")
-  row               String
-  purposes          Json             @default("[]")
-  functions         Json             @default("[]")
-  isActive          Boolean          @default(true) @map("is_active")
-  sourceManaged     Boolean          @default(true) @map("source_managed")
-  ownerEditedFields Json             @default("[]") @map("owner_edited_fields")
-  revision          Int              @default(0)
-  assetId           String?          @map("asset_id") @db.Uuid
-  createdAt         DateTime         @default(now()) @map("created_at")
-  updatedAt         DateTime         @updatedAt @map("updated_at")
-  asset             CatalogAsset?    @relation(fields: [assetId], references: [id], onDelete: SetNull)
-  variants          CatalogVariant[]
+  id                 String           @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  key                String           @unique
+  slug               String           @unique
+  importedPublicName String           @map("imported_public_name")
+  publicName         String           @map("public_name")
+  description        String           @default("")
+  row                String
+  purposes           Json             @default("[]")
+  functions          Json             @default("[]")
+  isActive           Boolean          @default(true) @map("is_active")
+  sourceManaged      Boolean          @default(true) @map("source_managed")
+  ownerEditedFields  Json             @default("[]") @map("owner_edited_fields")
+  revision           Int              @default(0)
+  assetId            String?          @map("asset_id") @db.Uuid
+  createdAt          DateTime         @default(now()) @map("created_at")
+  updatedAt          DateTime         @updatedAt @map("updated_at")
+  asset              CatalogAsset?    @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  variants           CatalogVariant[]
 
   @@map("catalog_families")
 }
 
 model CatalogVariant {
-  id                 String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  sourceRecordId     String?              @unique @map("source_record_id") @db.Uuid
-  familyId           String               @map("family_id") @db.Uuid
-  sku                String               @unique
-  importedData       Json                 @map("imported_data")
-  publicName         String               @map("public_name")
-  heightMm           Int                  @map("height_mm")
-  widthMm            Int                  @map("width_mm")
-  depthMm            Int                  @map("depth_mm")
-  layoutSpanMm       Int?                 @map("layout_span_mm")
-  bodyM2             Decimal              @map("body_m2") @db.Decimal(12, 4)
-  facadeM2           Decimal              @map("facade_m2") @db.Decimal(12, 4)
-  hdfM2              Decimal              @map("hdf_m2") @db.Decimal(12, 4)
-  fastenerChargeRub  Decimal              @map("fastener_charge_rub") @db.Decimal(12, 2)
-  cutPolicy          String               @map("cut_policy")
-  configurationData  Json                 @default("{}") @map("configuration_data")
-  variantData        Json                 @map("variant_data")
-  fastenersData      Json                 @map("fasteners_data")
-  isActive           Boolean              @default(true) @map("is_active")
-  isComplete         Boolean              @default(true) @map("is_complete")
-  sourceManaged      Boolean              @default(true) @map("source_managed")
-  ownerEditedFields  Json                 @default("[]") @map("owner_edited_fields")
-  revision           Int                  @default(0)
-  assetId            String?              @map("asset_id") @db.Uuid
-  createdAt          DateTime             @default(now()) @map("created_at")
-  updatedAt          DateTime             @updatedAt @map("updated_at")
-  sourceRecord       CatalogSourceRecord? @relation(fields: [sourceRecordId], references: [id], onDelete: SetNull)
-  family             CatalogFamily        @relation(fields: [familyId], references: [id], onDelete: Restrict)
-  asset              CatalogAsset?        @relation(fields: [assetId], references: [id], onDelete: SetNull)
-  edits              CatalogEditHistory[]
+  id                String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  sourceRecordId    String?              @unique @map("source_record_id") @db.Uuid
+  familyId          String               @map("family_id") @db.Uuid
+  sku               String               @unique
+  importedData      Json                 @map("imported_data")
+  publicName        String               @map("public_name")
+  heightMm          Int                  @map("height_mm")
+  widthMm           Int                  @map("width_mm")
+  depthMm           Int                  @map("depth_mm")
+  layoutSpanMm      Int?                 @map("layout_span_mm")
+  bodyM2            Decimal              @map("body_m2") @db.Decimal(12, 4)
+  facadeM2          Decimal              @map("facade_m2") @db.Decimal(12, 4)
+  hdfM2             Decimal              @map("hdf_m2") @db.Decimal(12, 4)
+  fastenerChargeRub Decimal              @map("fastener_charge_rub") @db.Decimal(12, 2)
+  cutPolicy         String               @map("cut_policy")
+  configurationData Json                 @default("{}") @map("configuration_data")
+  variantData       Json                 @map("variant_data")
+  fastenersData     Json                 @map("fasteners_data")
+  isActive          Boolean              @default(true) @map("is_active")
+  isComplete        Boolean              @default(true) @map("is_complete")
+  sourceManaged     Boolean              @default(true) @map("source_managed")
+  ownerEditedFields Json                 @default("[]") @map("owner_edited_fields")
+  revision          Int                  @default(0)
+  assetId           String?              @map("asset_id") @db.Uuid
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+  sourceRecord      CatalogSourceRecord? @relation(fields: [sourceRecordId], references: [id], onDelete: SetNull)
+  family            CatalogFamily        @relation(fields: [familyId], references: [id], onDelete: Restrict)
+  asset             CatalogAsset?        @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  edits             CatalogEditHistory[]
 
   @@index([familyId])
   @@index([isActive, isComplete])
@@ -164,16 +371,17 @@ model CatalogAsset {
 }
 
 model PriceVersion {
-  id          String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  version     Int                  @unique
-  currency    String               @default("RUB")
-  rates       Json
-  checksum    String               @unique
-  publishedAt DateTime             @default(now()) @map("published_at")
-  createdAt   DateTime             @default(now()) @map("created_at")
-  publications CatalogPublication[]
-  currentForPricingState PricingState? @relation("CurrentPriceVersion")
-  draftBases PriceDraft[] @relation("PriceDraftBaseVersion")
+  id                     String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  version                Int                  @unique
+  currency               String               @default("RUB")
+  rates                  Json
+  checksum               String               @unique
+  publishedAt            DateTime             @default(now()) @map("published_at")
+  createdAt              DateTime             @default(now()) @map("created_at")
+  publications           CatalogPublication[]
+  currentForPricingState PricingState?        @relation("CurrentPriceVersion")
+  draftBases             PriceDraft[]         @relation("PriceDraftBaseVersion")
+  leads                  Lead[]
 
   @@map("price_versions")
 }
@@ -204,13 +412,13 @@ model PriceDraft {
 }
 
 model CatalogImportHistory {
-  id                 String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  sourceChecksum     String   @map("source_checksum")
-  sourceMapChecksum  String   @map("source_map_checksum")
-  baseRevision       Int      @map("base_revision")
-  resultingRevision  Int      @map("resulting_revision")
-  reconciliation     Json
-  appliedAt          DateTime @default(now()) @map("applied_at")
+  id                String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  sourceChecksum    String   @map("source_checksum")
+  sourceMapChecksum String   @map("source_map_checksum")
+  baseRevision      Int      @map("base_revision")
+  resultingRevision Int      @map("resulting_revision")
+  reconciliation    Json
+  appliedAt         DateTime @default(now()) @map("applied_at")
 
   @@map("catalog_import_history")
 }
@@ -229,21 +437,23 @@ model CatalogEditHistory {
 }
 
 model CatalogPublication {
-  id              String                   @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  catalogRevision Int                      @map("catalog_revision")
-  priceVersionId  String                   @map("price_version_id") @db.Uuid
-  releaseId       String?                  @map("release_id")
-  snapshot        Json
-  pricingSnapshot Json?                    @map("pricing_snapshot")
-  checksum        String                   @unique
-  status          CatalogPublicationStatus @default(CANDIDATE)
-  backupReceipt   Json?                    @map("backup_receipt")
-  createdAt       DateTime                 @default(now()) @map("created_at")
-  activatedAt     DateTime?                @map("activated_at")
-  priceVersion    PriceVersion             @relation(fields: [priceVersionId], references: [id], onDelete: Restrict)
-  activeForState  CatalogState?            @relation("ActiveCatalogPublication")
+  id                 String                     @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  catalogRevision    Int                        @map("catalog_revision")
+  priceVersionId     String                     @map("price_version_id") @db.Uuid
+  releaseId          String?                    @map("release_id")
+  snapshot           Json
+  pricingSnapshot    Json?                      @map("pricing_snapshot")
+  checksum           String                     @unique
+  status             CatalogPublicationStatus   @default(CANDIDATE)
+  backupReceipt      Json?                      @map("backup_receipt")
+  createdAt          DateTime                   @default(now()) @map("created_at")
+  activatedAt        DateTime?                  @map("activated_at")
+  publicVerifiedAt   DateTime?                  @map("public_verified_at")
+  priceVersion       PriceVersion               @relation(fields: [priceVersionId], references: [id], onDelete: Restrict)
+  activeForState     CatalogState?              @relation("ActiveCatalogPublication")
   attemptsAsPrevious CatalogActivationAttempt[] @relation("PreviousPublication")
   attemptsAsNext     CatalogActivationAttempt[] @relation("NextPublication")
+  leads              Lead[]
 
   @@index([status])
   @@map("catalog_publications")
@@ -278,6 +488,7 @@ model AuthSession {
   revokedAt                DateTime? @map("revoked_at")
   userAgent                String?   @map("user_agent")
   ipAddress                String?   @map("ip_address")
+  recoverySmokeOperationId String?   @unique(map: "auth_sessions_recovery_smoke_operation_id_key") @map("recovery_smoke_operation_id") @db.Uuid
   createdAt                DateTime  @default(now()) @map("created_at")
   updatedAt                DateTime  @updatedAt @map("updated_at")
   user                     User      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "auth_sessions_user_id_fkey")
@@ -285,4 +496,712 @@ model AuthSession {
   @@index([userId], map: "auth_sessions_user_id_idx")
   @@index([expiresAt], map: "auth_sessions_expires_at_idx")
   @@map("auth_sessions")
+}
+
+model LeadPolicyVersion {
+  id                        String                            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  version                   Int                               @unique
+  privacyNoticeText         String                            @map("privacy_notice_text")
+  privacyNoticeChecksum     String                            @map("privacy_notice_checksum")
+  consentText               String                            @map("consent_text")
+  consentChecksum           String                            @map("consent_checksum")
+  policyBundleChecksum      String                            @unique @map("policy_bundle_checksum")
+  operatorIdentity          Json                              @map("operator_identity")
+  retentionDays             Int                               @map("retention_days")
+  recoveryWindowDays        Int                               @map("recovery_window_days")
+  deliveryMode              LeadPolicyDeliveryMode            @map("delivery_mode")
+  deliveryConfigVersion     Int?                              @map("delivery_config_version")
+  deliveryDestinationDigest String?                           @map("delivery_destination_digest")
+  createdAt                 DateTime                          @default(now()) @map("created_at")
+  activatedAt               DateTime?                         @map("activated_at")
+  activeForStates           LeadPolicyState[]                 @relation("ActiveLeadPolicy")
+  transitionOperations      LeadPolicyTransitionOperation[]
+  withdrawal                LeadPolicyCandidateWithdrawal?
+  attestations              LeadPolicyProtectionAttestation[]
+  leads                     Lead[]
+
+  @@map("lead_policy_versions")
+}
+
+model LeadPolicyCandidateWithdrawal {
+  id                         String            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  policyVersionId            String            @unique @map("policy_version_id") @db.Uuid
+  operationId                String            @unique @map("operation_id") @db.Uuid
+  requestDigest              String            @map("request_digest")
+  expectedPolicyRevision     Int               @map("expected_policy_revision")
+  expectedTransitionRevision Int               @map("expected_transition_revision")
+  reason                     String
+  actorUserId                String?           @map("actor_user_id") @db.Uuid
+  storedResult               Json              @map("stored_result")
+  epochSequence              BigInt            @map("epoch_sequence")
+  epochHash                  String            @map("epoch_hash")
+  createdAt                  DateTime          @default(now()) @map("created_at")
+  policyVersion              LeadPolicyVersion @relation(fields: [policyVersionId], references: [id], onDelete: Restrict)
+  actor                      User?             @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@map("lead_policy_candidate_withdrawals")
+}
+
+model LeadPolicyState {
+  id                    String             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey          String             @unique @default("lead-policy") @map("singleton_key")
+  activePolicyVersionId String?            @unique @map("active_policy_version_id") @db.Uuid
+  revision              Int                @default(0)
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
+  activePolicyVersion   LeadPolicyVersion? @relation("ActiveLeadPolicy", fields: [activePolicyVersionId], references: [id], onDelete: Restrict)
+
+  @@map("lead_policy_state")
+}
+
+model LeadPolicyTransitionState {
+  id                     String                         @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey           String                         @unique @default("lead-policy-transition") @map("singleton_key")
+  currentOperationId     String?                        @unique @map("current_operation_id") @db.Uuid
+  terminalCommandId      String?                        @unique @map("terminal_command_id") @db.Uuid
+  revision               Int                            @default(0)
+  phase                  LeadPolicyTransitionPhase      @default(IDLE)
+  effectiveRecoveryCapAt DateTime?                      @map("effective_recovery_cap_at")
+  telegramDecision       String?                        @map("telegram_decision")
+  captureBlock           Boolean                        @default(false) @map("capture_block")
+  irreversible           Boolean                        @default(false)
+  forwardOnly            Boolean                        @default(false) @map("forward_only")
+  terminalDirection      LeadPolicyTerminalDirection?   @map("terminal_direction")
+  createdAt              DateTime                       @default(now()) @map("created_at")
+  updatedAt              DateTime                       @updatedAt @map("updated_at")
+  currentOperation       LeadPolicyTransitionOperation? @relation("CurrentLeadPolicyTransition", fields: [currentOperationId], references: [id], onDelete: Restrict)
+  terminalCommand        LeadPolicyTransitionCommand?   @relation("TerminalLeadPolicyCommand", fields: [terminalCommandId], references: [id], onDelete: Restrict)
+
+  @@map("lead_policy_transition_state")
+}
+
+model LeadPolicyTransitionOperation {
+  id                         String                        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  operationId                String                        @unique @map("operation_id") @db.Uuid
+  candidatePolicyVersionId   String                        @map("candidate_policy_version_id") @db.Uuid
+  candidateBundleChecksum    String                        @map("candidate_bundle_checksum")
+  startingPolicyRevision     Int                           @map("starting_policy_revision")
+  startingTransitionRevision Int                           @map("starting_transition_revision")
+  startingProtectionRevision Int                           @map("starting_protection_revision")
+  phase                      LeadPolicyTransitionPhase     @default(PREPARED)
+  telegramDecision           String                        @map("telegram_decision")
+  retentionDecision          String                        @map("retention_decision")
+  terminalOutcome            String?                       @map("terminal_outcome")
+  startedAt                  DateTime                      @default(now()) @map("started_at")
+  completedAt                DateTime?                     @map("completed_at")
+  candidatePolicyVersion     LeadPolicyVersion             @relation(fields: [candidatePolicyVersionId], references: [id], onDelete: Restrict)
+  commands                   LeadPolicyTransitionCommand[]
+  currentForState            LeadPolicyTransitionState?    @relation("CurrentLeadPolicyTransition")
+
+  @@map("lead_policy_transition_operations")
+}
+
+model LeadPolicyTransitionCommand {
+  id                         String                        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  commandOperationId         String                        @unique @map("command_operation_id") @db.Uuid
+  transitionOperationId      String                        @map("transition_operation_id") @db.Uuid
+  kind                       LeadPolicyCommandKind
+  requestDigest              String                        @map("request_digest")
+  expectedPolicyRevision     Int                           @map("expected_policy_revision")
+  expectedTransitionRevision Int                           @map("expected_transition_revision")
+  expectedProtectionRevision Int                           @map("expected_protection_revision")
+  expectedPhase              LeadPolicyTransitionPhase     @map("expected_phase")
+  preAckFenceRevision        Int?                          @map("pre_ack_fence_revision")
+  preAckDirection            LeadPolicyTerminalDirection?  @map("pre_ack_direction")
+  epochSequence              BigInt?                       @map("epoch_sequence")
+  epochHash                  String?                       @map("epoch_hash")
+  checkpointSequence         BigInt?                       @map("checkpoint_sequence")
+  storedPhase                String                        @map("stored_phase")
+  storedResult               Json?                         @map("stored_result")
+  createdAt                  DateTime                      @default(now()) @map("created_at")
+  completedAt                DateTime?                     @map("completed_at")
+  transitionOperation        LeadPolicyTransitionOperation @relation(fields: [transitionOperationId], references: [id], onDelete: Restrict)
+  terminalForState           LeadPolicyTransitionState?    @relation("TerminalLeadPolicyCommand")
+
+  @@index([transitionOperationId])
+  @@map("lead_policy_transition_commands")
+}
+
+model BackupSnapshotGeneration {
+  id                     String           @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  exportedSnapshotId     String           @unique @map("exported_snapshot_id")
+  releaseId              String           @map("release_id")
+  dependencySetChecksum  String           @map("dependency_set_checksum")
+  manifestSchemaVersion  Int              @map("manifest_schema_version")
+  recoveryBundleChecksum String           @map("recovery_bundle_checksum")
+  createdAt              DateTime         @default(now()) @map("created_at")
+  completedAt            DateTime?        @map("completed_at")
+  artifacts              BackupArtifact[]
+
+  @@map("backup_snapshot_generations")
+}
+
+/// Phase-dependent proof requirements are PostgreSQL CHECK constraints in the
+/// Stage 4A migration because Prisma 7 PSL cannot express conditional checks.
+model BackupArtifact {
+  id                         String                   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  snapshotGenerationId       String                   @map("snapshot_generation_id") @db.Uuid
+  scope                      BackupScope
+  schemaVersion              Int                      @map("schema_version")
+  versionInventory           Json                     @map("version_inventory")
+  versionInventoryChecksum   String                   @map("version_inventory_checksum")
+  recoveryCapAt              DateTime?                @map("recovery_cap_at")
+  encryptedObjectInventory   Json                     @map("encrypted_object_inventory")
+  capacityInventory          Json?                    @map("capacity_inventory")
+  capacityInventoryChecksum  String?                  @map("capacity_inventory_checksum")
+  lifecycleReceipt           Json?                    @map("lifecycle_receipt")
+  intendedProtectionRevision Int?                     @map("intended_protection_revision")
+  attestationChecksum        String?                  @map("attestation_checksum")
+  scopeHeadSequence          BigInt?                  @map("scope_head_sequence")
+  scopeHeadHash              String?                  @map("scope_head_hash")
+  state                      BackupArtifactState      @default(PREPARED)
+  lifecycleRevision          Int                      @default(0) @map("lifecycle_revision")
+  lifecycleRecordChecksum    String?                  @map("lifecycle_record_checksum")
+  purgeReceiptChecksum       String?                  @map("purge_receipt_checksum")
+  requiredCoreArtifactId     String?                  @map("required_core_artifact_id") @db.Uuid
+  reconciliationError        String?                  @map("reconciliation_error")
+  createdAt                  DateTime                 @default(now()) @map("created_at")
+  updatedAt                  DateTime                 @updatedAt @map("updated_at")
+  purgedAt                   DateTime?                @map("purged_at")
+  snapshotGeneration         BackupSnapshotGeneration @relation(fields: [snapshotGenerationId], references: [id], onDelete: Restrict)
+  requiredCoreArtifact       BackupArtifact?          @relation("BackupArtifactCoreDependency", fields: [requiredCoreArtifactId], references: [id], onDelete: Restrict)
+  dependentArtifacts         BackupArtifact[]         @relation("BackupArtifactCoreDependency")
+  coreForProtectionStates    LeadProtectionState[]    @relation("LeadProtectionCoreArtifact")
+  leadForProtectionStates    LeadProtectionState[]    @relation("LeadProtectionLeadArtifact")
+
+  @@unique([snapshotGenerationId, scope])
+  @@index([state])
+  @@map("backup_artifacts")
+}
+
+model LeadProtectionState {
+  id                        String                            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey              String                            @unique @default("lead-protection") @map("singleton_key")
+  currentLeadArtifactId     String?                           @map("current_lead_artifact_id") @db.Uuid
+  compatibleCoreArtifactId  String?                           @map("compatible_core_artifact_id") @db.Uuid
+  leadBackupHeadSequence    BigInt?                           @map("lead_backup_head_sequence")
+  leadBackupHeadHash        String?                           @map("lead_backup_head_hash")
+  latestRecoverableExpiryAt DateTime?                         @map("latest_recoverable_expiry_at")
+  erasureCoverageSequence   BigInt?                           @map("erasure_coverage_sequence")
+  erasureCoverageHash       String?                           @map("erasure_coverage_hash")
+  configurationChecksum     String?                           @map("configuration_checksum")
+  inventoryChecksum         String?                           @map("inventory_checksum")
+  revision                  Int                               @default(0)
+  lastVerifiedAt            DateTime?                         @map("last_verified_at")
+  status                    ProtectionStatus                  @default(BLOCKED)
+  createdAt                 DateTime                          @default(now()) @map("created_at")
+  updatedAt                 DateTime                          @updatedAt @map("updated_at")
+  currentLeadArtifact       BackupArtifact?                   @relation("LeadProtectionLeadArtifact", fields: [currentLeadArtifactId], references: [id], onDelete: Restrict)
+  compatibleCoreArtifact    BackupArtifact?                   @relation("LeadProtectionCoreArtifact", fields: [compatibleCoreArtifactId], references: [id], onDelete: Restrict)
+  attestations              LeadPolicyProtectionAttestation[]
+
+  @@map("lead_protection_state")
+}
+
+model LeadPolicyProtectionAttestation {
+  id                      String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  policyVersionId         String              @map("policy_version_id") @db.Uuid
+  policyBundleChecksum    String              @map("policy_bundle_checksum")
+  protectionStateId       String              @map("protection_state_id") @db.Uuid
+  protectionRevision      Int                 @map("protection_revision")
+  backupInventoryChecksum String              @map("backup_inventory_checksum")
+  minimumCoverageSequence BigInt              @map("minimum_coverage_sequence")
+  minimumCoverageHash     String              @map("minimum_coverage_hash")
+  verifiedAt              DateTime            @map("verified_at")
+  status                  ProtectionStatus
+  reason                  String?
+  policyVersion           LeadPolicyVersion   @relation(fields: [policyVersionId], references: [id], onDelete: Restrict)
+  protectionState         LeadProtectionState @relation(fields: [protectionStateId], references: [id], onDelete: Restrict)
+
+  @@unique([policyVersionId, protectionRevision])
+  @@map("lead_policy_protection_attestations")
+}
+
+model RecoveryControlChainState {
+  id                   String                @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  chain                RecoveryChainKind     @unique
+  pendingSequence      BigInt?               @map("pending_sequence")
+  pendingHash          String?               @map("pending_hash")
+  acknowledgedSequence BigInt                @default(0) @map("acknowledged_sequence")
+  acknowledgedHash     String?               @map("acknowledged_hash")
+  revision             Int                   @default(0)
+  status               RecoveryControlStatus @default(IDLE)
+  signingKeyVersion    Int                   @map("signing_key_version")
+  operationId          String?               @map("operation_id") @db.Uuid
+  targetHost           String?               @map("target_host")
+  credentialVersions   Json?                 @map("credential_versions")
+  lastError            String?               @map("last_error")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @updatedAt @map("updated_at")
+
+  @@map("recovery_control_chain_state")
+}
+
+model RecoveryHighWaterCheckpointState {
+  id                     String                @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey           String                @unique @default("recovery-high-water") @map("singleton_key")
+  sequence               BigInt                @default(0)
+  checkpointHash         String?               @map("checkpoint_hash")
+  anchorKeyVersion       Int                   @map("anchor_key_version")
+  chainTuples            Json                  @map("chain_tuples")
+  coreLeadProjectionHash String?               @map("core_lead_projection_hash")
+  shareProjectionHash    String?               @map("share_projection_hash")
+  frozenShareTuple       Json?                 @map("frozen_share_tuple")
+  anchorObjectVersion    String?               @map("anchor_object_version")
+  anchorEtag             String?               @map("anchor_etag")
+  readBackAcknowledgedAt DateTime?             @map("read_back_acknowledged_at")
+  status                 RecoveryControlStatus @default(IDLE)
+  lastError              String?               @map("last_error")
+  createdAt              DateTime              @default(now()) @map("created_at")
+  updatedAt              DateTime              @updatedAt @map("updated_at")
+
+  @@map("recovery_high_water_checkpoint_state")
+}
+
+model CryptoVersionState {
+  id                            String                 @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  domain                        String
+  version                       Int
+  lifecycle                     CryptoVersionLifecycle
+  writerEpoch                   Int                    @default(0) @map("writer_epoch")
+  revision                      Int                    @default(0)
+  activatedAt                   DateTime?              @map("activated_at")
+  retirementStartedAt           DateTime?              @map("retirement_started_at")
+  retiredAt                     DateTime?              @map("retired_at")
+  lastVerifiedInventoryChecksum String?                @map("last_verified_inventory_checksum")
+  createdAt                     DateTime               @default(now()) @map("created_at")
+  updatedAt                     DateTime               @updatedAt @map("updated_at")
+
+  @@unique([domain, version])
+  @@map("crypto_version_state")
+}
+
+/// Physical scope ownership (GLOBAL/CORE only) is enforced by a PostgreSQL
+/// CHECK in the Stage 4A migration because Prisma 7 cannot narrow an enum per model.
+model RecoveryProviderOperationFence {
+  id                           String                             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  operationId                  String                             @unique @map("operation_id") @db.Uuid
+  scope                        RecoveryProviderScope
+  sourceHostEpoch              BigInt                             @map("source_host_epoch")
+  operationKind                String                             @map("operation_kind")
+  providerConfigChecksum       String                             @map("provider_config_checksum")
+  requestedPrefixChecksum      String                             @map("requested_prefix_checksum")
+  objectKey                    String                             @map("object_key")
+  requestChecksum              String                             @map("request_checksum")
+  intendedCapabilityKind       String                             @map("intended_capability_kind")
+  issuanceSelector             String                             @map("issuance_selector")
+  requestedPolicy              Json                               @map("requested_policy")
+  actualCapabilityIdentity     String?                            @map("actual_capability_identity")
+  effectivePolicyHash          String?                            @map("effective_policy_hash")
+  issuanceAttestationChecksum  String?                            @map("issuance_attestation_checksum")
+  revocationSelector           String                             @map("revocation_selector")
+  issuedAt                     DateTime?                          @map("issued_at")
+  expiresAt                    DateTime?                          @map("expires_at")
+  maxAcceptedRequestLifetimeMs BigInt                             @map("max_accepted_request_lifetime_ms")
+  expectedParentHash           String?                            @map("expected_parent_hash")
+  expectedSequence             BigInt?                            @map("expected_sequence")
+  lifecycle                    RecoveryProviderOperationLifecycle @default(PREPARED)
+  revision                     Int                                @default(0)
+  phaseSigningKeyVersion       Int                                @map("phase_signing_key_version")
+  previousPhaseHash            String?                            @map("previous_phase_hash")
+  headPhaseHash                String                             @map("head_phase_hash")
+  headPhaseSignature           String                             @map("head_phase_signature")
+  offHostPrefix                String                             @map("off_host_prefix")
+  offHostHeadChecksum          String                             @map("off_host_head_checksum")
+  owningAcknowledgement        Json?                              @map("owning_acknowledgement")
+  providerRevocationReceipt    String?                            @map("provider_revocation_receipt")
+  barrierAt                    DateTime?                          @map("barrier_at")
+  sweepOneChecksum             String?                            @map("sweep_one_checksum")
+  sweepOneAt                   DateTime?                          @map("sweep_one_at")
+  sweepTwoChecksum             String?                            @map("sweep_two_checksum")
+  sweepTwoAt                   DateTime?                          @map("sweep_two_at")
+  terminalResult               Json?                              @map("terminal_result")
+  retainUntil                  DateTime                           @map("retain_until")
+  createdAt                    DateTime                           @default(now()) @map("created_at")
+  updatedAt                    DateTime                           @updatedAt @map("updated_at")
+  hostRecordTransition         ActiveHostEpochTransition?         @relation("HostRecordFence")
+  checkpointRecordTransition   ActiveHostEpochTransition?         @relation("CheckpointRecordFence")
+
+  @@index([sourceHostEpoch, lifecycle])
+  @@map("recovery_provider_operation_fences")
+}
+
+/// Physical scope ownership (LEAD only) is enforced by a PostgreSQL CHECK in
+/// the Stage 4A migration because Prisma 7 cannot narrow an enum per model.
+model LeadRecoveryProviderOperationFence {
+  id                           String                             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  operationId                  String                             @unique @map("operation_id") @db.Uuid
+  scope                        RecoveryProviderScope              @default(LEAD)
+  sourceHostEpoch              BigInt                             @map("source_host_epoch")
+  operationKind                String                             @map("operation_kind")
+  providerConfigChecksum       String                             @map("provider_config_checksum")
+  requestedPrefixChecksum      String                             @map("requested_prefix_checksum")
+  objectKey                    String                             @map("object_key")
+  requestChecksum              String                             @map("request_checksum")
+  intendedCapabilityKind       String                             @map("intended_capability_kind")
+  issuanceSelector             String                             @map("issuance_selector")
+  requestedPolicy              Json                               @map("requested_policy")
+  actualCapabilityIdentity     String?                            @map("actual_capability_identity")
+  effectivePolicyHash          String?                            @map("effective_policy_hash")
+  issuanceAttestationChecksum  String?                            @map("issuance_attestation_checksum")
+  revocationSelector           String                             @map("revocation_selector")
+  issuedAt                     DateTime?                          @map("issued_at")
+  expiresAt                    DateTime?                          @map("expires_at")
+  maxAcceptedRequestLifetimeMs BigInt                             @map("max_accepted_request_lifetime_ms")
+  expectedParentHash           String?                            @map("expected_parent_hash")
+  expectedSequence             BigInt?                            @map("expected_sequence")
+  lifecycle                    RecoveryProviderOperationLifecycle @default(PREPARED)
+  revision                     Int                                @default(0)
+  phaseSigningKeyVersion       Int                                @map("phase_signing_key_version")
+  previousPhaseHash            String?                            @map("previous_phase_hash")
+  headPhaseHash                String                             @map("head_phase_hash")
+  headPhaseSignature           String                             @map("head_phase_signature")
+  offHostPrefix                String                             @map("off_host_prefix")
+  offHostHeadChecksum          String                             @map("off_host_head_checksum")
+  owningAcknowledgement        Json?                              @map("owning_acknowledgement")
+  providerRevocationReceipt    String?                            @map("provider_revocation_receipt")
+  barrierAt                    DateTime?                          @map("barrier_at")
+  sweepOneChecksum             String?                            @map("sweep_one_checksum")
+  sweepOneAt                   DateTime?                          @map("sweep_one_at")
+  sweepTwoChecksum             String?                            @map("sweep_two_checksum")
+  sweepTwoAt                   DateTime?                          @map("sweep_two_at")
+  terminalResult               Json?                              @map("terminal_result")
+  retainUntil                  DateTime                           @map("retain_until")
+  createdAt                    DateTime                           @default(now()) @map("created_at")
+  updatedAt                    DateTime                           @updatedAt @map("updated_at")
+
+  @@index([sourceHostEpoch, lifecycle])
+  @@map("lead_recovery_provider_operation_fences")
+}
+
+model ActiveHostEpochTransition {
+  id                               String                          @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey                     String                          @unique @default("active-host-transition") @map("singleton_key")
+  operationId                      String                          @unique @map("operation_id") @db.Uuid
+  sourceHostIdentity               String                          @map("source_host_identity")
+  targetHostIdentity               String                          @map("target_host_identity")
+  phase                            String
+  expectedHostParentHash           String                          @map("expected_host_parent_hash")
+  expectedHostSequence             BigInt                          @map("expected_host_sequence")
+  expectedCheckpointParentHash     String                          @map("expected_checkpoint_parent_hash")
+  expectedCheckpointSequence       BigInt                          @map("expected_checkpoint_sequence")
+  hostSigningKeyVersion            Int                             @map("host_signing_key_version")
+  checkpointSigningKeyVersion      Int                             @map("checkpoint_signing_key_version")
+  hostBytesChecksum                String?                         @map("host_bytes_checksum")
+  checkpointBytesChecksum          String?                         @map("checkpoint_bytes_checksum")
+  hostRecordFenceId                String?                         @unique @map("host_record_fence_id") @db.Uuid
+  checkpointRecordFenceId          String?                         @unique @map("checkpoint_record_fence_id") @db.Uuid
+  hostFencePhaseHeadChecksum       String?                         @map("host_fence_phase_head_checksum")
+  checkpointFencePhaseHeadChecksum String?                         @map("checkpoint_fence_phase_head_checksum")
+  finalizerCredentialVersion       Int?                            @map("finalizer_credential_version")
+  terminalResult                   Json?                           @map("terminal_result")
+  createdAt                        DateTime                        @default(now()) @map("created_at")
+  updatedAt                        DateTime                        @updatedAt @map("updated_at")
+  completedAt                      DateTime?                       @map("completed_at")
+  hostRecordFence                  RecoveryProviderOperationFence? @relation("HostRecordFence", fields: [hostRecordFenceId], references: [id], onDelete: Restrict)
+  checkpointRecordFence            RecoveryProviderOperationFence? @relation("CheckpointRecordFence", fields: [checkpointRecordFenceId], references: [id], onDelete: Restrict)
+
+  @@map("active_host_epoch_transitions")
+}
+
+/// PostgreSQL CHECK constraints in the generated Stage 4A migration enforce
+/// nonnegative counters, the UTC window, and all three D-23 conservation sums.
+/// Prisma 7 PSL cannot represent those constraints in this schema yet.
+model LeadAdmissionBudgetState {
+  id                                  String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  singletonKey                        String   @unique @default("lead-admission-budget") @map("singleton_key")
+  revision                            Int      @default(0)
+  windowStartedAt                     DateTime @map("window_started_at")
+  windowEndsAt                        DateTime @map("window_ends_at")
+  windowIntentCount                   Int      @default(0) @map("window_intent_count")
+  windowIntentLimit                   Int      @map("window_intent_limit")
+  tombstoneCap                        Int      @map("tombstone_cap")
+  attemptCap                          Int      @map("attempt_cap")
+  checkpointCap                       Int      @map("checkpoint_cap")
+  reservedOpenTombstoneUnits          Int      @default(0) @map("reserved_open_tombstone_units")
+  reservedOpenAttemptUnits            Int      @default(0) @map("reserved_open_attempt_units")
+  reservedOpenCleanupUnits            Int      @default(0) @map("reserved_open_cleanup_units")
+  reservedLeadErasureTombstoneUnits   Int      @default(0) @map("reserved_lead_erasure_tombstone_units")
+  reservedLeadErasureAttemptUnits     Int      @default(0) @map("reserved_lead_erasure_attempt_units")
+  reservedLeadErasureCleanupUnits     Int      @default(0) @map("reserved_lead_erasure_cleanup_units")
+  pendingTombstoneReservations        Int      @default(0) @map("pending_tombstone_reservations")
+  pendingAttempts                     Int      @default(0) @map("pending_attempts")
+  pendingUnbatchedCleanupReservations Int      @default(0) @map("pending_unbatched_cleanup_reservations")
+  pendingErasureCleanupReservations   Int      @default(0) @map("pending_erasure_cleanup_reservations")
+  uncheckpointedBatches               Int      @default(0) @map("uncheckpointed_batches")
+  uncheckpointedErasureOperations     Int      @default(0) @map("uncheckpointed_erasure_operations")
+  artifactPinnedTombstoneUnits        Int      @default(0) @map("artifact_pinned_tombstone_units")
+  artifactPinnedAttemptUnits          Int      @default(0) @map("artifact_pinned_attempt_units")
+  artifactPinnedCleanupUnits          Int      @default(0) @map("artifact_pinned_cleanup_units")
+  liveTombstones                      Int      @default(0) @map("live_tombstones")
+  createdAt                           DateTime @default(now()) @map("created_at")
+  updatedAt                           DateTime @updatedAt @map("updated_at")
+
+  @@map("lead_admission_budget_state")
+}
+
+/// The Stage 4A migration also rejects RELEASED unless all three dimensions are
+/// FREE and no cleanup or replay obligation remains (unsupported by Prisma 7 PSL).
+model LeadAdmissionReservation {
+  id                            BigInt                            @id @default(autoincrement())
+  submissionKeyId               String?                           @unique @map("submission_key_id") @db.Uuid
+  lifecycle                     LeadAdmissionReservationLifecycle @default(OPEN_ACTIVE)
+  tombstoneState                LeadTombstoneUnitState            @default(ACTIVE_RESERVED) @map("tombstone_state")
+  attemptState                  LeadAttemptUnitState              @default(ACTIVE_RESERVED) @map("attempt_state")
+  cleanupState                  LeadCleanupUnitState              @default(ACTIVE_RESERVED) @map("cleanup_state")
+  cleanupOperationId            String?                           @map("cleanup_operation_id") @db.Uuid
+  cleanupOperationKind          String?                           @map("cleanup_operation_kind")
+  replayObligationKind          String?                           @map("replay_obligation_kind")
+  terminalKind                  String?                           @map("terminal_kind")
+  terminalAt                    DateTime?                         @map("terminal_at")
+  lastArtifactInventoryChecksum String?                           @map("last_artifact_inventory_checksum")
+  createdAt                     DateTime                          @default(now()) @map("created_at")
+  updatedAt                     DateTime                          @updatedAt @map("updated_at")
+  submissionKeyLink             LeadSubmissionKey?                @relation("ReservationSubmissionKey", fields: [submissionKeyId], references: [id], onDelete: Restrict)
+  registryOwner                 LeadSubmissionKey?                @relation("SubmissionKeyReservation")
+  erasureMarkerAttempts         LeadErasureMarkerAttempt[]
+  abandonmentAttempts           SubmissionKeyAbandonmentAttempt[]
+
+  @@index([lifecycle])
+  @@map("lead_admission_reservations")
+}
+
+model LeadSubmissionKey {
+  id                          String                            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  idempotencyDigest           String                            @map("idempotency_digest")
+  idempotencyKeyVersion       Int                               @map("idempotency_key_version")
+  recoveryCapabilityDigest    String                            @map("recovery_capability_digest")
+  recoveryKeyVersion          Int                               @map("recovery_key_version")
+  reservationId               BigInt                            @unique @map("reservation_id")
+  leadId                      String?                           @unique @map("lead_id") @db.Uuid
+  state                       LeadSubmissionKeyState            @default(OPEN)
+  openExpiresAt               DateTime                          @map("open_expires_at")
+  submitClaimToken            String?                           @map("submit_claim_token")
+  submitLeaseExpiresAt        DateTime?                         @map("submit_lease_expires_at")
+  abandonmentOperationId      String?                           @map("abandonment_operation_id") @db.Uuid
+  submissionSchemaVersion     Int                               @map("submission_schema_version")
+  fingerprintSchemaVersion    Int?                              @map("fingerprint_schema_version")
+  fingerprintKeyVersion       Int?                              @map("fingerprint_key_version")
+  canonicalPayloadFingerprint String?                           @map("canonical_payload_fingerprint")
+  tombstoneExpiresAt          DateTime?                         @map("tombstone_expires_at")
+  denyUntil                   DateTime?                         @map("deny_until")
+  createdAt                   DateTime                          @default(now()) @map("created_at")
+  updatedAt                   DateTime                          @updatedAt @map("updated_at")
+  reservation                 LeadAdmissionReservation          @relation("SubmissionKeyReservation", fields: [reservationId], references: [id], onDelete: Restrict)
+  reservationLink             LeadAdmissionReservation?         @relation("ReservationSubmissionKey")
+  lead                        Lead?                             @relation("CommittedLead", fields: [leadId], references: [id], onDelete: Restrict)
+  intent                      LeadSubmissionIntent?
+  abandonmentAttempts         SubmissionKeyAbandonmentAttempt[]
+
+  @@unique([idempotencyKeyVersion, idempotencyDigest])
+  @@unique([recoveryKeyVersion, recoveryCapabilityDigest])
+  @@index([state, openExpiresAt])
+  @@map("lead_submission_keys")
+}
+
+model LeadSubmissionIntent {
+  id               String            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  submissionKeyId  String            @unique @map("submission_key_id") @db.Uuid
+  receiptExpiresAt DateTime          @map("receipt_expires_at")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  submissionKey    LeadSubmissionKey @relation(fields: [submissionKeyId], references: [id], onDelete: Restrict)
+
+  @@map("lead_submission_intents")
+}
+
+model Lead {
+  id                          String                 @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  publicReference             String                 @unique @map("public_reference") @db.VarChar(32)
+  lifecycle                   LeadLifecycle          @default(ACTIVE)
+  requestFingerprint          String                 @map("request_fingerprint")
+  fingerprintKeyVersion       Int                    @map("fingerprint_key_version")
+  fingerprintSchemaVersion    Int                    @map("fingerprint_schema_version")
+  leadSnapshotSchemaVersion   Int                    @map("lead_snapshot_schema_version")
+  snapshot                    Json
+  publicationId               String                 @map("publication_id") @db.Uuid
+  priceVersionId              String                 @map("price_version_id") @db.Uuid
+  encryptedContact            Bytes                  @map("encrypted_contact")
+  contactKeyVersion           Int                    @map("contact_key_version")
+  contactPayloadSchemaVersion Int                    @map("contact_payload_schema_version")
+  contactNonce                Bytes                  @map("contact_nonce")
+  contactTag                  Bytes                  @map("contact_tag")
+  policyVersionId             String                 @map("policy_version_id") @db.Uuid
+  policyBundleChecksum        String                 @map("policy_bundle_checksum")
+  deliveryMode                LeadPolicyDeliveryMode @map("delivery_mode")
+  deliveryConfigVersion       Int?                   @map("delivery_config_version")
+  deliveryDestinationDigest   String?                @map("delivery_destination_digest")
+  acceptedRecoveryWindowDays  Int                    @map("accepted_recovery_window_days")
+  consentAcceptedAt           DateTime               @map("consent_accepted_at")
+  personalDataExpiresAt       DateTime               @map("personal_data_expires_at")
+  workflowStatus              LeadWorkflowStatus     @default(NEW) @map("workflow_status")
+  workflowRevision            Int                    @default(0) @map("workflow_revision")
+  createdAt                   DateTime               @default(now()) @map("created_at")
+  updatedAt                   DateTime               @updatedAt @map("updated_at")
+  publication                 CatalogPublication     @relation(fields: [publicationId], references: [id], onDelete: Restrict)
+  priceVersion                PriceVersion           @relation(fields: [priceVersionId], references: [id], onDelete: Restrict)
+  policyVersion               LeadPolicyVersion      @relation(fields: [policyVersionId], references: [id], onDelete: Restrict)
+  submissionKey               LeadSubmissionKey?     @relation("CommittedLead")
+  statusHistory               LeadStatusHistory[]
+  notification                LeadNotification?
+  erasureRequest              LeadErasureRequest?
+
+  @@index([workflowStatus, createdAt])
+  @@index([personalDataExpiresAt])
+  @@map("leads")
+}
+
+model LeadStatusHistory {
+  id          String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  leadId      String              @map("lead_id") @db.Uuid
+  fromStatus  LeadWorkflowStatus? @map("from_status")
+  toStatus    LeadWorkflowStatus  @map("to_status")
+  ownerUserId String              @map("owner_user_id") @db.Uuid
+  createdAt   DateTime            @default(now()) @map("created_at")
+  lead        Lead                @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  owner       User                @relation(fields: [ownerUserId], references: [id], onDelete: Restrict)
+
+  @@index([leadId, createdAt])
+  @@map("lead_status_history")
+}
+
+model LeadNotification {
+  id                        String                 @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  leadId                    String                 @unique @map("lead_id") @db.Uuid
+  channel                   String                 @default("telegram")
+  purpose                   String                 @default("lead_created")
+  deliveryMode              LeadPolicyDeliveryMode @map("delivery_mode")
+  deliveryConfigVersion     Int?                   @map("delivery_config_version")
+  deliveryDestinationDigest String?                @map("delivery_destination_digest")
+  status                    LeadNotificationStatus
+  manualResendAuthorized    Boolean                @default(false) @map("manual_resend_authorized")
+  resendBlockReason         String?                @map("resend_block_reason")
+  attemptCount              Int                    @default(0) @map("attempt_count")
+  nextAttemptAt             DateTime?              @map("next_attempt_at")
+  leaseToken                String?                @map("lease_token")
+  leaseExpiresAt            DateTime?              @map("lease_expires_at")
+  dispatchStartedAt         DateTime?              @map("dispatch_started_at")
+  providerResponseId        String?                @map("provider_response_id")
+  lastErrorCode             String?                @map("last_error_code")
+  sentAt                    DateTime?              @map("sent_at")
+  createdAt                 DateTime               @default(now()) @map("created_at")
+  updatedAt                 DateTime               @updatedAt @map("updated_at")
+  lead                      Lead                   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId, channel, purpose])
+  @@index([status, nextAttemptAt])
+  @@map("lead_notifications")
+}
+
+model LeadErasureReceipt {
+  id               String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  requestDigest    String   @map("request_digest")
+  digestKeyVersion Int      @map("digest_key_version")
+  completedAt      DateTime @map("completed_at")
+  expiresAt        DateTime @map("expires_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@unique([digestKeyVersion, requestDigest])
+  @@index([expiresAt])
+  @@map("lead_erasure_receipts")
+}
+
+model LeadErasureRequest {
+  id                       String                     @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  leadId                   String                     @unique @map("lead_id") @db.Uuid
+  kind                     LeadErasureKind
+  operationDigest          String                     @map("operation_digest")
+  digestKeyVersion         Int                        @map("digest_key_version")
+  ledgerKeyVersion         Int                        @map("ledger_key_version")
+  phase                    LeadErasurePhase           @default(PREPARED)
+  notificationQuiescenceAt DateTime?                  @map("notification_quiescence_at")
+  markerTimestamp          DateTime?                  @map("marker_timestamp")
+  markerPayloadChecksum    String?                    @map("marker_payload_checksum")
+  coverageSequence         BigInt?                    @map("coverage_sequence")
+  coverageHash             String?                    @map("coverage_hash")
+  createdAt                DateTime                   @default(now()) @map("created_at")
+  updatedAt                DateTime                   @updatedAt @map("updated_at")
+  lead                     Lead                       @relation(fields: [leadId], references: [id], onDelete: Restrict)
+  markerAttempts           LeadErasureMarkerAttempt[]
+
+  @@unique([digestKeyVersion, operationDigest])
+  @@map("lead_erasure_requests")
+}
+
+model LeadErasureMarkerAttempt {
+  id                           String                   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  requestId                    String?                  @map("request_id") @db.Uuid
+  reservationId                BigInt                   @map("reservation_id")
+  normalizedCapacityTransition Json                     @map("normalized_capacity_transition")
+  operationDigest              String                   @map("operation_digest")
+  digestKeyVersion             Int                      @map("digest_key_version")
+  attemptNumber                Int                      @map("attempt_number")
+  objectLocator                String                   @unique @map("object_locator")
+  markerSchemaVersion          Int                      @map("marker_schema_version")
+  markerKeyVersion             Int                      @map("marker_key_version")
+  plaintextChecksum            String                   @map("plaintext_checksum")
+  ciphertextChecksum           String                   @map("ciphertext_checksum")
+  ciphertextSize               BigInt                   @map("ciphertext_size")
+  state                        LeadErasureMarkerState   @default(PREPARED)
+  objectVersion                String?                  @map("object_version")
+  objectEtag                   String?                  @map("object_etag")
+  coverageSequence             BigInt?                  @map("coverage_sequence")
+  coverageHash                 String?                  @map("coverage_hash")
+  lastErrorCode                String?                  @map("last_error_code")
+  createdAt                    DateTime                 @default(now()) @map("created_at")
+  updatedAt                    DateTime                 @updatedAt @map("updated_at")
+  request                      LeadErasureRequest?      @relation(fields: [requestId], references: [id], onDelete: SetNull)
+  reservation                  LeadAdmissionReservation @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+
+  @@unique([digestKeyVersion, operationDigest, attemptNumber])
+  @@index([state])
+  @@map("lead_erasure_marker_attempts")
+}
+
+model SubmissionKeyAbandonmentBatch {
+  id                        String                             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  operationId               String                             @unique @map("operation_id") @db.Uuid
+  operationDigest           String                             @map("operation_digest")
+  digestKeyVersion          Int                                @map("digest_key_version")
+  orderedMembershipChecksum String                             @map("ordered_membership_checksum")
+  cleanupObligationId       String                             @unique @map("cleanup_obligation_id") @db.Uuid
+  markerLocator             String?                            @unique @map("marker_locator")
+  markerObjectVersion       String?                            @map("marker_object_version")
+  markerChecksum            String?                            @map("marker_checksum")
+  markerSize                BigInt?                            @map("marker_size")
+  coverageSequence          BigInt?                            @map("coverage_sequence")
+  coverageHash              String?                            @map("coverage_hash")
+  checkpointSequence        BigInt?                            @map("checkpoint_sequence")
+  state                     SubmissionKeyAbandonmentBatchState @default(PREPARED)
+  lastErrorCode             String?                            @map("last_error_code")
+  createdAt                 DateTime                           @default(now()) @map("created_at")
+  updatedAt                 DateTime                           @updatedAt @map("updated_at")
+  attempts                  SubmissionKeyAbandonmentAttempt[]
+
+  @@unique([digestKeyVersion, operationDigest])
+  @@map("submission_key_abandonment_batches")
+}
+
+model SubmissionKeyAbandonmentAttempt {
+  id                    String                         @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  submissionKeyId       String?                        @map("submission_key_id") @db.Uuid
+  reservationId         BigInt                         @map("reservation_id")
+  normalizedBeforeState Json                           @map("normalized_before_state")
+  normalizedAfterState  Json                           @map("normalized_after_state")
+  operationId           String                         @unique @map("operation_id") @db.Uuid
+  operationDigest       String                         @map("operation_digest")
+  digestKeyVersion      Int                            @map("digest_key_version")
+  reason                String
+  denyUntil             DateTime                       @map("deny_until")
+  batchId               String?                        @map("batch_id") @db.Uuid
+  state                 SubmissionKeyAbandonmentState  @default(PREPARED)
+  reconciliationError   String?                        @map("reconciliation_error")
+  createdAt             DateTime                       @default(now()) @map("created_at")
+  updatedAt             DateTime                       @updatedAt @map("updated_at")
+  submissionKey         LeadSubmissionKey?             @relation(fields: [submissionKeyId], references: [id], onDelete: SetNull)
+  reservation           LeadAdmissionReservation       @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+  batch                 SubmissionKeyAbandonmentBatch? @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  @@unique([digestKeyVersion, operationDigest])
+  @@index([state, denyUntil])
+  @@map("submission_key_abandonment_attempts")
 }
