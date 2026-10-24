@@ -116,7 +116,7 @@ def projected_svg(model: dict, fixture: dict, masks: dict[str, str]) -> bytes:
             continue
         command = "M" + " L".join(f"{x:.2f},{y:.2f}" for x, y in hull) + " Z"
         paths.append(
-            f'<path id="mask-{semantic}" data-semantic="{semantic}" d="{command}" '
+            f'<path id="mask-{semantic}" d="{command}" '
             f'fill="{colors[semantic]}" stroke="#383b37" stroke-width="2"/>'
         )
     title = html.escape(fixture["id"])

@@ -94,7 +94,7 @@ Create production env files on the server (never commit them):
   services:
     postgres:
       ports: !override
-        - "127.0.0.1:54329:5432"
+        - "127.0.0.1:<postgres-port>:5432"
       environment:
         POSTGRES_PASSWORD: "<strong generated password>"
   ```
@@ -105,10 +105,11 @@ Create production env files on the server (never commit them):
 
   ```bash
   NODE_ENV=production
+  PORT=<unused backend port, for example 3100 on a shared VPS>
   COOKIE_SECURE=true
   JWT_SECRET=<output of: openssl rand -hex 32>
   CORS_ORIGINS=https://<domain>,https://<app-domain>
-  DATABASE_URL=postgresql://superuser:<strong password>@localhost:54329/seriya?schema=public
+  DATABASE_URL=postgresql://superuser:<strong password>@localhost:<postgres-port>/seriya?schema=public
   BACKUP_DATABASE_NAME=seriya
   BACKUP_DATABASE_USER=superuser
   TRUST_PROXY=true
@@ -163,7 +164,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:<backend-port>;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -175,7 +176,7 @@ server {
 
 Certbot rewrites this block for HTTPS and adds the HTTP→HTTPS redirect itself.
 
-The checked-in nginx template also serves the owner webapp from a separate protected subdomain such as `admin.<domain>`. For this project the public host is `seriya.raspilok.ru`; add the owner subdomain only when the owner workspace is released. Obtain certificates for every enabled hostname.
+The checked-in nginx template also serves the owner webapp from a separate protected subdomain such as `admin.<domain>`. For this project the public host is `seriya.raspilok.ru`; add the owner subdomain only when the owner workspace is released. Obtain certificates for every enabled hostname. On a shared VPS, choose backend and PostgreSQL host ports that are not used by another project, put the backend port in `backend.env`, and substitute the same value for `<backend-port>` in nginx.
 The exact owner origin must also be present in `CORS_ORIGINS`; otherwise cookie login and refresh are intentionally rejected.
 
 ## Step 6 — backend as a systemd service
@@ -200,7 +201,7 @@ ssh <server> /opt/<project>/deploy.sh
 
 The script refuses a dirty/out-of-sync checkout, resolves any earlier interrupted switch through Bash even when a fresh Git clone does not preserve a local executable bit, requires all three production env files, creates and verifies a database backup receipt from the source Compose project before migration, assembles a timestamped full release outside `current`, installs locked dependencies, generates Prisma, previews/applies the approved catalog, stages only manifest-declared derived SVG files from the shared production asset package into a clean public directory, prepares/exports the exact candidate, builds backend plus both frontends, verifies the owner API origin embedded in its bundle, writes a release checksum manifest, switches the complete application symlink, verifies backend readiness, activates and verifies the matching database publication, and smoke-tests the public site, owner workspace, and APIs. Unlisted files beside the production manifest—including raw OBJ/B3D, archives, or rejected images—are never copied into the web root. Any failure after switching restores the previous application and publication together.
 
-Production activation intentionally fails until every published catalog family has a rights-approved production asset whose source and derived checksums match the shared manifest and files. The six supplied Basis packages and 25 neutral schematics are enough for development and converter validation, not for bypassing that launch gate. Supply the remaining confirmed Basis exports, approve provenance/rights, run the same batch converter, and place the complete package in `shared/catalog-assets` before the first live catalog activation.
+Production activation intentionally fails until every published catalog family has a rights-approved production asset whose source and derived checksums match the shared manifest and files. For the first test release, run `bun run catalog:assets:fixtures` and `bun run catalog:assets:production`: the six approved Basis-derived visuals replace their neutral counterparts, while approved Seriya-owned neutral schematics cover the remaining families. Place the generated package from `.scratch/catalog-assets-production` in `shared/catalog-assets`. Further Basis exports replace neutral schematics incrementally and do not block the first test release.
 
 The deploy pulls `main` from GitHub on the server — **unpushed local commits never reach production**. Push first, then deploy. Before deploying, verify the release source (`git remote -v`, `git status --short --branch`); if the worktree is dirty or the branch is not pushed/synced, stop and report the blocker instead of forcing it.
 
@@ -230,7 +231,7 @@ This is also the pattern for future product background jobs (scheduled notificat
 - [ ] Both registration endpoints return `403`; the bootstrapped owner can log in and a normal authenticated user receives `403` on `/api/owner/catalog`.
 - [ ] `/api/catalog`, `/catalog/`, backend runtime, and release manifest expose the same publication/release pair.
 - [ ] Production asset coverage check reports zero missing families.
-- [ ] `docker ps` shows PostgreSQL bound to `127.0.0.1:54329` only.
+- [ ] `docker ps` shows PostgreSQL bound only to the selected `127.0.0.1:<postgres-port>`.
 - [ ] `systemctl list-timers` shows certbot, sessions-cleanup, and db-backup timers active.
 - [ ] Manual backup run produced a file; test restore matched; the server password is stored nowhere.
 

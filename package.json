@@ -33,6 +33,7 @@
     "test:catalog": "bun scripts/run-python.mjs -m unittest discover -s scripts/catalog -p \"test_*.py\" && bun run catalog:check",
     "catalog:assets": "bun scripts/run-python.mjs scripts/catalog-assets/generate_schematics.py --seed catalog/seed/catalog.v1.json --output website/public/catalog --manifest website/public/catalog/manifest.v1.json",
     "catalog:assets:fixtures": "bun scripts/run-python.mjs scripts/catalog-assets/inspect_basis.py --source .scratch/bazis-shef/шеф --fixtures scripts/catalog-assets/basis-fixtures.v1.json --output .scratch/catalog-assets-fixtures",
+    "catalog:assets:production": "bun scripts/run-python.mjs scripts/catalog-assets/build_production_package.py --schematic-manifest website/public/catalog/manifest.v1.json --schematic-directory website/public/catalog --basis-manifest .scratch/catalog-assets-fixtures/manifest.basis.v1.json --basis-directory .scratch/catalog-assets-fixtures --output .scratch/catalog-assets-production",
     "test:assets": "bun scripts/run-python.mjs -m unittest discover -s scripts/catalog-assets -p \"test_*.py\"",
     "architecture:check": "bun scripts/architecture-check.mjs",
     "typecheck": "bun run --filter '*' --sequential typecheck",
