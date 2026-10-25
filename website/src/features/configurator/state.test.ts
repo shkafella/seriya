@@ -92,10 +92,11 @@ describe('configurator state model', () => {
   test('restores a compatible draft through the feature-owned boundary', () => {
     const command = buildConfigurationCommand(configuredState(), 'local-draft')!
     const draft: ConfiguratorDraft = {
-      draftSchemaVersion: 2,
+      draftSchemaVersion: 3,
       savedAt: '2026-10-24T10:00:00.000Z',
       uiOptions: { startSide: 'right' },
       command,
+      reconciliationSourceCommand: null,
       acceptedQuote: null,
     }
     expect(configuratorStateFromDraft(draft, bootstrap)).toMatchObject({

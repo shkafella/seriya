@@ -36,6 +36,8 @@ export type PublishedKitchenSnapshot = {
   variants: PublishedKitchenVariant[]
 }
 
+export type KitchenQuoteCalculation = Omit<ConfigurationQuoteResponse, 'configurationFingerprint'>
+
 type Placement = {
   variant: PublishedKitchenVariant
   standardVariant: PublishedKitchenVariant
@@ -53,7 +55,7 @@ const rows = ['lower', 'wall', 'mezzanine'] as const
 export function calculateKitchenQuote(
   snapshot: PublishedKitchenSnapshot,
   request: ConfigurationQuoteRequest,
-): ConfigurationQuoteResponse {
+): KitchenQuoteCalculation {
   if (request.publicationId !== snapshot.publicationId) throw new Error('The requested publication is no longer active')
 
   const variants = new Map(snapshot.variants.map((variant) => [variant.id, variant]))
@@ -61,50 +63,10 @@ export function calculateKitchenQuote(
   const body = requiredMaterial(materials, request.bodyMaterialId, 'body')
   const hdf = requiredSingleActiveMaterial(snapshot.materials, 'hdf')
   const facade = request.facadeMaterialId === null ? null : requiredMaterial(materials, request.facadeMaterialId, 'facade')
-
-  const placements = request.rows.flatMap((row) => row.modules.map((module) => {
-    const selected = requiredVariant(variants, module.variantId)
-    if (selected.row !== row.row || !selected.configuration.straightEligible || !['ordinary', 'tall'].includes(selected.configuration.role)) {
-      throw new Error('The selected module is not compatible with this straight kitchen row')
-    }
-    const standardVariant = resolveStandardVariant(snapshot.variants, selected, module.cutWidthMm)
-    const spanMm = module.cutWidthMm ?? layoutSpan(standardVariant)
-    return {
-      variant: selected,
-      standardVariant,
-      row: row.row,
-      startMm: module.startMm,
-      spanMm,
-      withoutFacade: module.withoutFacade,
-      cut: spanMm !== layoutSpan(standardVariant),
-    } satisfies Placement
-  }))
-
-  assertNoOverlaps(placements)
-  assertUpperReservations(placements)
-  assertCutLimits(placements)
-
-  const panels = request.falsePanels.map((panel) => {
-    const variant = requiredVariant(variants, panel.variantId)
-    if (variant.configuration.role !== 'false_panel' || !variant.configuration.straightEligible || !variant.configuration.falsePanelPositions.includes(panel.position)) {
-      throw new Error('The selected false panel is not compatible with this position')
-    }
-    if (panel.widthMm !== layoutSpan(variant)) throw new Error('False panel width must match the published catalog panel')
-    if (variant.consumption.facade > 0 && !facade) throw new Error('A facade material is required for a false panel')
-    const placement: FalsePanelPlacement = {
-      variant,
-      standardVariant: variant,
-      row: panel.row,
-      startMm: panel.startMm,
-      spanMm: layoutSpan(variant),
-      withoutFacade: false,
-      cut: false,
-      position: panel.position,
-    }
-    return placement
-  })
-  for (const panel of panels) assertFalsePanelPosition(panel, placements, panels.filter((item) => item !== panel))
-  assertNoOverlaps([...placements, ...panels])
+  const { placements, panels } = resolveKitchenGeometry(snapshot, request)
+  if (!facade && panels.some((panel) => panel.variant.consumption.facade > 0)) {
+    throw new Error('A facade material is required for a false panel')
+  }
 
   const specification: ConfigurationQuoteResponse['specification'] = []
   let wholesaleTotal = 0
@@ -181,6 +143,63 @@ export function calculateKitchenQuote(
   }
 }
 
+export function validateKitchenGeometry(
+  snapshot: PublishedKitchenSnapshot,
+  request: ConfigurationQuoteRequest,
+) {
+  resolveKitchenGeometry(snapshot, request)
+}
+
+function resolveKitchenGeometry(
+  snapshot: PublishedKitchenSnapshot,
+  request: ConfigurationQuoteRequest,
+) {
+  if (request.publicationId !== snapshot.publicationId) throw new Error('The requested publication is no longer active')
+  const variants = new Map(snapshot.variants.map((variant) => [variant.id, variant]))
+  const placements = request.rows.flatMap((row) => row.modules.map((module) => {
+    const selected = requiredVariant(variants, module.variantId)
+    if (selected.row !== row.row || !selected.configuration.straightEligible || !['ordinary', 'tall'].includes(selected.configuration.role)) {
+      throw new Error('The selected module is not compatible with this straight kitchen row')
+    }
+    const standardVariant = resolveStandardVariant(snapshot.variants, selected, module.cutWidthMm)
+    const spanMm = module.cutWidthMm ?? layoutSpan(standardVariant)
+    return {
+      variant: selected,
+      standardVariant,
+      row: row.row,
+      startMm: module.startMm,
+      spanMm,
+      withoutFacade: module.withoutFacade,
+      cut: spanMm !== layoutSpan(standardVariant),
+    } satisfies Placement
+  }))
+
+  assertNoOverlaps(placements)
+  assertUpperReservations(placements)
+  assertCutLimits(placements)
+
+  const panels = request.falsePanels.map((panel) => {
+    const variant = requiredVariant(variants, panel.variantId)
+    if (variant.configuration.role !== 'false_panel' || !variant.configuration.straightEligible || !variant.configuration.falsePanelPositions.includes(panel.position)) {
+      throw new Error('The selected false panel is not compatible with this position')
+    }
+    if (panel.widthMm !== layoutSpan(variant)) throw new Error('False panel width must match the published catalog panel')
+    return {
+      variant,
+      standardVariant: variant,
+      row: panel.row,
+      startMm: panel.startMm,
+      spanMm: layoutSpan(variant),
+      withoutFacade: false,
+      cut: false,
+      position: panel.position,
+    } satisfies FalsePanelPlacement
+  })
+  for (const panel of panels) assertFalsePanelPosition(panel, placements, panels.filter((item) => item !== panel))
+  assertNoOverlaps([...placements, ...panels])
+  return { placements, panels }
+}
+
 /** Proposes the smallest atomic upper-row package: the selected replacement and, when needed, its right neighbour. */
 export function proposeUpperReplacement(
   snapshot: PublishedKitchenSnapshot,
@@ -242,7 +261,7 @@ export function proposeUpperReplacement(
   return { requiresConfirmation: changes.length > 1, changes }
 }
 
-function resolveStandardVariant(variants: PublishedKitchenVariant[], selected: PublishedKitchenVariant, requestedWidth: number | null) {
+export function resolveStandardVariant(variants: PublishedKitchenVariant[], selected: PublishedKitchenVariant, requestedWidth: number | null) {
   if (requestedWidth === null || requestedWidth === layoutSpan(selected)) return selected
   if (selected.cutPolicy !== 'allowed') throw new Error('The selected module cannot be cut')
   const matches = variants

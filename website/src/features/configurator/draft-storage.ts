@@ -21,11 +21,13 @@ export function serializeConfiguratorDraft(
   acceptedQuote: AcceptedConfigurationQuote | null,
   uiOptions: ConfiguratorDraftUiOptions,
   savedAt = new Date(),
+  reconciliationSourceCommand: ConfigurationQuoteRequest | null = null,
 ) {
   return JSON.stringify(configuratorDraftSchema.parse({
     draftSchemaVersion: CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION,
     savedAt: savedAt.toISOString(),
     command,
+    reconciliationSourceCommand,
     uiOptions,
     acceptedQuote,
   }))
@@ -42,7 +44,7 @@ export function readConfiguratorDraft(raw: string | null): ConfiguratorDraftRead
 
   if (parsed && typeof parsed === 'object') {
     const version = (parsed as { draftSchemaVersion?: unknown }).draftSchemaVersion
-    if (typeof version === 'number' && ![0, 1, CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION].includes(version)) {
+    if (typeof version === 'number' && ![0, 1, 2, CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION].includes(version)) {
       return { status: 'unsupported', version }
     }
   }

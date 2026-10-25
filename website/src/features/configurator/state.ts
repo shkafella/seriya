@@ -146,6 +146,16 @@ export class ConfiguratorStateModel {
     this.accepted = acceptedQuote
   }
 
+  accept(acceptedQuote: AcceptedConfigurationQuote) {
+    this.accepted = acceptedQuote
+  }
+
+  clearAcceptance() {
+    if (this.accepted === null) return false
+    this.accepted = null
+    return true
+  }
+
   undo() {
     const nextHistory = undoHistory(this.history)
     if (nextHistory === this.history) return false

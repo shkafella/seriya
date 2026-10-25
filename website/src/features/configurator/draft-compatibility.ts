@@ -6,6 +6,7 @@ import type {
 
 export type DraftCompatibility =
   | { status: 'ready'; acceptedQuote: AcceptedConfigurationQuote | null }
+  | { status: 'reconciling' }
   | { status: 'stale' }
   | { status: 'corrupt' }
 
@@ -27,6 +28,7 @@ export function validateDraftCompatibility(
   bootstrap: ConfigurationBootstrap,
 ): DraftCompatibility {
   const command = draft.command
+  if (draft.reconciliationSourceCommand !== null) return { status: 'reconciling' }
   if (command.publicationId !== bootstrap.publicationId) return { status: 'stale' }
 
   const materials = new Map(bootstrap.materials.map((material) => [material.id, material]))
@@ -49,18 +51,11 @@ export function validateDraftCompatibility(
         || (variant.configuration.role !== 'ordinary' && variant.configuration.role !== 'tall')) {
         return { status: 'corrupt' }
       }
-      const standardWidth = variant.dimensionsMm.layoutSpan ?? variant.dimensionsMm.width
+      const standardVariant = resolveStandardVariant(bootstrap, variant, module.cutWidthMm)
+      if (!standardVariant) return { status: 'corrupt' }
+      const standardWidth = variantSpan(standardVariant)
       const moduleWidth = module.cutWidthMm ?? standardWidth
       if (module.cutWidthMm !== null && module.cutWidthMm !== standardWidth) {
-        const reduction = standardWidth - module.cutWidthMm
-        if (!variant.cutToWidth.allowed
-          || reduction <= 0
-          || variant.cutToWidth.maxReductionMm === null
-          || reduction > variant.cutToWidth.maxReductionMm
-          || variant.cutToWidth.stepMm === null
-          || reduction % variant.cutToWidth.stepMm !== 0) {
-          return { status: 'corrupt' }
-        }
         cutsByRow.set(row.row, (cutsByRow.get(row.row) ?? 0) + 1)
       }
       modulePlacements.push({
@@ -144,4 +139,30 @@ export function validateDraftCompatibility(
   }
 
   return { status: 'ready', acceptedQuote: draft.acceptedQuote }
+}
+
+function resolveStandardVariant(
+  bootstrap: ConfigurationBootstrap,
+  selected: ConfigurationBootstrap['variants'][number],
+  requestedWidth: number | null,
+) {
+  if (requestedWidth === null || requestedWidth === variantSpan(selected)) return selected
+  if (!selected.cutToWidth.allowed) return null
+  return bootstrap.variants
+    .filter((variant) => variant.familyKey === selected.familyKey
+      && variant.row === selected.row
+      && variant.cutToWidth.allowed)
+    .filter((variant) => {
+      const reduction = variantSpan(variant) - requestedWidth
+      return reduction >= 0
+        && variant.cutToWidth.maxReductionMm !== null
+        && reduction <= variant.cutToWidth.maxReductionMm
+        && variant.cutToWidth.stepMm !== null
+        && reduction % variant.cutToWidth.stepMm === 0
+    })
+    .sort((left, right) => variantSpan(left) - variantSpan(right))[0] ?? null
+}
+
+function variantSpan(variant: ConfigurationBootstrap['variants'][number]) {
+  return variant.dimensionsMm.layoutSpan ?? variant.dimensionsMm.width
 }

@@ -3,6 +3,7 @@ import { describe, expect, test } from 'bun:test'
 import { apiErrorCodeSchema } from './errors'
 
 import {
+  configuratorReconciliationRequestSchema,
   configuratorReconciliationResponseSchema,
   leadIntentResponseSchema,
   ownerLeadDetailSchema,
@@ -72,6 +73,7 @@ const reconciliationQuote = {
   publicationId: configuration.publicationId,
   priceVersionId: '018f0f89-8a7b-7c6d-8e5f-1234567890ad',
   intentId: 'reconciled-quote',
+  configurationFingerprint: `sha256:${'a'.repeat(64)}`,
   totalRub: 125_000,
   includedVatRub: 20_833.33,
   kitchenHeightMm: 2400,
@@ -179,9 +181,10 @@ describe('lead submission contract', () => {
     const base = {
       originalPublicationId: configuration.publicationId,
       currentPublicationId: configuration.publicationId,
-      originalQuote: null,
+      originalQuote: reconciliationQuote,
       currentQuote: null,
-      currentConfigurationFingerprint: 'sha256:current-configuration',
+      workingCommand: { ...configuration, intentId: reconciliationQuote.intentId },
+      currentConfigurationFingerprint: reconciliationQuote.configurationFingerprint,
       requiresAcceptance: false,
     }
     const blockingIssue = {
@@ -189,6 +192,17 @@ describe('lead submission contract', () => {
       path: ['rows', 0, 'modules', 0],
       blocking: true,
       message: 'Модуль больше недоступен',
+      target: { kind: 'module', row: 'lower', index: 0 },
+      originalSelection: {
+        kind: 'variant',
+        id: configuration.rows[0].modules[0].variantId,
+        publicName: 'Шкаф 600',
+        sku: 'LOWER-600',
+        row: 'lower',
+        widthMm: 600,
+        layoutSpanMm: 600,
+      },
+      replacementOptions: [],
     } as const
 
     expect(configuratorReconciliationResponseSchema.safeParse({
@@ -231,6 +245,7 @@ describe('lead submission contract', () => {
     expect(configuratorReconciliationResponseSchema.safeParse({
       ...base,
       currentPublicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff',
+      workingCommand: { ...base.workingCommand, publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff' },
       currentQuote: { ...reconciliationQuote, publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff' },
       issues: [{ code: 'PUBLICATION_CHANGED', blocking: false, path: ['publicationId'], message: 'Публикация обновлена' }],
       requiresAcceptance: true,
@@ -238,19 +253,18 @@ describe('lead submission contract', () => {
     expect(configuratorReconciliationResponseSchema.safeParse({
       ...base,
       currentPublicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff',
+      workingCommand: { ...base.workingCommand, publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff' },
       currentQuote: { ...reconciliationQuote, publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff' },
       issues: [],
     }).success).toBe(false)
     expect(configuratorReconciliationResponseSchema.safeParse({
       ...base,
-      originalQuote: reconciliationQuote,
       currentQuote: { ...reconciliationQuote, totalRub: 130_000 },
       issues: [{ code: 'PRICE_CHANGED', blocking: false, path: ['totalRub'], message: 'Цена изменилась' }],
       requiresAcceptance: true,
     }).success).toBe(true)
     expect(configuratorReconciliationResponseSchema.safeParse({
       ...base,
-      originalQuote: reconciliationQuote,
       currentQuote: { ...reconciliationQuote, totalRub: 130_000 },
       issues: [],
     }).success).toBe(false)
@@ -259,6 +273,17 @@ describe('lead submission contract', () => {
       currentQuote: { ...reconciliationQuote, publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff' },
       issues: [],
     }).success).toBe(false)
+  })
+
+  test('requires source and working reconciliation commands to share an intent', () => {
+    expect(configuratorReconciliationRequestSchema.safeParse({
+      sourceCommand: configuration,
+      workingCommand: { ...configuration, intentId: 'another-intent' },
+    }).success).toBe(false)
+    expect(configuratorReconciliationRequestSchema.safeParse({
+      sourceCommand: configuration,
+      workingCommand: configuration,
+    }).success).toBe(true)
   })
 
   test('binds every intent state to its exact response shape', () => {

@@ -6,6 +6,7 @@ import type { Prisma } from '../../generated/prisma/client'
 import { createPrisma, type DbClient } from '../../db'
 import { createApp } from '../../app'
 import type { AppEnv } from '../../env'
+import { canonicalJson, sha256 } from './application/canonical-json'
 import { applyCatalogImport, CatalogImportError, CatalogService, loadCatalogSeed, previewCatalogImport } from './index'
 
 const databaseUrl = process.env.TEST_DATABASE_URL
@@ -26,6 +27,9 @@ maybeDescribe('catalog import integration', () => {
     REFRESH_TOKEN_TTL_DAYS: 30, REFRESH_REUSE_GRACE_SECONDS: 10, SESSION_ABSOLUTE_TTL_DAYS: 90,
     SESSION_RETENTION_DAYS: 7, AUTH_BODY_LIMIT_BYTES: 64 * 1024, AUTH_RATE_LIMIT_MAX: 60,
     AUTH_RATE_LIMIT_WINDOW_SECONDS: 60, AUTH_REGISTRATION_ENABLED: true, SHUTDOWN_GRACE_SECONDS: 20,
+    CONFIGURATOR_BODY_LIMIT_BYTES: 64 * 1024, CONFIGURATOR_QUOTE_RATE_LIMIT_MAX: 120,
+    CONFIGURATOR_REPLACEMENT_RATE_LIMIT_MAX: 30, CONFIGURATOR_RECONCILIATION_RATE_LIMIT_MAX: 20,
+    CONFIGURATOR_RATE_LIMIT_WINDOW_SECONDS: 60,
     TRUST_PROXY: false, COOKIE_SECURE: false, SPACES_UPLOAD_MAX_BYTES: 10 * 1024 * 1024,
     SPACES_UPLOAD_URL_TTL_SECONDS: 900, SPACES_DOWNLOAD_URL_TTL_SECONDS: 300,
     SPACES_PUBLIC_CACHE_CONTROL: 'public, max-age=31536000, immutable',
@@ -686,5 +690,78 @@ maybeDescribe('catalog import integration', () => {
     expect((await quote.json()).totalRub).toBeGreaterThan(0)
     const forged = await app.request('/api/configurator/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...quoteRequest, totalRub: 1 }) })
     expect(forged.status).toBe(400)
+
+    const currentPublication = await appDb.catalogPublication.findUniqueOrThrow({
+      where: { id: bootstrap.publicationId },
+    })
+    if (!currentPublication.snapshot || typeof currentPublication.snapshot !== 'object' || Array.isArray(currentPublication.snapshot)
+      || !currentPublication.pricingSnapshot || typeof currentPublication.pricingSnapshot !== 'object' || Array.isArray(currentPublication.pricingSnapshot)) {
+      throw new Error('Expected published catalog and pricing snapshots')
+    }
+    const oldPublicationId = crypto.randomUUID()
+    const oldReleaseId = `candidate-${oldPublicationId}`
+    const oldPublicSnapshot = {
+      ...(structuredClone(currentPublication.snapshot) as Record<string, unknown>),
+      publicationId: oldPublicationId,
+      releaseId: oldReleaseId,
+    }
+    const oldPricingSnapshot = {
+      ...(structuredClone(currentPublication.pricingSnapshot) as Record<string, unknown>),
+      publicationId: oldPublicationId,
+    }
+    await appDb.catalogPublication.create({
+      data: {
+        id: oldPublicationId,
+        catalogRevision: currentPublication.catalogRevision,
+        priceVersionId: currentPublication.priceVersionId,
+        releaseId: oldReleaseId,
+        snapshot: oldPublicSnapshot as Prisma.InputJsonValue,
+        pricingSnapshot: oldPricingSnapshot as Prisma.InputJsonValue,
+        checksum: sha256(canonicalJson(oldPublicSnapshot)),
+        status: 'SUPERSEDED',
+        activatedAt: new Date(),
+        publicVerifiedAt: new Date(),
+      },
+    })
+    const reconciliationRequest = {
+      sourceCommand: { ...quoteRequest, publicationId: oldPublicationId },
+      workingCommand: quoteRequest,
+    }
+    const reconciliation = await app.request('/api/configurator/reconcile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reconciliationRequest),
+    })
+    expect(reconciliation.status).toBe(200)
+    expect(await reconciliation.json()).toMatchObject({
+      originalPublicationId: oldPublicationId,
+      currentPublicationId: bootstrap.publicationId,
+      currentQuote: { publicationId: bootstrap.publicationId },
+      issues: [{ code: 'PUBLICATION_CHANGED', blocking: false }],
+    })
+
+    await appDb.catalogPublication.update({
+      where: { id: oldPublicationId },
+      data: { publicVerifiedAt: null },
+    })
+    const unverified = await app.request('/api/configurator/reconcile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reconciliationRequest),
+    })
+    expect(unverified.status).toBe(409)
+    expect((await unverified.json()).error.code).toBe('RECONCILIATION_REQUIRED')
+
+    await appDb.catalogPublication.update({
+      where: { id: bootstrap.publicationId },
+      data: { pricingSnapshot: { malformed: true } },
+    })
+    const malformedCurrent = await app.request('/api/configurator/reconcile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reconciliationRequest),
+    })
+    expect(malformedCurrent.status).toBe(409)
+    expect((await malformedCurrent.json()).error.code).toBe('RECONCILIATION_REQUIRED')
   }, 30_000)
 })

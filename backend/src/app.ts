@@ -5,7 +5,7 @@ import { secureHeaders } from 'hono/secure-headers'
 import type { DbClient } from './db'
 import type { AppEnv } from './env'
 import { errorResponse, handleError, validationErrorHook } from './http/errors'
-import { createAuthSecurity } from './http/security'
+import { createAuthSecurity, createRequestSecurity } from './http/security'
 import { createAuthModule, type AuthHttpEnv } from './modules/auth'
 import { CatalogService, createCatalogRoutes } from './modules/catalog'
 import { ConfigurationService, createConfigurationRoutes } from './modules/configuration'
@@ -48,6 +48,20 @@ export function createApp({ env, prisma }: CreateAppOptions) {
     trustedProxyClientIpPosition: env.TRUSTED_PROXY_CLIENT_IP_POSITION,
   })) {
     app.use('/api/auth/*', middleware)
+  }
+  for (const [path, label, rateLimitMax] of [
+    ['/api/configurator/quote', 'configuration quote', env.CONFIGURATOR_QUOTE_RATE_LIMIT_MAX],
+    ['/api/configurator/replacement-proposal', 'configuration replacement', env.CONFIGURATOR_REPLACEMENT_RATE_LIMIT_MAX],
+    ['/api/configurator/reconcile', 'configuration reconciliation', env.CONFIGURATOR_RECONCILIATION_RATE_LIMIT_MAX],
+  ] as const) {
+    for (const middleware of createRequestSecurity({
+      bodyLimitBytes: env.CONFIGURATOR_BODY_LIMIT_BYTES,
+      rateLimitMax,
+      rateLimitWindowSeconds: env.CONFIGURATOR_RATE_LIMIT_WINDOW_SECONDS,
+      trustProxy: env.TRUST_PROXY,
+      trustedProxyClientIpHeader: env.TRUSTED_PROXY_CLIENT_IP_HEADER,
+      trustedProxyClientIpPosition: env.TRUSTED_PROXY_CLIENT_IP_POSITION,
+    }, label)) app.use(path, middleware)
   }
   app.get('/', (c) => {
     return c.json({

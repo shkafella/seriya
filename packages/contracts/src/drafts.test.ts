@@ -36,11 +36,12 @@ describe('configurator draft contract', () => {
       draftSchemaVersion: CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION,
       savedAt: '2026-10-24T08:00:00.000Z',
       command,
+      reconciliationSourceCommand: null,
       uiOptions: { startSide: 'right' },
       acceptedQuote: null,
     })
 
-    expect(draft.draftSchemaVersion).toBe(2)
+    expect(draft.draftSchemaVersion).toBe(3)
     expect(JSON.stringify(draft)).not.toContain('phone')
   })
 
@@ -52,9 +53,10 @@ describe('configurator draft contract', () => {
       { contact: { messenger: 'telegram', value: '@visitor' } },
     ]) {
       expect(() => configuratorDraftSchema.parse({
-        draftSchemaVersion: 2,
+        draftSchemaVersion: 3,
         savedAt: '2026-10-24T08:00:00.000Z',
         command,
+        reconciliationSourceCommand: null,
         uiOptions: { startSide: 'left' },
         acceptedQuote: null,
         ...forbidden,
@@ -68,9 +70,10 @@ describe('configurator draft contract', () => {
       savedAt: '2026-10-24T08:00:00.000Z',
       command,
     })).toEqual({
-      draftSchemaVersion: 2,
+      draftSchemaVersion: 3,
       savedAt: '2026-10-24T08:00:00.000Z',
       command,
+      reconciliationSourceCommand: null,
       uiOptions: { startSide: 'left' },
       acceptedQuote: null,
     })
@@ -81,7 +84,7 @@ describe('configurator draft contract', () => {
       command,
       acceptedQuote: null,
     })).toMatchObject({
-      draftSchemaVersion: 2,
+      draftSchemaVersion: 3,
       uiOptions: { startSide: 'left' },
     })
 
@@ -94,9 +97,10 @@ describe('configurator draft contract', () => {
 
   test('rejects an accepted quote from another publication', () => {
     expect(() => configuratorDraftSchema.parse({
-      draftSchemaVersion: 2,
+      draftSchemaVersion: 3,
       savedAt: '2026-10-24T08:00:00.000Z',
       command,
+      reconciliationSourceCommand: null,
       uiOptions: { startSide: 'left' },
       acceptedQuote: {
         publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff',
@@ -106,5 +110,36 @@ describe('configurator draft contract', () => {
         acceptedAt: '2026-10-24T08:00:00.000Z',
       },
     })).toThrow('Accepted quote must belong to the draft publication')
+  })
+
+  test('stores unfinished reconciliation without acceptance and with one shared intent', () => {
+    const working = {
+      ...command,
+      publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff',
+    }
+    const draft = configuratorDraftSchema.parse({
+      draftSchemaVersion: 3,
+      savedAt: '2026-10-24T08:00:00.000Z',
+      command: working,
+      reconciliationSourceCommand: command,
+      uiOptions: { startSide: 'left' },
+      acceptedQuote: null,
+    })
+    expect(draft.reconciliationSourceCommand?.publicationId).toBe(command.publicationId)
+
+    expect(() => configuratorDraftSchema.parse({
+      ...draft,
+      acceptedQuote: {
+        publicationId: working.publicationId,
+        priceVersionId: '018f0f89-8a7b-7c6d-8e5f-1234567890ad',
+        configurationFingerprint: 'sha256:configuration',
+        totalRub: 125_000,
+        acceptedAt: '2026-10-24T08:00:00.000Z',
+      },
+    })).toThrow('An unfinished reconciliation cannot carry an accepted quote')
+    expect(() => configuratorDraftSchema.parse({
+      ...draft,
+      command: { ...working, intentId: 'another-intent' },
+    })).toThrow('Reconciliation commands must share one intent identifier')
   })
 })

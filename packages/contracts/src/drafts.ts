@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { configurationQuoteRequestSchema } from './configuration'
 
-export const CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION = 2 as const
+export const CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION = 3 as const
 
 const isoTimestampSchema = z.string().datetime({ offset: true })
 
@@ -31,10 +31,19 @@ export const configuratorDraftUiOptionsSchema = z.object({
   startSide: z.enum(['left', 'right']),
 }).strict()
 
+const legacyConfiguratorDraftV2Schema = z.object({
+  draftSchemaVersion: z.literal(2),
+  savedAt: isoTimestampSchema,
+  command: configurationQuoteRequestSchema,
+  uiOptions: configuratorDraftUiOptionsSchema,
+  acceptedQuote: acceptedConfigurationQuoteSchema.nullable(),
+}).strict()
+
 export const configuratorDraftSchema = z.object({
   draftSchemaVersion: z.literal(CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION),
   savedAt: isoTimestampSchema,
   command: configurationQuoteRequestSchema,
+  reconciliationSourceCommand: configurationQuoteRequestSchema.nullable(),
   uiOptions: configuratorDraftUiOptionsSchema,
   acceptedQuote: acceptedConfigurationQuoteSchema.nullable(),
 }).strict().superRefine((value, context) => {
@@ -45,11 +54,35 @@ export const configuratorDraftSchema = z.object({
       message: 'Accepted quote must belong to the draft publication',
     })
   }
+  if (value.reconciliationSourceCommand !== null) {
+    if (value.acceptedQuote !== null) {
+      context.addIssue({
+        code: 'custom',
+        path: ['acceptedQuote'],
+        message: 'An unfinished reconciliation cannot carry an accepted quote',
+      })
+    }
+    if (value.reconciliationSourceCommand.publicationId === value.command.publicationId) {
+      context.addIssue({
+        code: 'custom',
+        path: ['reconciliationSourceCommand', 'publicationId'],
+        message: 'Reconciliation source must belong to an older publication',
+      })
+    }
+    if (value.reconciliationSourceCommand.intentId !== value.command.intentId) {
+      context.addIssue({
+        code: 'custom',
+        path: ['command', 'intentId'],
+        message: 'Reconciliation commands must share one intent identifier',
+      })
+    }
+  }
 })
 
 export const configuratorDraftMigrationInputSchema = z.discriminatedUnion('draftSchemaVersion', [
   legacyConfiguratorDraftV0Schema,
   legacyConfiguratorDraftV1Schema,
+  legacyConfiguratorDraftV2Schema,
   configuratorDraftSchema,
 ])
 
@@ -63,8 +96,10 @@ export function migrateConfiguratorDraft(input: unknown): ConfiguratorDraft {
     draftSchemaVersion: CURRENT_CONFIGURATOR_DRAFT_SCHEMA_VERSION,
     savedAt: draft.savedAt,
     command: draft.command,
+    reconciliationSourceCommand: null,
     uiOptions: { startSide: 'left' },
-    acceptedQuote: draft.draftSchemaVersion === 1 ? draft.acceptedQuote : null,
+    acceptedQuote: draft.draftSchemaVersion === 1 || draft.draftSchemaVersion === 2 ? draft.acceptedQuote : null,
+    ...(draft.draftSchemaVersion === 2 ? { uiOptions: draft.uiOptions } : {}),
   })
 }
 

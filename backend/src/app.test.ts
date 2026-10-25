@@ -53,3 +53,40 @@ test('CORS preflight allows the standard mutation methods exposed by the client 
   expect(response.status).toBe(204)
   expect(response.headers.get('access-control-allow-methods')).toContain('PATCH')
 })
+
+test('configurator write guards reject unsafe traffic before database work', async () => {
+  let databaseCalls = 0
+  const guardedEnv = loadEnv({
+    DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/seriya',
+    JWT_SECRET: '12345678901234567890123456789012',
+    CONFIGURATOR_BODY_LIMIT_BYTES: '8',
+    CONFIGURATOR_RECONCILIATION_RATE_LIMIT_MAX: '1',
+  })
+  const prisma = {
+    $queryRaw: async () => {
+      databaseCalls += 1
+      return [{ '?column?': 1 }]
+    },
+    $transaction: async () => {
+      databaseCalls += 1
+      throw new Error('database must not be reached')
+    },
+  } as unknown as DbClient
+  const app = createApp({ env: guardedEnv, prisma })
+  const oversized = await app.request('/api/configurator/reconcile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ value: 'too large' }),
+  })
+
+  expect(oversized.status).toBe(413)
+
+  const smallRequest = () => app.request('/api/configurator/reconcile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: '{}',
+  })
+  expect((await smallRequest()).status).toBe(400)
+  expect((await smallRequest()).status).toBe(429)
+  expect(databaseCalls).toBe(0)
+})

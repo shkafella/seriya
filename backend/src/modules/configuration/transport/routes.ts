@@ -8,5 +8,6 @@ export function createConfigurationRoutes(options: { service: ConfigurationHttpS
   routes.get('/bootstrap', async (c) => c.json(await options.service.bootstrap()))
   routes.post('/quote', async (c) => c.json(await options.service.quote(await c.req.json())))
   routes.post('/replacement-proposal', async (c) => c.json(await options.service.replacementProposal(await c.req.json())))
+  routes.post('/reconcile', async (c) => c.json(await options.service.reconcile(await c.req.json())))
   return routes
 }

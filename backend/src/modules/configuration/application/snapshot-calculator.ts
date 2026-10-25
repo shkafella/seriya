@@ -1,5 +1,6 @@
-import type { ConfigurationQuoteRequest, ConfigurationQuoteResponse } from '@seriya/contracts'
+import { configurationQuoteResponseSchema, type ConfigurationQuoteRequest, type ConfigurationQuoteResponse } from '@seriya/contracts'
 
+import { configurationFingerprint } from './configuration-fingerprint'
 import {
   calculateKitchenQuote,
   type PublishedKitchenSnapshot,
@@ -13,5 +14,10 @@ export interface ConfigurationSnapshotCalculator {
 }
 
 export const configurationSnapshotCalculator: ConfigurationSnapshotCalculator = {
-  calculate: calculateKitchenQuote,
+  calculate(snapshot, command) {
+    return configurationQuoteResponseSchema.parse({
+      ...calculateKitchenQuote(snapshot, command),
+      configurationFingerprint: configurationFingerprint(command),
+    })
+  },
 }

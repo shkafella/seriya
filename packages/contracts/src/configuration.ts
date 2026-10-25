@@ -138,6 +138,7 @@ export const configurationQuoteResponseSchema = z.object({
   publicationId: uuidSchema,
   priceVersionId: uuidSchema,
   intentId: z.string().min(1).max(120),
+  configurationFingerprint: z.string().regex(/^sha256:[a-f0-9]{64}$/),
   totalRub: rubleAmountSchema,
   includedVatRub: rubleAmountSchema,
   kitchenHeightMm: z.number().int().positive(),

@@ -148,8 +148,40 @@ export const leadPolicyResponseSchema = z.object({
 }).strict()
 
 export const configuratorReconciliationRequestSchema = z.object({
-  originalPublicationId: uuidSchema,
-  command: configurationQuoteRequestSchema,
+  sourceCommand: configurationQuoteRequestSchema,
+  workingCommand: configurationQuoteRequestSchema,
+}).strict().superRefine((value, context) => {
+  if (value.sourceCommand.intentId !== value.workingCommand.intentId) {
+    context.addIssue({
+      code: 'custom',
+      path: ['workingCommand', 'intentId'],
+      message: 'Reconciliation commands must share one intent identifier',
+    })
+  }
+})
+
+export const reconciliationTargetSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('module'), row: z.enum(['lower', 'wall', 'mezzanine']), index: z.number().int().nonnegative() }).strict(),
+  z.object({ kind: z.literal('false_panel'), index: z.number().int().nonnegative() }).strict(),
+  z.object({ kind: z.literal('material'), field: z.enum(['bodyMaterialId', 'facadeMaterialId']) }).strict(),
+  z.object({ kind: z.literal('trim'), field: z.enum(['plinthVariantId', 'crownVariantId']) }).strict(),
+])
+
+export const reconciliationVariantOptionSchema = z.object({
+  kind: z.literal('variant'),
+  id: uuidSchema,
+  publicName: z.string().min(1).max(240),
+  sku: z.string().min(1).max(100),
+  row: z.enum(['lower', 'wall', 'mezzanine', 'accessory']),
+  widthMm: z.number().int().positive(),
+  layoutSpanMm: z.number().int().positive().nullable(),
+}).strict()
+
+export const reconciliationMaterialOptionSchema = z.object({
+  kind: z.literal('material'),
+  id: z.string().trim().min(1).max(100),
+  publicName: z.string().min(1).max(120),
+  materialKind: z.enum(['body', 'facade', 'hdf']),
 }).strict()
 
 const reconciliationIssueBaseSchema = z.object({
@@ -161,12 +193,16 @@ export const reconciliationIssueSchema = z.discriminatedUnion('code', [
   reconciliationIssueBaseSchema.extend({
     code: z.literal('ITEM_UNAVAILABLE'),
     blocking: z.literal(true),
-    replacementVariantIds: z.array(uuidSchema).max(20).optional(),
+    target: reconciliationTargetSchema,
+    originalSelection: reconciliationVariantOptionSchema,
+    replacementOptions: z.array(reconciliationVariantOptionSchema).max(20),
   }).strict(),
   reconciliationIssueBaseSchema.extend({
     code: z.literal('MATERIAL_UNAVAILABLE'),
     blocking: z.literal(true),
-    replacementVariantIds: z.array(uuidSchema).max(20).optional(),
+    target: reconciliationTargetSchema,
+    originalSelection: reconciliationMaterialOptionSchema,
+    replacementOptions: z.array(reconciliationMaterialOptionSchema).max(20),
   }).strict(),
   reconciliationIssueBaseSchema.extend({
     code: z.literal('PRICE_CHANGED'),
@@ -181,8 +217,9 @@ export const reconciliationIssueSchema = z.discriminatedUnion('code', [
 export const configuratorReconciliationResponseSchema = z.object({
   originalPublicationId: uuidSchema,
   currentPublicationId: uuidSchema,
-  originalQuote: configurationQuoteResponseSchema.nullable(),
+  originalQuote: configurationQuoteResponseSchema,
   currentQuote: configurationQuoteResponseSchema.nullable(),
+  workingCommand: configurationQuoteRequestSchema,
   issues: z.array(reconciliationIssueSchema),
   currentConfigurationFingerprint: checksumSchema,
   requiresAcceptance: z.boolean(),
@@ -194,7 +231,7 @@ export const configuratorReconciliationResponseSchema = z.object({
   const hasPublicationChangedIssue = value.issues.some((issue) => issue.code === 'PUBLICATION_CHANGED')
   const publicationChanged = value.originalPublicationId !== value.currentPublicationId
   const hasPriceChangedIssue = value.issues.some((issue) => issue.code === 'PRICE_CHANGED')
-  const priceChanged = value.originalQuote !== null && value.currentQuote !== null && (
+  const priceChanged = value.currentQuote !== null && (
     value.originalQuote.priceVersionId !== value.currentQuote.priceVersionId
     || value.originalQuote.totalRub !== value.currentQuote.totalRub
   )
@@ -226,7 +263,7 @@ export const configuratorReconciliationResponseSchema = z.object({
       message: 'PRICE_CHANGED exists if and only if the quoted price or price version changed',
     })
   }
-  if (value.originalQuote !== null && value.originalQuote.publicationId !== value.originalPublicationId) {
+  if (value.originalQuote.publicationId !== value.originalPublicationId) {
     context.addIssue({
       code: 'custom',
       path: ['originalQuote', 'publicationId'],
@@ -238,6 +275,31 @@ export const configuratorReconciliationResponseSchema = z.object({
       code: 'custom',
       path: ['currentQuote', 'publicationId'],
       message: 'The current quote must belong to the current publication',
+    })
+  }
+  if (value.workingCommand.publicationId !== value.currentPublicationId) {
+    context.addIssue({
+      code: 'custom',
+      path: ['workingCommand', 'publicationId'],
+      message: 'The working command must belong to the current publication',
+    })
+  }
+  if (value.currentQuote !== null
+    && value.currentConfigurationFingerprint !== value.currentQuote.configurationFingerprint) {
+    context.addIssue({
+      code: 'custom',
+      path: ['currentConfigurationFingerprint'],
+      message: 'The reconciliation fingerprint must match the current quote',
+    })
+  }
+  const blockingTargets = value.issues
+    .filter((issue) => issue.blocking)
+    .map((issue) => JSON.stringify(issue.target))
+  if (new Set(blockingTargets).size !== blockingTargets.length) {
+    context.addIssue({
+      code: 'custom',
+      path: ['issues'],
+      message: 'A reconciliation target may have only one blocking issue',
     })
   }
 })
@@ -446,6 +508,7 @@ export type LeadSubmissionSuccess = z.infer<typeof leadSubmissionSuccessSchema>
 export type LeadPolicyResponse = z.infer<typeof leadPolicyResponseSchema>
 export type ConfiguratorReconciliationRequest = z.infer<typeof configuratorReconciliationRequestSchema>
 export type ConfiguratorReconciliationResponse = z.infer<typeof configuratorReconciliationResponseSchema>
+export type ReconciliationIssue = z.infer<typeof reconciliationIssueSchema>
 export type OwnerLeadListItem = z.infer<typeof ownerLeadListItemSchema>
 export type OwnerLeadSnapshot = z.infer<typeof ownerLeadSnapshotSchema>
 export type OwnerLeadDetail = z.infer<typeof ownerLeadDetailSchema>

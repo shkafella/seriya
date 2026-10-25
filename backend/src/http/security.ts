@@ -5,7 +5,7 @@ import { isIP } from 'node:net'
 
 import { errorResponse } from './errors'
 
-type AuthSecurityOptions = {
+export type RequestSecurityOptions = {
   bodyLimitBytes: number
   rateLimitMax: number
   rateLimitWindowSeconds: number
@@ -22,16 +22,25 @@ type RateLimitBucket = {
 const maxTrackedClients = 10_000
 
 export function createAuthSecurity(options: AuthSecurityOptions): MiddlewareHandler[] {
+  return createRequestSecurity(options, 'authentication')
+}
+
+type AuthSecurityOptions = RequestSecurityOptions
+
+export function createRequestSecurity(
+  options: RequestSecurityOptions,
+  requestLabel = 'public',
+): MiddlewareHandler[] {
   return [
     bodyLimit({
       maxSize: options.bodyLimitBytes,
       onError: (c) => c.json(errorResponse('PAYLOAD_TOO_LARGE', 'Request body is too large'), 413),
     }),
-    createAuthRateLimit(options),
+    createRateLimit(options, requestLabel),
   ]
 }
 
-function createAuthRateLimit(options: AuthSecurityOptions): MiddlewareHandler {
+function createRateLimit(options: RequestSecurityOptions, requestLabel: string): MiddlewareHandler {
   const buckets = new Map<string, RateLimitBucket>()
   const windowMs = options.rateLimitWindowSeconds * 1000
 
@@ -67,7 +76,7 @@ function createAuthRateLimit(options: AuthSecurityOptions): MiddlewareHandler {
 
     if (bucket.count > options.rateLimitMax) {
       c.header('Retry-After', String(Math.max(1, Math.ceil((bucket.resetAt - now) / 1000))))
-      return c.json(errorResponse('RATE_LIMITED', 'Too many authentication requests'), 429)
+      return c.json(errorResponse('RATE_LIMITED', `Too many ${requestLabel} requests`), 429)
     }
 
     await next()

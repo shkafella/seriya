@@ -13,6 +13,7 @@ const cutLowerId = '018f0f89-8a7b-7c6d-8e5f-1234567890b0'
 const cutWallId = '018f0f89-8a7b-7c6d-8e5f-1234567890b1'
 const tallId = '018f0f89-8a7b-7c6d-8e5f-1234567890b2'
 const wallId = '018f0f89-8a7b-7c6d-8e5f-1234567890b3'
+const standard550Id = '018f0f89-8a7b-7c6d-8e5f-1234567890b4'
 
 const metadata = {
   straightEligible: true,
@@ -60,6 +61,12 @@ const bootstrap: ConfigurationBootstrap = {
       configuration: { ...metadata, role: 'ordinary' },
     },
     {
+      id: standard550Id, familyKey: 'cut-lower', row: 'lower', sku: 'STD-L-550', publicName: 'Стандартный низ 550',
+      dimensionsMm: { height: 720, width: 550, depth: 500 },
+      cutToWidth: { allowed: true, maxReductionMm: 50, stepMm: 1 },
+      configuration: { ...metadata, role: 'ordinary' },
+    },
+    {
       id: cutWallId, familyKey: 'cut-wall', row: 'wall', sku: 'CUT-W', publicName: 'Подрезной верх',
       dimensionsMm: { height: 700, width: 600, depth: 320 },
       cutToWidth: { allowed: true, maxReductionMm: 50, stepMm: 10 },
@@ -82,7 +89,7 @@ const bootstrap: ConfigurationBootstrap = {
 
 function draft(): ConfiguratorDraft {
   return {
-    draftSchemaVersion: 2,
+    draftSchemaVersion: 3,
     savedAt: '2026-10-24T10:00:00.000Z',
     uiOptions: { startSide: 'right' },
     command: {
@@ -102,6 +109,7 @@ function draft(): ConfiguratorDraft {
       plinthVariantId: null,
       crownVariantId: null,
     },
+    reconciliationSourceCommand: null,
     acceptedQuote: null,
   }
 }
@@ -115,6 +123,15 @@ describe('configurator draft compatibility', () => {
     const candidate = draft()
     candidate.command.publicationId = '018f0f89-8a7b-7c6d-8e5f-1234567890ff'
     expect(validateDraftCompatibility(candidate, bootstrap)).toEqual({ status: 'stale' })
+  })
+
+  test('keeps an unfinished repair in reconciliation even on the current publication', () => {
+    const candidate = draft()
+    candidate.reconciliationSourceCommand = {
+      ...candidate.command,
+      publicationId: '018f0f89-8a7b-7c6d-8e5f-1234567890ff',
+    }
+    expect(validateDraftCompatibility(candidate, bootstrap)).toEqual({ status: 'reconciling' })
   })
 
   test('rejects wrong material kind and accessory-as-module semantics', () => {
@@ -187,6 +204,21 @@ describe('configurator draft compatibility', () => {
       { variantId: cutWallId, startMm: 1100, cutWidthMm: 550, withoutFacade: false },
     )
     expect(validateDraftCompatibility(candidate, bootstrap)).toEqual({ status: 'corrupt' })
+  })
+
+  test('does not count an exact family width as a cut when restoring a reconciled draft', () => {
+    const candidate = draft()
+    candidate.command.rows = [{
+      row: 'lower',
+      modules: [0, 550, 1100, 1650].map((startMm) => ({
+        variantId: cutLowerId,
+        startMm,
+        cutWidthMm: 550,
+        withoutFacade: false,
+      })),
+    }]
+
+    expect(validateDraftCompatibility(candidate, bootstrap)).toEqual({ status: 'ready', acceptedQuote: null })
   })
 
   test('rejects upper modules inside a tall-module reservation', () => {

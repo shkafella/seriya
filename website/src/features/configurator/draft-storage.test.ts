@@ -37,7 +37,7 @@ describe('configurator local draft storage', () => {
     expect(serialized).not.toContain('consent')
     expect(readConfiguratorDraft(serialized)).toMatchObject({
       status: 'ready',
-      draft: { draftSchemaVersion: 2, command, uiOptions: { startSide: 'right' } },
+      draft: { draftSchemaVersion: 3, command, reconciliationSourceCommand: null, uiOptions: { startSide: 'right' } },
     })
   })
 
@@ -74,7 +74,7 @@ describe('configurator local draft storage', () => {
       command,
       acceptedQuote: null,
     }))).toMatchObject({
-      status: 'ready', migrated: true, draft: { draftSchemaVersion: 2, uiOptions: { startSide: 'left' } },
+      status: 'ready', migrated: true, draft: { draftSchemaVersion: 3, uiOptions: { startSide: 'left' } },
     })
 
     const serialized = JSON.parse(serializeConfiguratorDraft(command, null, { startSide: 'left' }))

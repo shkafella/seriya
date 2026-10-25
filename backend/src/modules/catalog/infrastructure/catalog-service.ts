@@ -17,6 +17,7 @@ import { AppError } from '../../../http/errors'
 import { calculatePublicPriceRange, ensurePricingBootstrap } from '../../pricing'
 import { canonicalJson, sha256 } from '../application/canonical-json'
 import { configurationDefaultsForFamily } from '../application/configuration-defaults'
+import { hasConsistentPublicEvidence } from '../application/public-publication-evidence'
 
 type ActivationInput = {
   candidateId: string
@@ -401,22 +402,6 @@ function ownerFieldValue(variant: {
   }
 }
 
-function hasConsistentPublicEvidence(publication: {
-  activatedAt: Date | null
-  checksum: string
-  releaseId: string | null
-  snapshot: unknown
-  status: 'CANDIDATE' | 'ACTIVE' | 'SUPERSEDED'
-}) {
-  if (!publication.activatedAt || !publication.releaseId || publication.status === 'CANDIDATE') return false
-  try {
-    const snapshot = publicCatalogSchema.parse(publication.snapshot)
-    return snapshot.releaseId === publication.releaseId && sha256(canonicalJson(snapshot)) === publication.checksum
-  } catch {
-    return false
-  }
-}
-
 function duplicateCatalogSkuError() {
   return new AppError(409, 'CONFLICT', 'Another catalog variant already uses this SKU', { field: 'sku' })
 }
@@ -508,6 +493,8 @@ async function buildConfigurationPricingSnapshot(
   })
   if (variants.length === 0) throw new AppError(409, 'CATALOG_NOT_IMPORTED', 'No active catalog variants are available for configuration')
   return {
+    snapshotSchemaVersion: 1,
+    quoteCalculatorVersion: 1,
     publicationId,
     priceVersionId: price.id,
     rates: {
